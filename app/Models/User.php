@@ -17,10 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $tables = 'users';
+
     protected $fillable = [
-        'name',
+        'username',
         'email',
+        'email_verified_at',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +48,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function community(): HasOne
+    {
+        return $this->hasOne();
     }
 }
