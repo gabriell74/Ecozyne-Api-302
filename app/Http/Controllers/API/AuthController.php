@@ -20,11 +20,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             return response()->json([
+                'success' => true,
+                'message' => 'Login Berhasil',
                 'user' => $user,
             ]);
         }
 
         return response()->json([
+            'success' => false,
             'message' => 'Email atau password salah.'
         ], 401);
     }
