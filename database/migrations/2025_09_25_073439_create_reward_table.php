@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('waste_bank', function (Blueprint $table) {
+        Schema::create('reward', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('waste_bank_submission_id');
-            $table->foreign('waste_bank_submission_id')
-                ->references('id')
-                ->on('waste_bank_submission')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->string('reward_name');
+            $table->string('description');
+            $table->string('photo');
+            $table->integer('stock');
+            $table->integer('unit_point');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('waste_bank');
+        Schema::dropIfExists('reward');
     }
 };

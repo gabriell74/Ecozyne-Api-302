@@ -14,9 +14,17 @@ return new class extends Migration
         Schema::create('community', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('address_id');
-            $table->foreign('address_id')->references('id')->on('address')->onDelete('cascade');
+            $table->foreign('address_id')
+                ->references('id')
+                ->on('address')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('photo');
             $table->integer('phone_number');
             $table->string('name');

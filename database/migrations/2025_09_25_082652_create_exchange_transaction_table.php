@@ -14,9 +14,17 @@ return new class extends Migration
         Schema::create('exchange_transaction', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('exchange_id');
-            $table->foreign('exchange_id')->references('id')->on('exchange')->onDelete('cascade');
-            $table->unsignedBigInteger('gift_id');
-            $table->foreign('gift_id')->references('id')->on('gift')->onDelete('cascade');
+            $table->foreign('exchange_id')
+                ->references('id')
+                ->on('exchange')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->unsignedBigInteger('reward_id');
+            $table->foreign('reward_id')
+                ->references('id')
+                ->on('reward')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->integer('amount');
             $table->integer('unit_point');
             $table->timestamps();

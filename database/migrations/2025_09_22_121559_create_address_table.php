@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('address', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kelurahan_id');
-            $table->foreign('kelurahan_id')->references('id')->on('kelurahan')->onDelete('cascade');
+            $table->foreign('kelurahan_id')
+                ->references('id')
+                ->on('kelurahan')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('address');
             $table->string('postal_code');
             $table->timestamps();

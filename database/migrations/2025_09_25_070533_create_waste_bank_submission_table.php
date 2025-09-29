@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('waste_bank_submission', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('community_id');
-            $table->foreign('community_id')->references('id')->on('community')->onDelete('cascade');
+            $table->foreign('community_id')
+                ->references('id')
+                ->on('community')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('waste_bank_name');
             $table->string('waste_bank_location');
             $table->string('latitude');

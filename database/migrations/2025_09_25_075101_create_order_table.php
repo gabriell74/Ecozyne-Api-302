@@ -14,9 +14,17 @@ return new class extends Migration
         Schema::create('order', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('community_id');
-            $table->foreign('community_id')->references('id')->on('community')->onDelete('cascade');
+            $table->foreign('community_id')
+                ->references('id')
+                ->on('community')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('waste_bank_id');
-            $table->foreign('waste_bank_id')->references('id')->on('waste_bank')->onDelete('cascade');
+            $table->foreign('waste_bank_id')
+                ->references('id')
+                ->on('waste_bank')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('status_order');
             $table->string('status_payment');
             $table->timestamps();

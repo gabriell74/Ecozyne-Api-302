@@ -14,9 +14,17 @@ return new class extends Migration
         Schema::create('activity_registration', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('activity_id');
-            $table->foreign('activity_id')->references('id')->on('activity')->onDelete('cascade');
+            $table->foreign('activity_id')
+                ->references('id')
+                ->on('activity')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('community_id');
-            $table->foreign('community_id')->references('id')->on('community')->onDelete('cascade');
+            $table->foreign('community_id')
+                ->references('id')
+                ->on('community')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

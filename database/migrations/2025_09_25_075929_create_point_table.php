@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('point', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('community_id');
-            $table->foreign('community_id')->references('id')->on('community')->onDelete('cascade');
+            $table->foreign('community_id')
+                ->references('id')
+                ->on('community')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->integer('point');
             $table->date('expired_point');
             $table->timestamps();

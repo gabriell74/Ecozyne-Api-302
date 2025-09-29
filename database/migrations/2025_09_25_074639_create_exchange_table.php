@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('exchange', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('community_id');
-            $table->foreign('community_id')->references('id')->on('community')->onDelate('cascade');
+            $table->foreign('community_id')
+                ->references('id')
+                ->on('community')
+                ->onDelate('cascade')
+                ->onUpdate('cascade');
             $table->string('exchange_status');
             $table->timestamps();
         });
