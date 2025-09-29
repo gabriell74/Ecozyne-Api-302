@@ -23,11 +23,14 @@ class AuthController extends Controller
             // $token = $user->createToken('auth-token')->plainTextToken;
 
             return response()->json([
+                'success' => true,
+                'message' => 'Login Berhasil',
                 'user' => $user,
             ]);
         }
 
         return response()->json([
+            'success' => false,
             'message' => 'Email atau password salah.'
         ], 401);
     }
