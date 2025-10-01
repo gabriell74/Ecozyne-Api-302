@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kelurahan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kecamatan_id');
+            $table->string('kelurahan');
             $table->foreign('kecamatan_id')
                 ->references('id')
                 ->on('kecamatan')
