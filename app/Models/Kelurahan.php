@@ -12,6 +12,7 @@ class Kelurahan extends Model
 
     protected $fillable = [
         'kecamatan_id',
+        'kelurahan',
     ];
 
     public function kecamatan(): BelongsTo
