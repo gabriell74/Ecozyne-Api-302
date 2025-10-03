@@ -1,0 +1,21 @@
+/* custom.css */
+.sidebar a.active {
+    background-color: #38bdf8 !important; /* Warna biru untuk active link */
+}
+
+/* Untuk Card yang berwarna pastel seperti di screenshot */
+.card {
+    background-color: #e5f7f8; /* Warna latar belakang card (light cyan/blue-green) */
+    border-radius: 12px;
+}
+
+/* Jika kamu ingin Card berwarna putih */
+.bg-white {
+     background-color: white !important;
+}
+
+/* Warna tombol hijau Ecozyne */
+.btn-success {
+    background-color: #4ade80 !important;
+    border-color: #4ade80 !important;
+}
