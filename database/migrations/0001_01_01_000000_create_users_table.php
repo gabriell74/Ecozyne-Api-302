@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'waste_bank', 'community']);
+            $table->boolean('password_expired')->default(true);
+            $table->timestamp('last_password_change')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

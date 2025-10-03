@@ -1,4 +1,3 @@
-@extends('layout.admin') 
 <div class="container-fluid">
     <!-- Stats Cards -->
     <div class="row">
