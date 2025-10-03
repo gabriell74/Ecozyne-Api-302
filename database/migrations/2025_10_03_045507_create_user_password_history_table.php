@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activity', function (Blueprint $table) {
+        Schema::create('user_password_history', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description');
-            $table->string('photo');
-            $table->integer('quota');
-            $table->date('duedate');
+            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->string('password_hash');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('activity');
+        Schema::dropIfExists('user_password_history');
     }
 };

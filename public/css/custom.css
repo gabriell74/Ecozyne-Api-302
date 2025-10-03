@@ -1,21 +1,31 @@
-/* custom.css */
-.sidebar a.active {
-    background-color: #38bdf8 !important; /* Warna biru untuk active link */
+/* Tentukan warna kustom */
+:root {
+    --sidebar-width: 250px; /* Variabel baru untuk lebar sidebar */
+    --eco-green: #4ade80;
+    --eco-blue: #38bdf8;
+    --card-bg: #e6ffe6;
 }
 
-/* Untuk Card yang berwarna pastel seperti di screenshot */
-.card {
-    background-color: #e5f7f8; /* Warna latar belakang card (light cyan/blue-green) */
-    border-radius: 12px;
+/* Sidebar Customisasi */
+#sidebar-wrapper {
+    width: var(--sidebar-width); /* Menggunakan variabel lebar */
+    position: fixed; /* Sidebar mengambang */
+    height: 100vh;
+}
+/* Bagian Kunci: Mendorong Konten Utama */
+#page-content-wrapper {
+    /* Atur margin-kiri konten utama sebesar lebar sidebar */
+    margin-left: var(--sidebar-width); 
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
 }
 
-/* Jika kamu ingin Card berwarna putih */
-.bg-white {
-     background-color: white !important;
-}
 
-/* Warna tombol hijau Ecozyne */
-.btn-success {
-    background-color: #4ade80 !important;
-    border-color: #4ade80 !important;
+/* ... (Sisa kode CSS Anda di bawah ini) ... */
+
+#sidebar-wrapper .list-group-item.active {
+    background-color: var(--eco-blue);
+    color: white;
+    border-radius: 8px; 
 }
+/* ... (dst) ... */

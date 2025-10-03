@@ -22,6 +22,22 @@ class AuthController extends Controller
             // Buat token akses untuk pengguna kalau perlu nanti tambah di json sekalian
             // $token = $user->createToken('auth-token')->plainTextToken;
 
+            if ($user->password_expired) {
+                Auth::logout();
+
+                return response()->json([
+                    'success' => false,
+                    'masagge' => 'Password expired',
+                    'data' => [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'role' => $user->role
+                    ]
+                        
+                    ], 423);  
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Login Berhasil',
