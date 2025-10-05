@@ -15,9 +15,4 @@ class Address extends Model
         'address',
         'postal_code',
     ];
-
-    public function kelurahan(): BelongsTo
-    {
-        return $this->belongsTo(Kelurahan::class);
-    }
 }

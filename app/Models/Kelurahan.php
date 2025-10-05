@@ -22,9 +22,4 @@ class Kelurahan extends Model
     {
         return $this->belongsTo(Kecamatan::class);
     }
-
-    public function address(): HasMany
-    {
-        return $this->hasMany(Address::class);
-    }
 }

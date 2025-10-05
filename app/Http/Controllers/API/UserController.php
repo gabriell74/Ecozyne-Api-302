@@ -20,9 +20,9 @@ class UserController extends Controller
         $request->validate([
             'username' => 'required',
             'name' => 'required',
-            'email' => 'required',
-            'password' => 'required',
-            'phone_number' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+            'phone_number' => 'required|min:10',
             'address' => 'required',
             'postal_code' => 'required',
             'kecamatan' => 'required',
@@ -32,6 +32,12 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            $address = Address::create([
+                'address' => $request->address,
+                'kelurahan_id' => $request->kelurahan,
+                'postal_code' => $request->postal_code,
+            ]);
+            
             $user = User::create([
                 'username' => $request->username,
                 'email' => $request->email,
@@ -40,30 +46,27 @@ class UserController extends Controller
 
             Community::create([
                 'user_id' => $user->id,
-                'address_id' => $request->address_id,
+                'address_id' => $address->id,
                 'phone_number' => $request->phone_number,
                 'name' => $request->name,
-            ]);
-
-            Address::create([
-                'address' => $request->address,
-                'kelurahan_id' => $request->kelurahan,
-                'postal_code' => $request->postal_code,
             ]);
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Pendaftaran berhasil',
+                'success' => true,
+                'message' => 'Pendaftaran Berhasil',
             ], 201);
 
         } catch (\Exception $e) {
             DB::rollback();
 
-            return response()->json([
-                'message' => 'Pendaftaran gagal',
-            ]);
-        }
+            dd($e);
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'Pendaftaran Gagal',
+            // ]);
+        } 
     }
 
     public function changeExpiredPassword(request $request)

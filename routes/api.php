@@ -4,9 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\UserController;
 
-Route::post('/daftar', [AuthController::class, 'daftar']);
+Route::post('/register', [UserController::class, 'register']);
+Route::get('/regions', [RegionController::class, 'index']);
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/admin/gallery', [GalleryController::class, 'index']);

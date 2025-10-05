@@ -26,7 +26,7 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('photo')->default('foto');
-            $table->integer('phone_number');
+            $table->string('phone_number', 20);
             $table->string('name');
             $table->timestamps();
         });
