@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'waste_bank', 'community']);
+            $table->enum('role', ['admin', 'waste_bank', 'community'])->default('community');
             $table->boolean('password_expired')->default(true);
             $table->timestamp('last_password_change')->nullable();
             $table->rememberToken();

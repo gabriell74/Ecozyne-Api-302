@@ -25,7 +25,7 @@ return new class extends Migration
                 ->on('address')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('photo');
+            $table->string('photo')->default('foto');
             $table->integer('phone_number');
             $table->string('name');
             $table->timestamps();

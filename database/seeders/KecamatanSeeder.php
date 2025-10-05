@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Kecamatan;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class KecamatanSeeder extends Seeder
 {
@@ -13,7 +12,7 @@ class KecamatanSeeder extends Seeder
      */
     public function run(): void
     {
-        Kecamatan::insert(
+        Kecamatan::insert([
             ['id' => 1, 'kecamatan' => 'Batam Kota'],
             ['id' => 2, 'kecamatan' => 'Batu Aji'],
             ['id' => 3, 'kecamatan' => 'Batu Ampar'],
@@ -24,8 +23,8 @@ class KecamatanSeeder extends Seeder
             ['id' => 8, 'kecamatan' => 'Lubuk Baja'],
             ['id' => 9, 'kecamatan' => 'Nongsa'],
             ['id' => 10, 'kecamatan' => 'Sagulung'],
-            ['id' => 11, 'kecamatan' => 'Sei Beduk'],   
-            ['id' => 12, 'kecamatan' => 'Sekupang'],   
-        );
+            ['id' => 11, 'kecamatan' => 'Sei Beduk'],
+            ['id' => 12, 'kecamatan' => 'Sekupang'],
+        ]);
     }
 }

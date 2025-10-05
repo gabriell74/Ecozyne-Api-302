@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Kelurahan;
 use Illuminate\Database\Seeder;
 
 class KelurahanSeeder extends Seeder
@@ -12,7 +12,7 @@ class KelurahanSeeder extends Seeder
      */
     public function run(): void
     {
-        Kelurahan::create(
+        Kelurahan::insert([
             // Kecamatan id 1 = Batam Kota
             ['kecamatan_id' => 1, 'kelurahan' => 'Baloi Permai'],
             ['kecamatan_id' => 1, 'kelurahan' => 'Belian'],
@@ -22,10 +22,10 @@ class KelurahanSeeder extends Seeder
             ['kecamatan_id' => 1, 'kelurahan' => 'Teluk Tering'],
 
             // Kecamatan id 2 = Batu Aji
-            ['kecamatan_id' => 1, 'kelurahan' => 'Bukit Tempayang'],
-            ['kecamatan_id' => 1, 'kelurahan' => 'Buliang'],
-            ['kecamatan_id' => 1, 'kelurahan' => 'Kibing'],
-            ['kecamatan_id' => 1, 'kelurahan' => 'Tanjung Uncang'],
+            ['kecamatan_id' => 2, 'kelurahan' => 'Bukit Tempayang'],
+            ['kecamatan_id' => 2, 'kelurahan' => 'Buliang'],
+            ['kecamatan_id' => 2, 'kelurahan' => 'Kibing'],
+            ['kecamatan_id' => 2, 'kelurahan' => 'Tanjung Uncang'],
 
             // Kecamatan id 3 = Batu Ampar
             ['kecamatan_id' => 3, 'kelurahan' => 'Batu Merah'],
@@ -40,7 +40,7 @@ class KelurahanSeeder extends Seeder
             ['kecamatan_id' => 4, 'kelurahan' => 'Pulau Terong'],
             ['kecamatan_id' => 4, 'kelurahan' => 'Sekanak Raya'],
             ['kecamatan_id' => 4, 'kelurahan' => 'Tanjung Sari'],
-            
+
             // Kecamatan id 5 = Bengkong
             ['kecamatan_id' => 5, 'kelurahan' => 'Bengkong Indah'],
             ['kecamatan_id' => 5, 'kelurahan' => 'Bengkong Laut'],
@@ -64,7 +64,7 @@ class KelurahanSeeder extends Seeder
             ['kecamatan_id' => 7, 'kelurahan' => 'Sembulang'],
             ['kecamatan_id' => 7, 'kelurahan' => 'Sitanjung'],
             ['kecamatan_id' => 7, 'kelurahan' => 'Subang Mas'],
-            
+
             // Kecamatan id 8 = Lubuk Baja
             ['kecamatan_id' => 8, 'kelurahan' => 'Baloi Indah'],
             ['kecamatan_id' => 8, 'kelurahan' => 'Batu Selicin'],
@@ -100,7 +100,6 @@ class KelurahanSeeder extends Seeder
             ['kecamatan_id' => 12, 'kelurahan' => 'Tiban Baru'],
             ['kecamatan_id' => 12, 'kelurahan' => 'Tiban Indah'],
             ['kecamatan_id' => 12, 'kelurahan' => 'Tiban Lama'],
-
-        );
+        ]);
     }
 }

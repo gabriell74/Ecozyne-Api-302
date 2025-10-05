@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PasswordHistory extends Model
 {
@@ -11,9 +12,9 @@ class PasswordHistory extends Model
 
     protected $table = 'user_password_history';
 
-    protected $fillable = ['user,id', 'password_hash'];
+    protected $fillable = ['user_id', 'password_hash'];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

@@ -27,12 +27,9 @@ class AuthController extends Controller
 
                 return response()->json([
                     'success' => false,
-                    'masagge' => 'Password expired',
+                    'message' => 'Password expired',
                     'data' => [
-                        'user_id' => $user->id,
-                        'email' => $user->email,
-                        'name' => $user->name,
-                        'role' => $user->role
+                        'id' => $user->id,
                     ]
                         
                     ], 423);  

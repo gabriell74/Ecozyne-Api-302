@@ -40,6 +40,7 @@ class UserController extends Controller
 
             Community::create([
                 'user_id' => $user->id,
+                'address_id' => $request->address_id,
                 'phone_number' => $request->phone_number,
                 'name' => $request->name,
             ]);
@@ -83,7 +84,6 @@ class UserController extends Controller
 
         $user = User::find($request->user_id);
 
-        // 1. Validasi password lama
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'success' => false,
@@ -91,7 +91,6 @@ class UserController extends Controller
             ], 400);
         }
 
-        // 2. Validasi password level 2 (strong)
         if (!$this->isStrongPassword($request->new_password)) {
             return response()->json([
                 'success' => false,
@@ -106,7 +105,6 @@ class UserController extends Controller
             ], 400);
         }
 
-        // 3. Validasi password history
         if ($this->isPasswordInHistory($user->id, $request->new_password)) {
             return response()->json([
                 'success' => false,
@@ -114,14 +112,12 @@ class UserController extends Controller
             ], 400);
         }
 
-        // Update password
         $user->update([
             'password' => Hash::make($request->new_password),
             'password_expired' => false,
             'last_password_change' => now(),
         ]);
 
-        // Simpan ke history
         PasswordHistory::create([
             'user_id' => $user->id,
             'password_hash' => hash('sha256', $request->new_password)
