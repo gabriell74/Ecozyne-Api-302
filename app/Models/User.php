@@ -28,8 +28,6 @@ class User extends Authenticatable
         'email_verified_at',
         'password',
         'role',
-        'password_expired',
-        'last_password_change',
     ];
 
     /**
@@ -41,16 +39,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    protected $casts = [
-        'password_expired' => 'boolean',
-        'last_password_change' => 'datetime',
-    ];
-
-    public function passwordHistory()
-    {
-        return $this->hasMany(PasswordHistory::class);
-    }
 
     /**
      * Get the attributes that should be cast.

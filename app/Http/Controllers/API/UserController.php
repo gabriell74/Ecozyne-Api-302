@@ -3,35 +3,34 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
+use App\Models\Point;
 use App\Models\Address;
 use App\Models\Community;
 use Illuminate\Http\Request;
-use App\Models\PasswordHistory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-
     public function register(Request $request)
     {
-        $request->validate([
-            'username' => 'required',
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-            'phone_number' => 'required|min:10',
-            'address' => 'required',
-            'postal_code' => 'required',
-            'kecamatan' => 'required',
-            'kelurahan' => 'required',
-        ]);
-
-        DB::beginTransaction();
-
         try {
+            $validated = $request->validate([
+                'username' => 'required',
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:8',
+                'phone_number' => 'required|min:10',
+                'address' => 'required',
+                'postal_code' => 'required',
+                'kelurahan' => 'required',
+            ]);
+
+            DB::beginTransaction();
+
             $address = Address::create([
                 'address' => $request->address,
                 'kelurahan_id' => $request->kelurahan,
@@ -44,11 +43,16 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            Community::create([
+            $community = Community::create([
                 'user_id' => $user->id,
                 'address_id' => $address->id,
                 'phone_number' => $request->phone_number,
                 'name' => $request->name,
+            ]);
+
+            Point::create([
+                'community_id' => $community->id,
+                'expired_point'=> now()->addYear(),
             ]);
 
             DB::commit();
@@ -58,121 +62,19 @@ class UserController extends Controller
                 'message' => 'Pendaftaran Berhasil',
             ], 201);
 
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            dd($e);
-            // return response()->json([
-            //     'success' => false,
-            //     'message' => 'Pendaftaran Gagal',
-            // ]);
-        } 
-    }
-
-    public function changeExpiredPassword(request $request)
-    {
-       $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
+                'errors' => $e->errors(),
             ], 422);
-        }
-
-        $user = User::find($request->user_id);
-
-        if (!Hash::check($request->current_password, $user->password)) {
+        } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Password lama salah'
-            ], 400);
+                'message' => 'Pendaftaran Gagal',
+            ], 500);
         }
-
-        if (!$this->isStrongPassword($request->new_password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Password harus memenuhi level 2 (strong)',
-                'requirements' => [
-                    'min_length' => 8,
-                    'require_uppercase' => true,
-                    'require_lowercase' => true,
-                    'require_numbers' => true,
-                    'require_symbols' => true
-                ]
-            ], 400);
-        }
-
-        if ($this->isPasswordInHistory($user->id, $request->new_password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Password tidak boleh sama dengan password sebelumnya'
-            ], 400);
-        }
-
-        $user->update([
-            'password' => Hash::make($request->new_password),
-            'password_expired' => false,
-            'last_password_change' => now(),
-        ]);
-
-        PasswordHistory::create([
-            'user_id' => $user->id,
-            'password_hash' => hash('sha256', $request->new_password)
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Password berhasil diubah'
-        ]);
-    }
-
-    private function isStrongPassword($password) 
-    {
-        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
-    }
-
-    private function isPasswordInHistory($userId, $password)
-    {
-        $passwordHash = hash('sha256', $password);
-        return PasswordHistory::where('user_id', $userId)
-                            ->where('password_hash', $passwordHash)
-                            ->exists();
-    }
-
-    public function validatePassword(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'password' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Password harus diisi'
-            ], 422);
-        }
-
-        $isStrong = $this->isStrongPassword($request->password);
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'is_strong' => $isStrong,
-                'requirements' => [
-                    'min_length' => strlen($request->password) >= 8,
-                    'has_uppercase' => preg_match('/[A-Z]/', $request->password),
-                    'has_lowercase' => preg_match('/[a-z]/', $request->password),
-                    'has_number' => preg_match('/\d/', $request->password),
-                    'has_symbol' => preg_match('/[@$!%*?&]/', $request->password),
-                ]
-            ]
-        ]);
     }
 
     /**

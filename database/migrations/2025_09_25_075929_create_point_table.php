@@ -19,7 +19,7 @@ return new class extends Migration
                 ->on('community')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->integer('point');
+            $table->integer('point')->default(0);
             $table->date('expired_point');
             $table->timestamps();
         });
