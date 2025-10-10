@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminArtikelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
@@ -18,6 +19,7 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
       Route::post('/logout', [AuthController::class, 'logout']);
 
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
+
       // Add other protected API routes here
 // });
 
