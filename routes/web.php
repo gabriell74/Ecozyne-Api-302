@@ -8,4 +8,3 @@ Route::get("/", function () {
 });
 
 Route::get('/article-list', [AdminArtikelController::class, 'index']);
-Route::post('/create-article', [AdminArtikelController::class, 'store']);

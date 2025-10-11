@@ -27,25 +27,27 @@ class AdminArtikelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'photo' => 'required',
-        ]);
+        public function store(Request $request)
+        {
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+            ]);
 
-        Article::created([
-            'title' => $request->title,
-            'description' => $request->description,
-            'photo' => $request->photo,
-        ]);
+            $path = $request->file('photo')->store('articles', 'public');
 
-        return response()->json([
-            'success' => true, 
-            'message' => 'Berhasil menambahkan artikel'
-        ], 201);
-    }
+            Article::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'photo' => $path,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menambahkan artikel'
+            ], 201);
+        }
 
     /**
      * Display the specified resource.

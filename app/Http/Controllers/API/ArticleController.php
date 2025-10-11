@@ -13,11 +13,30 @@ class ArticleController extends Controller
      */
     public function index()
     {
+        $articles = Article::latest()->get()->map(function ($article) {
+            $article->photo = asset('storage/' . $article->photo);
+            return $article;
+        });
+
         return response()->json([
             "success" => true,
-            "data" => Article::latest()->get()
-        ]);
+            "message" => "Berhasil mengambil data artikel",
+            "data" => $articles
+        ], 200);
+    }
 
+    public function latestArticles()
+    {
+        $articles = Article::latest()->take(3)->get()->map(function ($article) {
+            $article->photo = asset('storage/' . $article->photo);
+            return $article;
+        });
+
+        return response()->json([
+            "success" => true,
+            "message" => "Berhasil mengambil data artikel",
+            "data" => $articles
+        ], 200);
     }
 
     /**
