@@ -13,7 +13,9 @@ class AdminArtikelController extends Controller
      */
     public function index()
     {
-        return view('admin.article_list');
+        $articles = Article::latest()->get(); 
+
+        return view('admin.article_list', compact('articles'));
     }
 
     /**
@@ -21,7 +23,7 @@ class AdminArtikelController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.article_create');
     }
 
     /**
@@ -43,18 +45,15 @@ class AdminArtikelController extends Controller
                 'photo' => $path,
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Berhasil menambahkan artikel'
-            ], 201);
+            return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');
         }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Article $article)
     {
-        //
+        return view('admin.article_detail', compact('article'));
     }
 
     /**

@@ -28,5 +28,4 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
 /* 
 * Semua Route dibawah ini nanti diubah ke web.php
 */
-Route::post('/create-article', [AdminArtikelController::class, 'store']);
 
