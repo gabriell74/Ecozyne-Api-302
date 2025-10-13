@@ -8,55 +8,64 @@
     {{-- Bagian Pengguna --}}
     <h5 class="mb-3 mt-2 fw-bold text-secondary">Pengguna</h5>
     <div class="col-md-4 mb-4">
-        <div class="custom-card green-card">
-            <h6 class="fw-bold">Komunitas</h6>
-            <p class="text-muted">176 akun terdaftar</p>
-            <a href="#" class="btn btn-kelola btn-sm">Kelola Akun</a>
+        <div class="custom-card green-card" >
+            @include('partials.card', [
+            'title' => 'Komunitas',
+            'data' => '176 akun terdaftar',
+            'button_text' => 'Kelola Akun'
+            ])
         </div>
     </div>
     <div class="col-md-4 mb-4">
         <div class="custom-card green-card">
-            <h6 class="fw-bold">Bank Sampah</h6>
-            <p class="text-muted">90 akun terdaftar</p>
-            <a href="#" class="btn btn-kelola btn-sm">Kelola Akun</a>
+            @include('partials.card', [
+            'title' => 'Bank Sampah',
+            'data' => '176 akun terdaftar',
+            'button_text' => 'Kelola Akun'
+            ])
         </div>
     </div>
 
-    {{-- Kegiatan Sosial (Kolom Kanan) --}}
+    
     <div class="col-md-4 mb-4">
-        <div class="custom-card green-card h-100">
-            <h6 class="fw-bold">Kegiatan Sosial</h6>
-            <ul class="list-unstyled mt-3">
-                <li><small>Menanam Pohon - 12 Agustus 2025</small></li>
-                <li><small>Menanam Pohon - 15 Agustus 2025</small></li>
-                <li><small>Menanam Pohon - 14 Agustus 2025</small></li>
-            </ul>
+        <div class="">
+            @include('partials.kegiatan_sosial')
             <div class="text-end mt-4">
-                 <a href="#" class="btn btn-kelola btn-sm">Kelola Kegiatan</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    {{-- Bagian Kiri (Artikel, Hadiah, Komik) --}}
-    <div class="col-md-8">
-        {{-- ARTIKEL --}}
-        <h5 class="mb-3 fw-bold text-secondary">Artikel</h5>
-        <div class="row mb-4">
-            {{-- Item Artikel Placeholder --}}
-            <div class="col-4">
-                <div class="article-thumb bg-success rounded-3 shadow-sm" style="height: 120px; background-color: var(--eco-green);"></div>
-                <small class="text-center d-block mt-1">eco-enzyme</small>
-            </div>
-            <div class="col-4">
-                <div class="article-thumb bg-success rounded-3 shadow-sm" style="height: 120px; background-color: var(--eco-green);"></div>
-                <small class="text-center d-block mt-1">eco-enzyme</small>
-            </div>
-            <div class="col-4 d-flex flex-column justify-content-end align-items-end">
-                <a href="#" class="btn btn-kelola">Kelola Artikel</a>
-            </div>
+<div class="row">
+   <div class="card-artikel-wrapper">
+    <div class="artikel-header">
+    <h2>Artikel</h2>z
+    
+    <div class="artikel-list-container"> 
+        <div class="artikel-item-card">
+            <div class="kotak-hijau-placeholder"></div>
+            <p class="kategori-text">eco-enzyme</p>
         </div>
+        
+        <div class="artikel-item-card">
+            <div class="kotak-hijau-placeholder"></div>
+            <p class="kategori-text">eco-enzyme</p>
+        </div>
+
+         <div class="artikel-item-card">
+            <div class="kotak-hijau-placeholder"></div>
+            <p class="kategori-text">eco-enzyme</p>
+        </div>
+        <div class="tombol-container">
+       <a href="#" class="btn-kelola-artikel">Kelola Artikel</a>
+    </div>
+    
+    <div class="artikel-list-container">
+        </div>
+</div>
+</div>
+
+</div>
 
         {{-- KATALOG HADIAH --}}
         <h5 class="mb-3 fw-bold text-secondary">Katalog Hadiah</h5>
