@@ -27,7 +27,7 @@
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                     <div class="card h-100 shadow-sm border-0 bg-white">
                         @if($article->photo)
-                            <img src="{{ asset('storage/'.$article->photo) }}" 
+                            <img src="{{ asset('storage/' . $article->photo) }}" 
                                  class="card-img-top" 
                                  alt="{{ $article->title }}" 
                                  style="height: 180px; object-fit: cover;">
@@ -52,13 +52,16 @@
                                     <i class="fas fa-eye me-1"></i>Lihat Artikel
                                 </a>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-danger me-2">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
                                     <a href="{{ route('article.show', $article->id) }}" 
-                                       class="btn btn-sm btn-outline-warning">
-                                        <i class="fas fa-edit"></i>
+                                       class=" btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Ubah 
                                     </a>
+                                    <form action="{{ route('article.destroy', $article->id)}}" method="post">
+                                        @csrf @method('DELETE')
+                                        <button class="mt-2 btn btn-sm btn-danger me-2">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

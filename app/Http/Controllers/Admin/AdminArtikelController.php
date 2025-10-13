@@ -29,24 +29,24 @@ class AdminArtikelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-        public function store(Request $request)
-        {
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
-            ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+        ]);
 
-            $path = $request->file('photo')->store('articles', 'public');
+        $path = $request->file('photo')->store('articles', 'public');
 
-            Article::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'photo' => $path,
-            ]);
+        Article::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'photo' => $path,
+        ]);
 
-            return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');
-        }
+        return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');
+    }
 
     /**
      * Display the specified resource.
@@ -69,14 +69,30 @@ class AdminArtikelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+        ]);
+
+        $path = $request->file('photo')->store('articles', 'public');
+
+        Article::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'photo' => $path,
+        ]);
+
+        return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+        return redirect()->route('article.list')->with('success', 'Berhasil menghapus artikel!');
     }
 }
