@@ -1,12 +1,16 @@
 <div class="border-end bg-white shadow-sm" id="sidebar-wrapper">
   <div class="sidebar-heading p-3 text-start fw-bold fs-5 border-bottom d-flex align-items-center">
-    <img src="{{ asset('logo-placeholder.png') }}" alt="Logo" style="height: 30px;" class="me-2"> Ecozyne
+    <img src="{{ asset('images/ecozyne_logo.png') }}" alt="Logo" style="height: 40px;" class="me-2"> Ecozyne
   </div>
 
   <div class="list-group list-group-flush pt-2">
     <a href="#" class="list-group-item list-group-item-action border-0 py-3 active"><i class="fas fa-home me-2"></i> Dashboard</a>
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-exchange-alt me-2"></i> Tukar Poin</a>
-    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users me-2"></i> Pengguna</a>
+    <a href="#submenu-pengguna" data-bs-toggle="collapse" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users me-2"></i> Pengguna</a>
+    <div class="collapse list-group-item border-0 py-0" id="submenu-pengguna">
+        <a href="#" class="list-group-item list-group-item-action border-0 py-3 ps-5"><i class="fas fa-users-cog me-2"></i> Komunitas</a>
+        <a href="#" class="list-group-item list-group-item-action border-0 py-3 ps-5"><i class="fas fa-trash-alt me-2"></i> Bank Sampah</a>
+    </div>
     <a href="{{ route('article.list') }}" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-chart-bar me-2"></i> Artikel</a>
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-hands-helping me-2"></i> Kegiatan Sosial</a>
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-video me-2"></i> Video</a>

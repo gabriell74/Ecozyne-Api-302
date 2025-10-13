@@ -13,17 +13,20 @@
                         <div class="card-body">
                             <h6 class="fw-bold">Komunitas</h6>
                             <p class="text-muted mb-2">176 akun terdaftar</p>
-                            <button class="btn btn-dark rounded-pill mt-2">Kelola Akun</button>
+                            <a href="{{ route('admin.komunitas.index') }}" class="btn btn-dark rounded-pill mt-2">
+                            Kelola Akun
+                            </a>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-12 col-md-6 mb-3">
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body">
                             <h6 class="fw-bold">Bank Sampah</h6>
                             <p class="text-muted mb-2">90 akun terdaftar</p>
-                            <button class="btn btn-dark rounded-pill mt-2">Kelola Akun</button>
+                            <a href="{{ route('admin.komunitas.index') }}" class="btn btn-dark rounded-pill mt-2">
+                                Kelola Akun
+                            </a>
                         </div>
                     </div>
                 </div>
