@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\GalleryController;
-use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\RegionController;
+use App\Http\Controllers\API\ArticleController;
+use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\Admin\AdminArtikelController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
@@ -18,9 +20,12 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
       Route::post('/logout', [AuthController::class, 'logout']);
 
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
-      // Add other protected API routes here
-// });
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
+      Route::get('/articles', [ArticleController::class, 'index']);
+      Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
 // })->middleware('auth:sanctum');
+
+/* 
+* Semua Route dibawah ini nanti diubah ke web.php
+*/
+
