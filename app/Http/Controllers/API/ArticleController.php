@@ -13,7 +13,11 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        //
+        $article = Article::all();
+
+        return response()->json([
+            'article' => $article,
+        ]);
     }
 
     /**
