@@ -1,19 +1,16 @@
-<div class="sidebar text-white p-3 d-flex flex-column" style="width: 250px; background-color: #0b1c3f; height: 100vh;">
-    <div class="logo mb-4">
-        <h5 class="text-white">Ecozyne</h5>
-    </div>
-    <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-            <a href="#" class="nav-link text-white active" style="background-color: #38bdf8;">
-                <i class="fas fa-home me-2"></i> Dashboard
-            </a>
-        </li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-exchange-alt me-2"></i> Tukar Poin</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-users me-2"></i> Pengguna</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-book me-2"></i> Artikel</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-leaf me-2"></i> Kegiatan Sosial</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-video me-2"></i> Video</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-book-open me-2"></i> Komik</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-gift me-2"></i> Katalog Hadiah</a></li>
-    </ul>
+<div class="border-end bg-white shadow-sm" id="sidebar-wrapper">
+  <div class="sidebar-heading p-3 text-start fw-bold fs-5 border-bottom d-flex align-items-center">
+    <img src="{{ asset('logo-placeholder.png') }}" alt="Logo" style="height: 30px;" class="me-2"> Ecozyne
+  </div>
+
+  <div class="list-group list-group-flush pt-2">
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3 active"><i class="fas fa-home me-2"></i> Dashboard</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-exchange-alt me-2"></i> Tukar Poin</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users me-2"></i> Pengguna</a>
+    <a href="{{ route('article.list') }}" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-chart-bar me-2"></i> Artikel</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-hands-helping me-2"></i> Kegiatan Sosial</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-video me-2"></i> Video</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-book-open me-2"></i> Komik</a>
+    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-gift me-2"></i> Katalog Hadiah</a>
+  </div>
 </div>
