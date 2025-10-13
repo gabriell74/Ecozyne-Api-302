@@ -27,10 +27,15 @@
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                     <div class="card h-100 shadow-sm border-0 bg-white">
                         @if($article->photo)
-                            <img src="{{ asset('storage/' . $article->photo) }}" 
-                                 class="card-img-top" 
-                                 alt="{{ $article->title }}" 
-                                 style="height: 180px; object-fit: cover;">
+                        <div class="position-relative d-inline-block-w-100" style="max-width: 400px;">
+                            <form action="{{ route('article.destroy', $article->id)}}" class="position-absolute top-0 end-0 m-2" method="post">
+                                @csrf @method('delete')
+                                <button class="btn btn-sm btn-danger" type="submit">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                            <img src="{{ asset('storage/' . $article->photo) }}" class="card-img-top" alt="{{ $article->title }}" style="height: 180px; object-fit: cover;">
+                        </div>
                         @else
                             <div class="d-flex align-items-center justify-content-center bg-light" 
                                  style="height: 180px; color: gray;">
@@ -53,15 +58,9 @@
                                 </a>
                                 <div>
                                     <a href="{{ route('article.show', $article->id) }}" 
-                                       class=" btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Ubah 
+                                       class=" btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('article.destroy', $article->id)}}" method="post">
-                                        @csrf @method('DELETE')
-                                        <button class="mt-2 btn btn-sm btn-danger me-2">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
