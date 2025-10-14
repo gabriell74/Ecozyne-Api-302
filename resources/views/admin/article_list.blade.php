@@ -57,7 +57,7 @@
                                     <i class="fas fa-eye me-1"></i>Lihat Artikel
                                 </a>
                                 <div>
-                                    <a href="{{ route('article.show', $article->id) }}" 
+                                    <a href="{{ route('article.edit', $article->id) }}" 
                                        class=" btn btn-sm btn-outline-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>

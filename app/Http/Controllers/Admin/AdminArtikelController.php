@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class AdminArtikelController extends Controller
 {
@@ -59,32 +60,39 @@ class AdminArtikelController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Article $article)
     {
-        //
+        return view('admin.article_edit', compact("article"));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Article $article)
     {
         $request->validate([
-            'title' => 'required',
+            'title' => 'required|string|max:255',
             'description' => 'required',
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $path = $request->file('photo')->store('articles', 'public');
+        $article->title = $request->title;
+        $article->description = $request->description;
 
-        Article::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'photo' => $path,
-        ]);
+        if ($request->hasFile('photo')) {
+            if ($article->photo) {
+                Storage::delete('public/' . $article->photo);
+            }
 
-        return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');
+            $path = $request->file('photo')->store('articles', 'public');
+            $article->photo = $path;
+        }
+
+        $article->save();
+
+        return redirect()->route('article.list')->with('success', 'Artikel berhasil diperbarui!');
     }
+
 
     /**
      * Remove the specified resource from storage.
