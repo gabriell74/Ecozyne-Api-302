@@ -8,6 +8,7 @@ use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\Admin\AdminArtikelController;
+use App\Http\Controllers\API\DiscussionQuestionController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
@@ -23,6 +24,13 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
 
       Route::get('/articles', [ArticleController::class, 'index']);
       Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
+
+      Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
+      Route::post('/question/store', [DiscussionQuestionController::class, 'storeQuestion']);
+      Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
+      Route::patch('/question/update_like/{question}', [DiscussionQuestionController::class, 'updateLike']);
+      Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
+
 // })->middleware('auth:sanctum');
 
 /* 

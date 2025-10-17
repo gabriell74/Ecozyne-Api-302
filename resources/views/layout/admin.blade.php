@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
-<body class="bg-light">
+<body class="bg-light inter-body">
 
   {{-- Overlay hitam untuk layar kecil --}}
   <div id="sidebar-overlay" class="sidebar-overlay"></div>
