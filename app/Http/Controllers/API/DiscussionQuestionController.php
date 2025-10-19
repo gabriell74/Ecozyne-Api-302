@@ -60,23 +60,34 @@ class DiscussionQuestionController extends Controller
 
     }
 
-    public function updateLike(Request $request, Question $question)
+    public function toggleLike(Request $request, Question $question)
     {
-        $request->validate([
-            'total_like' => 'required',
-        ]);
+        $user = $request->user();
 
-        $question->total_like += $request->total_like;
-        
-        $question->save();
+        $isLiked = $question->likes()->where('user_id', $user->id)->exists();
+
+        if ($isLiked) {
+            $question->likes()->where('user_id', $user->id)->delete();
+            $question->decrement('total_like');
+
+            $message = 'Batal like';
+            $liked = false;
+        } else {
+            $question->likes()->create(['user_id' => $user->id]);
+            $question->increment('total_like');
+
+            $message = 'Menambah like';
+            $liked = true;
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil menambah like',
-            'total_like' => $question->total_like
-        ], 200);
-
+            'message' => $message,
+            'liked' => $liked,
+            'total_like' => $question->total_like,
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
