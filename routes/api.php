@@ -28,7 +28,7 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
       Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
       Route::post('/question/store', [DiscussionQuestionController::class, 'storeQuestion']);
       Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
-      Route::patch('/question/update_like/{question}', [DiscussionQuestionController::class, 'updateLike']);
+      Route::patch('/question/toggleLike/{question}', [DiscussionQuestionController::class, 'updateLike']);
       Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
 
 // })->middleware('auth:sanctum');
