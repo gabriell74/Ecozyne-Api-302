@@ -1,6 +1,7 @@
 @extends('layout.admin')
 
 @section('title', 'Detail Artikel')
+@section('header', 'Artikel')
 
 @section('content')
 <div class="container py-4">

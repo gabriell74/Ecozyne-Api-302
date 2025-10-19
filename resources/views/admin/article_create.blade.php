@@ -1,6 +1,7 @@
 @extends('admin.dashboard')
 
 @section('title', 'Tambah Artikel')
+@section('header', 'Artikel')
 
 @section('content')
 <div class="container mt-4">

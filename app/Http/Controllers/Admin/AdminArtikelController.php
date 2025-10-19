@@ -99,6 +99,10 @@ class AdminArtikelController extends Controller
      */
     public function destroy(Article $article)
     {
+        if ($article->photo && Storage::disk('public')->exists($article->photo)) {
+            Storage::disk('public')->delete($article->photo);
+        }
+
         $article->delete();
 
         return redirect()->route('article.list')->with('success', 'Berhasil menghapus artikel!');

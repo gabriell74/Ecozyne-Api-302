@@ -6,7 +6,7 @@
       <i class="fas fa-bars"></i>
     </button>
 
-    <h5 class="mb-0 fw-bold">Dasbor</h5>
+    <h5 class="mb-0 fw-bold">@yield('header','Dasbor')</h5>
 
     {{-- Toggle Navbar di mobile --}}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
