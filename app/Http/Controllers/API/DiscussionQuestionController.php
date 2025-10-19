@@ -13,12 +13,15 @@ class DiscussionQuestionController extends Controller
      */
     public function getAllQuestion()
     {
-        $question = Question::latest()->get();
+        $questions = Question::with('user')
+            ->withCount(['likes', 'comments'])
+            ->latest()
+            ->get();
 
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil data pertanyaan",
-            "data" => $question
+            "message" => "Berhasil mengambil data",
+            "data" => $questions
         ], 200);
     }
 
@@ -29,9 +32,9 @@ class DiscussionQuestionController extends Controller
             'question' => 'required|string',
         ]);
 
-        $question = Question::create([
+        Question::create([
             'user_id' => $request->user_id,
-            'question' => $request->question,
+            'data' => $request->question,
         ]);
 
         return response()->json([
