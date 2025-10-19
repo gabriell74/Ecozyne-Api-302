@@ -17,21 +17,20 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/admin/gallery', [GalleryController::class, 'index']);
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
+
+Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
-
+      
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
-
-      Route::get('/articles', [ArticleController::class, 'index']);
-      Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
-
+      
       Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
       Route::post('/question/store', [DiscussionQuestionController::class, 'storeQuestion']);
       Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
-      Route::patch('/question/toggleLike/{question}', [DiscussionQuestionController::class, 'updateLike']);
+      Route::patch('/question/{question}/like', [DiscussionQuestionController::class, 'toggleLike']);
       Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
-
-// })->middleware('auth:sanctum');
+});
 
 /* 
 * Semua Route dibawah ini nanti diubah ke web.php
