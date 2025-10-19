@@ -17,7 +17,7 @@ class Question extends Model
         'total_like',
     ];
 
-    protected $appends = ['total_like'/**'total_comment'*/, 'is_liked'];
+    protected $appends = ['is_liked'];
 
     public function likes(): HasMany
     {
@@ -34,7 +34,7 @@ class Question extends Model
     //     return $this->hasMany(Comment::class);
     // }
 
-    public function getTotalLikeAttribute()
+    public function getQuestionTotalLikeAttribute()
     {
         return $this->likes()->count();
     }

@@ -5,22 +5,20 @@ namespace App\Http\Controllers\API;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class DiscussionQuestionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function getAllQuestion()
     {
-        $questions = Question::with('user')
-            ->withCount(['likes', 'comments'])
+        $questions = Question::with(['user:id,username'])
+            // ->withCount(['likes', 'comments'])
             ->latest()
             ->get();
 
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil data",
+            "message" => "Berhasil mengambil pertanyaan",
             "data" => $questions
         ], 200);
     }
@@ -28,75 +26,95 @@ class DiscussionQuestionController extends Controller
     public function storeQuestion(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'question' => 'required|string',
         ]);
 
-        Question::create([
-            'user_id' => $request->user_id,
-            'data' => $request->question,
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $question = Question::create([
+            'user_id' => $user->id,
+            'question' => $request->question,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menambah pertanyaan',
+            'data' => $question,
         ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function updateQuestion(Request $request, Question $question)
     {
         $request->validate([
             'question' => 'required|string',
         ]);
 
-        $question->question = $request->question;
+        $user = Auth::user();
+        if ($question->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
 
+        $question->question = $request->question;
         $question->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Berhasil memperbarui pertanyaan',
+            'data' => $question,
         ], 200);
-
     }
 
-    public function toggleLike(Request $request, Question $question)
+    public function toggleLike(Question $question)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        $isLiked = $question->likes()->where('user_id', $user->id)->exists();
-
-        if ($isLiked) {
-            $question->likes()->where('user_id', $user->id)->delete();
-            $question->decrement('total_like');
-
-            $message = 'Batal like';
-            $liked = false;
-        } else {
-            $question->likes()->create(['user_id' => $user->id]);
-            $question->increment('total_like');
-
-            $message = 'Menambah like';
-            $liked = true;
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 401);
         }
+
+        $question->likes()->where('user_id', $user->id)->delete();
+
+        if (!$question->is_liked) {
+            $question->likes()->create(['user_id' => $user->id]);
+        }
+
+        $totalLike = $question->question_total_like;
+
+        $question->total_like = $totalLike;
+        $question->save();
+
+        $question->refresh();
 
         return response()->json([
             'success' => true,
-            'message' => $message,
-            'liked' => $liked,
+            'message' => $question->is_liked ? 'Liked' : 'Unliked',
+            'is_liked' => $question->is_liked,
             'total_like' => $question->total_like,
         ]);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function deleteQuestion(Question $question)
     {
+        $user = Auth::user();
+        if ($question->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
         $question->delete();
 
         return response()->json([
