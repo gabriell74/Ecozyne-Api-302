@@ -21,8 +21,6 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->text('answer');
             $table->timestamps();
-
-            $table->timestamps();
         });
     }
 
