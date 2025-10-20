@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminRewardController;
 use App\Http\Controllers\Admin\AdminArticleController;
+use App\Http\Controllers\Admin\AdminActivityController;
 
 Route::get('/', [AdminAuthController::class, 'loginPage'])->name('login');
 Route::post('/login/process', [AdminAuthController::class, 'login'])->name('login.process');
@@ -23,6 +24,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/article/destroy/{article}', [AdminArticleController::class, 'destroy'])->name('article.destroy');
 
     Route::get('/komunitas', [AdminController::class, 'komunitas'])->name('admin.komunitas.index');
+
+    // Kelola Kegiatan Sosial
+    Route::get('/activities', [AdminActivityController::class, 'getAllActivity'])->name('activity.list');
+    Route::get('/activity/create', [AdminActivityController::class, 'create'])->name('activity.create');
+    Route::post('/activity/store', [AdminActivityController::class, 'store'])->name('activity.store');
+    Route::get('/activity/details/{activity}', [AdminActivityController::class, 'show'])->name('activity.show');
+    Route::get('/activity/edit/{activity}', [AdminActivityController::class, 'edit'])->name('activity.edit');
+    Route::put('activity/update/{activity}', [AdminActivityController::class, 'update'])->name('activity.update');
+    Route::delete('/activity/destroy/{activity}', [AdminActivityController::class, 'destroy'])->name('activity.destroy');
 
     // Kelola Reward
     Route::get('/rewards', [AdminRewardController::class, 'getAllReward'])->name('reward.list');
