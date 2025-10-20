@@ -48,6 +48,14 @@ class DiscussionQuestionController extends Controller
             'question' => $request->question,
         ]);
 
+        $question = Question::with(['user:id,username'])
+        ->withExists([
+            'likes as is_liked' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            },
+        ])
+        ->find($question->id);
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menambah pertanyaan',
@@ -61,16 +69,25 @@ class DiscussionQuestionController extends Controller
             'question' => 'required|string',
         ]);
 
-        $user = Auth::user();
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
         if ($question->user_id !== $user->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized',
+                'message' => 'Unauthorized.',
             ], 403);
         }
 
-        $question->question = $request->question;
-        $question->save();
+        $question->update([
+            'question' => $request->question,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -82,7 +99,6 @@ class DiscussionQuestionController extends Controller
     public function toggleLike(Question $question)
     {
         $user = Auth::user();
-
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -90,7 +106,9 @@ class DiscussionQuestionController extends Controller
             ], 401);
         }
 
-        if ($question->is_liked) {
+        $isLiked = $question->likes()->where('user_id', $user->id)->exists();
+
+        if ($isLiked) {
             $question->likes()->where('user_id', $user->id)->delete();
             $status = false;
         } else {
@@ -99,7 +117,6 @@ class DiscussionQuestionController extends Controller
         }
 
         $totalLike = $question->likes()->count();
-
         $question->update(['total_like' => $totalLike]);
 
         return response()->json([
@@ -109,7 +126,6 @@ class DiscussionQuestionController extends Controller
             'total_like' => $totalLike,
         ]);
     }
-
 
     public function deleteQuestion(Question $question)
     {
