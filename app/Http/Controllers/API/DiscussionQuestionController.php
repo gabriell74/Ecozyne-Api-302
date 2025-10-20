@@ -11,8 +11,14 @@ class DiscussionQuestionController extends Controller
 {
     public function getAllQuestion()
     {
+        $user = Auth::user();
+
         $questions = Question::with(['user:id,username'])
-            // ->withCount(['likes', 'comments'])
+            ->withExists([
+                'likes as is_liked' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                },
+            ])
             ->latest()
             ->get();
 
@@ -22,7 +28,7 @@ class DiscussionQuestionController extends Controller
             "data" => $questions
         ], 200);
     }
-
+    
     public function storeQuestion(Request $request)
     {
         $request->validate([
@@ -84,26 +90,26 @@ class DiscussionQuestionController extends Controller
             ], 401);
         }
 
-        $question->likes()->where('user_id', $user->id)->delete();
-
-        if (!$question->is_liked) {
+        if ($question->is_liked) {
+            $question->likes()->where('user_id', $user->id)->delete();
+            $status = false;
+        } else {
             $question->likes()->create(['user_id' => $user->id]);
+            $status = true;
         }
 
-        $totalLike = $question->question_total_like;
+        $totalLike = $question->likes()->count();
 
-        $question->total_like = $totalLike;
-        $question->save();
-
-        $question->refresh();
+        $question->update(['total_like' => $totalLike]);
 
         return response()->json([
             'success' => true,
-            'message' => $question->is_liked ? 'Liked' : 'Unliked',
-            'is_liked' => $question->is_liked,
-            'total_like' => $question->total_like,
+            'message' => $status ? 'Liked' : 'Unliked',
+            'is_liked' => $status,
+            'total_like' => $totalLike,
         ]);
     }
+
 
     public function deleteQuestion(Question $question)
     {

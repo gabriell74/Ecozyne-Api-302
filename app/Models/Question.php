@@ -17,8 +17,6 @@ class Question extends Model
         'total_like',
     ];
 
-    protected $appends = ['is_liked'];
-
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
@@ -43,12 +41,4 @@ class Question extends Model
     // {
     //     return $this->comments()->count();
     // }
-
-    public function getIsLikedAttribute()
-    {
-        $user = Auth::user();
-        if (!$user) return false;
-
-        return $this->likes()->where('user_id', $user->id)->exists();
-    }
 }
