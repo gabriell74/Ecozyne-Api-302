@@ -17,6 +17,10 @@
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-hands-helping me-2"></i> Kegiatan Sosial</a>
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-video me-2"></i> Video</a>
     <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-book-open me-2"></i> Komik</a>
-    <a href="#" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-gift me-2"></i> Katalog Hadiah</a>
+    <a href="{{ route('reward.list') }}" class="{{ Route::is('reward.list', 'reward.create', 'reward.show', 'reward.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3"><i class="fas fa-gift me-2"></i> Katalog Hadiah</a>
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class="list-group-item list-group-item-action border-0 py-3" style="color: red;"><i class="fas fa-arrow-left me-2"></i> Logout</button>
+    </form>
   </div>
 </div>

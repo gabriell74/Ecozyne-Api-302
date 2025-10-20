@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <title>Ecozyne Website</title>
 </head>
 <body style="background-color: #D6EDDE; font-family: 'Poppins', sans-serif;">
 <div class="d-flex align-items-center justify-content-center min-vh-100">
@@ -17,11 +17,12 @@
             <img src="{{ asset('images/ecozyne_logo.png') }}" alt="Logo Perusahaan">
         </div>
         <h2 class="text-center fw-semibold">Masuk Akun</h2>
-        <form action="">
-            <input class="form-control" type="text" placeholder="Email">
-            <input class="form-control mt-3" type="text" placeholder="Kata Sandi">
+        <form action="{{ route('login.process') }}" method="post">
+            @csrf
+            <input class="form-control" name="email" type="email" placeholder="Email">
+            <input class="form-control mt-3" name="password" type="password" placeholder="Kata Sandi">
             <div class="mt-3 d-flex justify-content-center">
-                <button class="btn btn-lg" style="background-color: #55C173; color: #000;">Masuk Akun</button>
+                <button type="submit" class="btn btn-lg" style="background-color: #55C173; color: #000;">Masuk</button>
             </div>
         </form>
     </div>
