@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
-class AdminArtikelController extends Controller
+class AdminArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getAllArticle()
     {
         $articles = Article::latest()->get(); 
 
@@ -62,7 +62,7 @@ class AdminArtikelController extends Controller
      */
     public function edit(Article $article)
     {
-        return view('admin.article_edit', compact("article"));
+        return view('admin.article_edit', compact('article'));
     }
 
     /**

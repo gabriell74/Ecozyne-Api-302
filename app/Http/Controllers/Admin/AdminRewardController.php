@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Reward;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class AdminRewardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getAllReward()
     {
         $rewards = Reward::latest()->get(); 
 
@@ -55,32 +56,62 @@ class AdminRewardController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Reward $reward)
     {
-        //
+        return view('admin.reward_detail', compact('reward'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Reward $reward)
     {
-        //
+        return view('admin.reward_edit', compact('reward'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Reward $reward)
     {
-        //
+        $request->validate([
+            'reward_name' => 'required|string|max:255',
+            'description' => 'required',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'stock' => 'required',
+            'unit_point' => 'required',
+        ]);
+
+        $reward->reward_name = $request->reward_name;
+        $reward->description = $request->description;
+        $reward->stock = $request->stock;
+        $reward->unit_point = $request->unit_point;
+
+        if ($request->hasFile('photo')) {
+            if ($reward->photo) {
+                Storage::delete('public/' . $reward->photo);
+            }
+
+            $path = $request->file('photo')->store('reward', 'public');
+            $reward->photo = $path;
+        }
+
+        $reward->save();
+
+        return redirect()->route('reward.list')->with('success', 'Hadiah berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Reward $reward)
     {
-        //
+        if ($reward->photo && Storage::disk('public')->exists($reward->photo)) {
+            Storage::disk('public')->delete($reward->photo);
+        }
+
+        $reward->delete();
+
+        return redirect()->route('reward.list')->with('success', 'Berhasil menghapus hadiah!');
     }
 }

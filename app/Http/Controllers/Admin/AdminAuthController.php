@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 class AdminAuthController extends Controller
 {
     public function loginPage() {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+
         return view('admin.login');
     }
     
