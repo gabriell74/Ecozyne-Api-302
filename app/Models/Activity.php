@@ -14,6 +14,7 @@ class Activity extends Model
         'description',
         'photo',
         'quota',
+        'duedate',
     ];
 
     public function activityRegistration(): HasMany

@@ -39,7 +39,7 @@
                         </div>
                         @else
                             <div class="d-flex align-items-center justify-content-center bg-light" style="height: 180px; color: gray;">
-                                <form action="{{ route('reward.destroy', $reward->id)}}" class="position-absolute top-0 end-0 m-2" method="post">
+                                <form action="{{ route('article.destroy', $article->id)}}" class="position-absolute top-0 end-0 m-2" method="post">
                                     @csrf @method('delete')
                                     <button class="btn btn-sm btn-danger" type="submit">
                                         <i class="fas fa-trash"></i>

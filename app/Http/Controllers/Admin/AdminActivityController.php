@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class AdminActivityController extends Controller
 {
@@ -111,6 +112,6 @@ class AdminActivityController extends Controller
 
         $activity->delete();
 
-        return redirect()->route('ac$activity.list')->with('success', 'Berhasil menghapus aktivitas!');
+        return redirect()->route('activity.list')->with('success', 'Berhasil menghapus aktivitas!');
     }
 }
