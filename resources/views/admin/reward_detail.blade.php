@@ -27,12 +27,7 @@
 
         <div class="card-body">
             <h3 class="card-title fw-bold">{{ $reward->reward_name }}</h3>
-            <hr>
-
-            <p class="card-text">
-                {{ $reward->description }}
-            </p>
-            <hr>
+            
             <p class="card-text">
                 Stock Tersisa: {{ $reward->stock }}
             </p>

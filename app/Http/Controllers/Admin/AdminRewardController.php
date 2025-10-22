@@ -34,7 +34,6 @@ class AdminRewardController extends Controller
     {
         $request->validate([
             'reward_name' => 'required',
-            'description' => 'required',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
             'stock' => 'required',
             'unit_point' => 'required',
@@ -44,7 +43,6 @@ class AdminRewardController extends Controller
 
         Reward::create([
             'reward_name' => $request->reward_name,
-            'description' => $request->description,
             'photo' => $path,
             'stock' => $request->stock,
             'unit_point' => $request->unit_point,     
@@ -76,14 +74,12 @@ class AdminRewardController extends Controller
     {
         $request->validate([
             'reward_name' => 'required|string|max:255',
-            'description' => 'required',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'stock' => 'required',
             'unit_point' => 'required',
         ]);
 
         $reward->reward_name = $request->reward_name;
-        $reward->description = $request->description;
         $reward->stock = $request->stock;
         $reward->unit_point = $request->unit_point;
 

@@ -29,19 +29,6 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label fw-bold">Deskripsi</label>
-                            <textarea name="description" 
-                                      id="description" 
-                                      rows="5" 
-                                      class="form-control @error('description') is-invalid @enderror" 
-                                      placeholder="Tuliskan deskripsi hadiah..." 
-                                    >{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <label for="stock" class="form-label fw-bold">Stock</label>
                             <input type="number" 
                                    name="stock" 

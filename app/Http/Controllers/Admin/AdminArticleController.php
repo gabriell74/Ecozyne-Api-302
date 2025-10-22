@@ -34,7 +34,6 @@ class AdminArticleController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'description' => 'required',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
         ]);
 
@@ -42,7 +41,6 @@ class AdminArticleController extends Controller
 
         Article::create([
             'title' => $request->title,
-            'description' => $request->description,
             'photo' => $path,
         ]);
 
@@ -72,12 +70,10 @@ class AdminArticleController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $article->title = $request->title;
-        $article->description = $request->description;
 
         if ($request->hasFile('photo')) {
             if ($article->photo) {

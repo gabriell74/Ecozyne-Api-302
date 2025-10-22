@@ -14,6 +14,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+    //kelola pengguna
+    Route::get('/komunitas', function () {return view('admin.komunitas');})->name('admin.komunitas');
+    Route::get('/wastebank', function () {return view('admin.wastebank');})->name('admin.wastebank');
+
     // Kelola Artikel
     Route::get('/articles', [AdminArticleController::class, 'getAllArticle'])->name('article.list');
     Route::get('/article/create', [AdminArticleController::class, 'create'])->name('article.create');
@@ -22,10 +26,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/article/edit/{article}', [AdminArticleController::class, 'edit'])->name('article.edit');
     Route::put('article/update/{article}', [AdminArticleController::class, 'update'])->name('article.update');
     Route::delete('/article/destroy/{article}', [AdminArticleController::class, 'destroy'])->name('article.destroy');
-
-    Route::get('/komunitas', function() {
-        return view ('admin.komunitas');
-    })->name('admin.komunitas');
 
     // Kelola Kegiatan Sosial
     Route::get('/activities', [AdminActivityController::class, 'getAllActivity'])->name('activity.list');
