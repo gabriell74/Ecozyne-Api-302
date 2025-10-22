@@ -2,6 +2,7 @@
 
 @section('title', 'Kelola Komunitas - Ecozyne')
 
+
 @section('content')
 <div class="container-fluid py-4" style="background-color: #D6EDDE; min-height: 100vh;">
     <div class="row">
