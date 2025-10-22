@@ -73,6 +73,8 @@
                     </div>
                 </div>
             @endforeach
+            
+            {{ $activities->links() }}
         </div>
     @endif
 </div>

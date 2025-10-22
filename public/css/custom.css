@@ -74,6 +74,21 @@
     display: block;
 }
 
+#input_foto {
+    width: 120px; 
+    height: 120px; 
+    cursor: pointer; 
+    font-size: 48px; 
+    color: #888;
+}
+
+#preview_foto {
+    margin-bottom:10px; 
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:10px;
+}
+
 @media (max-width: 992px) {
     #sidebar-wrapper {
         left: -250px; 

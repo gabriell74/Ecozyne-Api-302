@@ -69,6 +69,8 @@
                     </div>
                 </div>
             @endforeach
+
+            {{ $rewards->links() }}
         </div>
     @endif
 </div>

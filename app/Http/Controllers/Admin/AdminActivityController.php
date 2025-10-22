@@ -14,7 +14,7 @@ class AdminActivityController extends Controller
      */
     public function getAllActivity()
     {
-        $activities = Activity::latest()->get(); 
+        $activities = Activity::latest()->paginate(8); 
 
         return view('admin.activity_list', compact('activities'));
     }

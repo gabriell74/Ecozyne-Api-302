@@ -65,14 +65,20 @@
                             @error('unit_point')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div>                      
 
                         <div class="mb-3">
-                            <label for="photo" class="form-label fw-bold">Foto Artikel</label>
+                            <label for="photo" class="form-label fw-bold">Foto Hadiah</label>
+                            <div id="preview_foto"></div>
+                            {{-- <label for="photo" 
+                                class="d-flex align-items-center justify-content-center border border-2 rounded bg-light"
+                                id="input_foto">
+                                +
+                            </label> --}}
                             <input type="file" 
                                    name="photo" 
                                    id="photo" 
-                                   class="form-control @error('photo') is-invalid @enderror" 
+                                   class="form-control mt-3 @error('photo') is-invalid @enderror" 
                                    accept="image/*">
                             @error('photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -93,4 +99,30 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+    document.getElementById('photo').addEventListener('change', function(event) {
+        let preview = document.getElementById('preview_foto');
+        preview.innerHTML = ''; // kosongkan dulu
+        let files = event.target.files;
+        for (let file of files) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let img = document.createElement('img');
+                img.src = e.target.result;
+                img.width = 250 ;
+                img.style.borderRadius = '8px';
+                img.style.objectFit = 'cover';
+                preview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
+<script> 
+      var editor = new FroalaEditor('#description');
+</script>
 @endsection

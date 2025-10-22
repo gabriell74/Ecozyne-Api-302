@@ -68,7 +68,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="photo" class="form-label fw-bold">Foto Artikel</label>
+                            <label for="photo" class="form-label fw-bold">Foto Aktivitas</label>
+                            <div id="preview_foto"></div>
                             <input type="file" 
                                    name="photo" 
                                    id="photo" 
@@ -93,4 +94,29 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script>
+    document.getElementById('photo').addEventListener('change', function(event) {
+        let preview = document.getElementById('preview_foto');
+        preview.innerHTML = ''; // kosongkan dulu
+        let files = event.target.files;
+        for (let file of files) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let img = document.createElement('img');
+                img.src = e.target.result;
+                img.width = 250 ;
+                img.style.borderRadius = '8px';
+                img.style.objectFit = 'cover';
+                preview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
+<script> 
+      var editor = new FroalaEditor('#description');
+</script>
 @endsection

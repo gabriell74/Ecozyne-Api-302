@@ -14,7 +14,7 @@ class AdminRewardController extends Controller
      */
     public function getAllReward()
     {
-        $rewards = Reward::latest()->get(); 
+        $rewards = Reward::latest()->paginate(8); 
 
         return view('admin.reward_list', compact('rewards'));
     }

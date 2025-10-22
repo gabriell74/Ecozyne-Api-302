@@ -14,7 +14,7 @@ class AdminArticleController extends Controller
      */
     public function getAllArticle()
     {
-        $articles = Article::latest()->get(); 
+        $articles = Article::latest()->paginate(8); 
 
         return view('admin.article_list', compact('articles'));
     }

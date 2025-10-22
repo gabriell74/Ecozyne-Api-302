@@ -23,7 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::put('article/update/{article}', [AdminArticleController::class, 'update'])->name('article.update');
     Route::delete('/article/destroy/{article}', [AdminArticleController::class, 'destroy'])->name('article.destroy');
 
-    Route::get('/komunitas', [AdminController::class, 'komunitas'])->name('admin.komunitas.index');
+    Route::get('/komunitas', function() {
+        return view ('admin.komunitas');
+    })->name('admin.komunitas');
 
     // Kelola Kegiatan Sosial
     Route::get('/activities', [AdminActivityController::class, 'getAllActivity'])->name('activity.list');
