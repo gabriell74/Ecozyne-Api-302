@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminRewardController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Admin\WasteBankSubmissionController;
 
 Route::get('/', [AdminAuthController::class, 'loginPage'])->name('login');
 Route::post('/login/process', [AdminAuthController::class, 'login'])->name('login.process');
@@ -13,7 +14,11 @@ Route::post('/login/process', [AdminAuthController::class, 'login'])->name('logi
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
 
+    // konfirmasi bank sampah
+    Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
+     Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
     //kelola pengguna
     Route::get('/komunitas', function () {return view('admin.komunitas');})->name('admin.komunitas');
     Route::get('/wastebank', function () {return view('admin.wastebank');})->name('admin.wastebank');

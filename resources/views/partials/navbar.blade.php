@@ -21,8 +21,12 @@
         </div>
       </form>
 
+      {{-- Ikon Notifikasi --}}
       <a href="#" class="text-secondary me-3 my-auto"><i class="fas fa-bell fa-lg"></i></a>
-      <img src="{{ asset('user-placeholder.png') }}" class="rounded-circle" alt="User" style="width: 40px; height: 40px; cursor: pointer;">
+      
+      <a href="{{ route('admin.profile') }}" class="text-secondary me-3 my-auto d-none d-lg-block" title="Profil Admin">
+        <i class="fas fa-user-circle fa-lg"></i>
+      </a>
     </div>
   </div>
 </nav>

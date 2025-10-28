@@ -2,92 +2,97 @@
 
 @section('title', 'Kelola Komunitas - Ecozyne')
 
-
 @section('content')
-<div class="container-fluid py-4" style="background-color: #D6EDDE; min-height: 100vh;">
+<div class="container-fluid py-4 page-komunitas" 
+     style="background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%); min-height: 100vh;">
     <div class="row">
         <div class="col-12">
-            <!-- Header dengan Breadcrumb -->
+            <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                            </li>
+                            <li class="breadcrumb-item"></li>
                         </ol>
                     </nav>
                     <h4 class="fw-bold mb-0" style="color:#343C6A">Kelola Komunitas</h4>
                     <p class="text-muted mb-0">176 akun terdaftar</p>
                 </div>
             </div>
+
             <!-- Card List Komunitas -->
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="card border-0 shadow-sm rounded-4" 
+                 style="background-color: #f5f8f3d2; color: #00000087;">
                 <div class="card-body p-0">
+
                     <!-- Komunitas 1 -->
-                    <div class="border-bottom border-dark p-3">
+                    <div class="border-bottom border-secondary p-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="fw-bold mb-1">Komunitas Hijau Lestari</h6>
-                                <p class="text-muted mb-0">hijaulestari@gmail.com</p>
-                                <small class="text-muted">Terdaftar: 15 Januari 2024</small>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
+                                <div>
+                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Komunitas Hijau Lestari</h6>
+                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">hijaulestari@gmail.com</p>
+                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 15 Januari 2024</small>
+                                </div>
                             </div>
-                            <div>
-                                <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                    <i class="fas fa-trash me-1"></i>Hapus
-                                </button>
-                            </div>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill">
+                                <i class="fas fa-trash me-1"></i>Hapus
+                            </button>
                         </div>
                     </div>
 
                     <!-- Komunitas 2 -->
-                    <div class="border-bottom border-dark p-3">
+                    <div class="border-bottom border-secondary p-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="fw-bold mb-1">Eco Warriors</h6>
-                                <p class="text-muted mb-0">ecowarriors@gmail.com</p>
-                                <small class="text-muted">Terdaftar: 20 Februari 2024</small>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
+                                <div>
+                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Eco Warriors</h6>
+                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">ecowarriors@gmail.com</p>
+                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 20 Februari 2024</small>
+                                </div>
                             </div>
-                            <div>
-                                <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                    <i class="fas fa-trash me-1"></i>Hapus
-                                </button>
-                            </div>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill">
+                                <i class="fas fa-trash me-1"></i>Hapus
+                            </button>
                         </div>
                     </div>
 
                     <!-- Komunitas 3 -->
-                    <div class="border-bottom border-dark p-3">
+                    <div class="border-bottom border-secondary p-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="fw-bold mb-1">Bumi Sehat</h6>
-                                <p class="text-muted mb-0">bumisehat@gmail.com</p>
-                                <small class="text-muted">Terdaftar: 5 Maret 2024</small>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
+                                <div>
+                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Bumi Sehat</h6>
+                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">bumisehat@gmail.com</p>
+                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 5 Maret 2024</small>
+                                </div>
                             </div>
-                            <div>
-                                <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                    <i class="fas fa-trash me-1"></i>Hapus
-                                </button>
-                            </div>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill">
+                                <i class="fas fa-trash me-1"></i>Hapus
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Tambahkan lebih banyak komunitas sesuai kebutuhan -->
-                    
-                    <!-- Komunitas 176 -->
+                    <!-- Komunitas 4 -->
                     <div class="p-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="fw-bold mb-1">Green Community</h6>
-                                <p class="text-muted mb-0">greencommunity@gmail.com</p>
-                                <small class="text-muted">Terdaftar: 10 Agustus 2024</small>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
+                                <div>
+                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Green Community</h6>
+                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">greencommunity@gmail.com</p>
+                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 10 Agustus 2024</small>
+                                </div>
                             </div>
-                            <div>
-                                <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                    <i class="fas fa-trash me-1"></i>Hapus
-                                </button>
-                            </div>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill">
+                                <i class="fas fa-trash me-1"></i>Hapus
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
 

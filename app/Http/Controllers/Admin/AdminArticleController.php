@@ -35,6 +35,7 @@ class AdminArticleController extends Controller
         $request->validate([
             'title' => 'required',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+            'description' => 'required|string',
         ]);
 
         $path = $request->file('photo')->store('articles', 'public');
@@ -42,6 +43,7 @@ class AdminArticleController extends Controller
         Article::create([
             'title' => $request->title,
             'photo' => $path,
+            'description' => $request->description,
         ]);
 
         return redirect()->route('article.list')->with('success', 'Berhasil menambah artikel!');

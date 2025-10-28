@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Community;
 use App\Models\WasteBank;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WasteBankSubmission extends Model
 {
