@@ -34,7 +34,7 @@
                                       rows="5" 
                                       class="form-control @error('description') is-invalid @enderror" 
                                       placeholder="Tuliskan isi aktivitas..." 
-                                    >{{ $activity->description }}</textarea>
+                                    >{!! $activity->description !!}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

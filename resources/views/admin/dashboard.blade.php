@@ -150,7 +150,7 @@
                         <i class="fas fa-newspaper me-2" style="color: #8b5cf6;"></i>Artikel Terbaru
                     </h5>
                     {{-- PERUBAHAN: Warna teks menjadi ungu gelap --}}
-                    <a href="{{ route('article.list') }}" class="btn btn-sm rounded-pill px-3" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.85rem;"> 
+                    <a href="{{ route('article.list') }}" class="btn btn-sm rounded-pill px-3" style="background: rgba(48, 204, 82, 0.482); color: #66b96c; border: 1px solid rgba(15, 255, 55, 0.3); font-size: 0.85rem;"> 
                         Kelola Artikel
                     </a>
                 </div>

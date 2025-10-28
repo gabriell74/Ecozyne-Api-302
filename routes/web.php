@@ -14,8 +14,10 @@ Route::post('/login/process', [AdminAuthController::class, 'login'])->name('logi
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    
+    //kelola profile
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-
+    Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('user.update.profile');
     // konfirmasi bank sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
      Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');

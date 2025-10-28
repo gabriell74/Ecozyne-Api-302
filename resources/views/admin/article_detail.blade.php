@@ -23,9 +23,9 @@
                 @if($article->photo)
                     {{-- Gambar Artikel dengan gaya modern --}}
                     <img src="{{ asset('storage/' . $article->photo) }}" 
-                         class="img-fluid article-img" 
-                         alt="{{ $article->title }}" 
-                         style="height: 100%; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
+                          class="img-fluid article-img" 
+                          alt="{{ $article->title }}" 
+                          style="height: 100%; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
                 @else
                     {{-- Placeholder Gambar --}}
                     <div class="d-flex align-items-center justify-content-center bg-light text-muted p-5 h-100" style="min-height: 350px;">
@@ -63,11 +63,11 @@
                         </form>
                     </div>
 
-                    {{-- Deskripsi Artikel --}}
+                    {{-- Deskripsi Artikel (PERUBAHAN PENTING DI SINI) --}}
                     <h5 class="fw-bold mb-3" style="color: #4A5568;">Deskripsi Lengkap</h5>
-                    {{-- Menggunakan white-space: pre-wrap untuk menjaga format line break --}}
-                    <div class="card-text text-secondary line-height-md" style="font-size: 1rem;">
-                        {{ $article->description }}
+                    {{-- Ganti {{ ... }} menjadi {!! ... !!} untuk me-render HTML --}}
+                    <div class="card-text text-secondary description-content" style="font-size: 1rem;">
+                        {!! $article->description !!}
                     </div>
 
                 </div>
@@ -77,10 +77,32 @@
 </div>
 
 <style>
-    /* Mengatasi border radius pada mobile */
+    /* Styling untuk membuat deskripsi terlihat modern dan mudah dibaca (Gen Z Style) */
+    .description-content {
+        line-height: 1.8; /* Jarak antar baris yang nyaman */
+        color: #4A5568 !important; /* Warna teks yang lebih gelap dan berkelas */
+    }
+
+    /* Styling tambahan untuk elemen HTML di dalam deskripsi (misalnya dari text editor) */
+    .description-content p {
+        margin-bottom: 1.5rem; /* Jarak antar paragraf */
+    }
+    .description-content strong, .description-content b {
+        color: #2D3748; /* Menekankan teks tebal */
+    }
+    .description-content a {
+        color: #38A169; /* Warna link yang konsisten dengan brand */
+        font-weight: 500;
+        text-decoration: none; /* Link minimalis tanpa underline */
+        border-bottom: 2px solid rgba(56, 161, 105, 0.3); /* Underline yang unik */
+    }
+    .description-content a:hover {
+        border-bottom-color: #38A169;
+    }
+
+    /* --- Media Queries yang sudah Anda buat, ditambahkan di sini untuk kelengkapan --- */
     @media (max-width: 767.98px) {
         .article-img {
-            /* Pastikan border radius bulat di atas saat mobile */
             border-top-left-radius: 1rem !important;
             border-top-right-radius: 1rem !important;
             border-bottom-left-radius: 0 !important;
@@ -88,18 +110,11 @@
         }
     }
 
-    /* Mengatasi border radius pada desktop */
     @media (min-width: 768px) {
         .article-img {
-            /* Pastikan gambar hanya melengkung di kiri saat desktop */
             border-top-right-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
         }
-    }
-
-    /* Gaya untuk Konten yang di-wrap (Deskripsi) */
-    .line-height-md {
-        line-height: 1.8;
     }
 </style>
 @endsection

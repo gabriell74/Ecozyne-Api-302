@@ -6,7 +6,7 @@
 @section('content')
 <div class="container py-4">
 
-    {{-- Tombol Kembali --}}
+    {{-- Tombol Kembali yang konsisten --}}
     <div class="mb-4">
         <a href="{{ route('activity.list') }}" class="btn btn-sm text-white rounded-pill px-4" 
            style="background-color: #38A169; border: none; font-weight: 500;">
@@ -14,18 +14,18 @@
         </a>
     </div>
 
-    {{-- Kartu Konten Utama dengan Shadow dan Rounded Edge yang lebih menonjol --}}
+    {{-- Kartu Konten Utama: Shadow, Rounded-4, dan Overflow-hidden --}}
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
         
         <div class="row g-0">
             {{-- Kolom Kiri: Gambar (Penuh di Mobile, Setengah di Desktop) --}}
             <div class="col-12 col-md-6">
                 @if($activity->photo)
-                    {{-- Gambar Kegiatan dengan gaya modern --}}
+                    {{-- Gambar Kegiatan dengan gaya modern, pastikan object-fit: cover --}}
                     <img src="{{ asset('storage/' . $activity->photo) }}" 
-                         class="img-fluid activity-img" 
-                         alt="{{ $activity->title }}" 
-                         style="height: 100%; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
+                          class="img-fluid activity-img" 
+                          alt="{{ $activity->title }}" 
+                          style="height: 100%; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
                 @else
                     {{-- Placeholder Gambar --}}
                     <div class="d-flex align-items-center justify-content-center bg-light text-muted p-5 h-100" style="min-height: 350px;">
@@ -60,10 +60,10 @@
                         </form>
                     </div>
 
-                    {{-- Deskripsi Kegiatan --}}
+                    {{-- Deskripsi Kegiatan (PERUBAHAN PENTING DI SINI) --}}
                     <h5 class="fw-bold mb-3" style="color: #4A5568;">Deskripsi Lengkap</h5>
-                    <div class="card-text text-secondary line-height-md" style="font-size: 1rem;">
-                        {{ $activity->description }}
+                    <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
+                        {!! $activity->description !!}
                     </div>
 
                 </div>
@@ -73,6 +73,31 @@
 </div>
 
 <style>
+    /* Styling untuk membuat deskripsi terlihat modern dan mudah dibaca (Gen Z Style) */
+    .activity-description-content {
+        line-height: 1.8; /* Jarak antar baris yang nyaman */
+        color: #4A5568 !important; 
+    }
+
+    /* Styling tambahan untuk elemen HTML di dalam deskripsi (misalnya dari text editor) */
+    .activity-description-content p {
+        margin-bottom: 1.5rem; /* Jarak antar paragraf */
+    }
+    .activity-description-content strong, .activity-description-content b {
+        color: #2D3748; /* Menekankan teks tebal */
+    }
+    .activity-description-content a {
+        color: #38A169; /* Warna link yang konsisten dengan brand */
+        font-weight: 500;
+        text-decoration: none; /* Link minimalis tanpa underline */
+        border-bottom: 2px solid rgba(56, 161, 105, 0.3); /* Underline yang unik */
+    }
+    .activity-description-content a:hover {
+        border-bottom-color: #38A169;
+    }
+    
+    /* --- Media Queries untuk memastikan border radius tetap konsisten --- */
+
     /* Mengatasi border radius pada mobile */
     @media (max-width: 767.98px) {
         .activity-img {
@@ -89,11 +114,6 @@
             border-top-right-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
         }
-    }
-    
-    /* Gaya untuk Konten yang di-wrap (Deskripsi) */
-    .line-height-md {
-        line-height: 1.8;
     }
 </style>
 @endsection
