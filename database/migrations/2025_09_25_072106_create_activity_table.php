@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('activity', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
+            $table->mediumText('description');
             $table->string('photo');
             $table->integer('quota');
             $table->date('duedate');
