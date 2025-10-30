@@ -20,20 +20,33 @@
                 </div>
             </div>
 
+            @if(session('success'))
+                <div class="alert alert-success shadow-sm border-0 rounded-3 mt-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($activities->isEmpty())
+                <div class="alert alert-info text-center shadow-sm border-0 rounded-3">
+                    Belum ada kegiatan sosial yang tersedia.
+                </div>
+            @else
+
             <!-- Card List Komunitas -->
             <div class="card border-0 shadow-sm rounded-4" 
                  style="background-color: #f5f8f3d2; color: #00000087;">
                 <div class="card-body p-0">
 
                     <!-- Komunitas 1 -->
+                    @foreach($communities as $community)
                     <div class="border-bottom border-secondary p-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
                                 <div>
-                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Komunitas Hijau Lestari</h6>
+                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">{{ $community->name }}</h6>
                                     <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">hijaulestari@gmail.com</p>
-                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 15 Januari 2024</small>
+                                    <small class="text-light-50" style="font-size: 0.75rem;">{{ $community->created_at->format('d M Y') }}</small>
                                 </div>
                             </div>
                             <button class="btn btn-outline-danger btn-sm rounded-pill">
@@ -41,57 +54,7 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Komunitas 2 -->
-                    <div class="border-bottom border-secondary p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
-                                <div>
-                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Eco Warriors</h6>
-                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">ecowarriors@gmail.com</p>
-                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 20 Februari 2024</small>
-                                </div>
-                            </div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                <i class="fas fa-trash me-1"></i>Hapus
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Komunitas 3 -->
-                    <div class="border-bottom border-secondary p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
-                                <div>
-                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Bumi Sehat</h6>
-                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">bumisehat@gmail.com</p>
-                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 5 Maret 2024</small>
-                                </div>
-                            </div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                <i class="fas fa-trash me-1"></i>Hapus
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Komunitas 4 -->
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
-                                <div>
-                                    <h6 class="fw-semibold mb-0 text-#001d16" style="font-size: 1rem;">Green Community</h6>
-                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">greencommunity@gmail.com</p>
-                                    <small class="text-light-50" style="font-size: 0.75rem;">Terdaftar: 10 Agustus 2024</small>
-                                </div>
-                            </div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill">
-                                <i class="fas fa-trash me-1"></i>Hapus
-                            </button>
-                        </div>
-                    </div>
+                    @endforeach
 
                 </div>
             </div>
