@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('reward', function (Blueprint $table) {
             $table->id();
             $table->string('reward_name');
-            $table->string('description');
             $table->string('photo');
             $table->integer('stock');
             $table->integer('unit_point');
