@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Kelurahan;
 use Illuminate\Database\Seeder;
 
-class KelurahanSeeder extends Seeder
+class KelurahanTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
