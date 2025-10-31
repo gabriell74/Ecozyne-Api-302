@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Kecamatan;
 use Illuminate\Database\Seeder;
 
-class KecamatanSeeder extends Seeder
+class KecamatanTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
