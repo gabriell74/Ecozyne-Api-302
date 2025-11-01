@@ -20,7 +20,13 @@
         <form action="{{ route('login.process') }}" method="post">
             @csrf
             <input class="form-control" name="email" type="email" placeholder="Email">
+            @error('email')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
             <input class="form-control mt-3" name="password" type="password" placeholder="Kata Sandi">
+            @error('password')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
             <div class="mt-3 d-flex justify-content-center">
                 <button type="submit" class="btn btn-lg" style="background-color: #55C173; color: #000;">Masuk</button>
             </div>
