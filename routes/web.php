@@ -27,6 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/communities', [AdminUserController::class, 'getAllCommunity'])->name('community.list');
     Route::delete('/community/destroy/{community}', [AdminUserController::class, 'destroyCommunity'])->name('community.destroy');
 
+    Route::get('/waste_banks', [AdminUserController::class, 'getAllWasteBank'])->name('waste_bank.list');
+    Route::delete('/waste_bank/destroy/{waste_bank}', [AdminUserController::class, 'destroyWasteBank'])->name('waste_bank.destroy');
+
     Route::get('/wastebank', function () {return view('admin.wastebank');})->name('admin.wastebank');
 
     // Kelola Artikel

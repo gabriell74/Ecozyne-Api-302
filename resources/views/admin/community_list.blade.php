@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Kelola Komunitas - Ecozyne')
+@section('title', 'Kelola Bank Sampah - Ecozyne')
 
 @section('content')
 <div class="container-fluid py-4 page-komunitas" 
@@ -28,7 +28,7 @@
 
             @if($communities->isEmpty())
                 <div class="alert alert-info text-center shadow-sm border-0 rounded-3">
-                    Belum ada kegiatan sosial yang tersedia.
+                    Belum ada akun komunitas yang terdaftar
                 </div>
             @else <!-- Card List Komunitas -->
                 <div class="card border-0 shadow-sm rounded-4" 

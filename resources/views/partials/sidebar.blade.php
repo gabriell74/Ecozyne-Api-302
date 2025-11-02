@@ -11,9 +11,9 @@
       <i class="fas fa-exchange-alt me-2"></i> Tukar Poin
     </a>
     <a href="#submenu-pengguna" data-bs-toggle="collapse" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users me-2"></i> Pengguna</a>
-      <div class="{{ Route::is('community.list') || Route::is('admin.wastebank') ? '' : 'collapse' }} list-group-item border-0 py-0" id="submenu-pengguna">
+      <div class="{{ Route::is('community.list') || Route::is('waste_bank.list') ? '' : 'collapse' }} list-group-item border-0 py-0" id="submenu-pengguna">
           <a href="{{ route('community.list')}}" class="{{ Route::is('community.list') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users-cog me-2"></i> Komunitas</a>
-          <a href="{{ route('admin.wastebank')}}" class="{{ Route::is('admin.wastebank') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3"><i class="fas fa-trash-alt me-2"></i> Bank Sampah</a>
+          <a href="{{ route('waste_bank.list')}}" class="{{ Route::is('waste_bank.list') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3"><i class="fas fa-trash-alt me-2"></i> Bank Sampah</a>
       </div>
     <a href="{{ route('article.list') }}" class="{{ Route::is('article.list', 'article.create', 'article.show', 'article.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-chart-bar me-2"></i> Artikel
