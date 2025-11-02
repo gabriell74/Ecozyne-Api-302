@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminRewardController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminActivityController;
@@ -21,8 +22,11 @@ Route::middleware('auth')->group(function () {
     // konfirmasi bank sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
      Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
-    //kelola pengguna
-    Route::get('/komunitas', function () {return view('admin.komunitas');})->name('admin.komunitas');
+
+    // Kelola Pengguna (Komunitas)
+    Route::get('/communities', [AdminUserController::class, 'getAllCommunity'])->name('community.list');
+    Route::delete('/community/destroy/{community}', [AdminUserController::class, 'destroyCommunity'])->name('community.destroy');
+
     Route::get('/wastebank', function () {return view('admin.wastebank');})->name('admin.wastebank');
 
     // Kelola Artikel

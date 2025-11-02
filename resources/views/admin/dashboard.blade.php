@@ -116,7 +116,7 @@
                                     <h6 class="fw-bold mb-1" style="color: #2B3A55;">Komunitas</h6>
                                     {{-- PERUBAHAN: Warna teks menjadi abu-abu (#6b7280) --}}
                                     <p class="mb-2 small" style="color: #6b7280;">176 akun terdaftar</p>
-                                    <a href="{{ route('admin.komunitas') }}" class="btn btn-sm rounded-pill px-3" style="background: #10b981; color: white; border: none; font-size: 0.85rem;">
+                                    <a href="{{ route('community.list') }}" class="btn btn-sm rounded-pill px-3" style="background: #10b981; color: white; border: none; font-size: 0.85rem;">
                                         Kelola Akun
                                     </a>
                                 </div>

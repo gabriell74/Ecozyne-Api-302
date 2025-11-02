@@ -11,9 +11,10 @@ use App\Http\Controllers\Controller;
 class AdminUserController extends Controller
 {
     public function getAllCommunity() {
-        $communities = Community::latest()->paginate(8); 
+        $communities = Community::latest()->paginate(10); 
+        $community_total = Community::count();
 
-        return view('admin.community_list', compact('communities'));
+        return view('admin.community_list', compact('communities', 'community_total'));
     }
 
     public function destroyCommunity(Community $community) {
