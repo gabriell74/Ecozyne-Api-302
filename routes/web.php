@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     //kelola profile
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
     Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('user.update.profile');
+    
     // konfirmasi bank sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
      Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
@@ -27,10 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/communities', [AdminUserController::class, 'getAllCommunity'])->name('community.list');
     Route::delete('/community/destroy/{community}', [AdminUserController::class, 'destroyCommunity'])->name('community.destroy');
 
+    // Kelola Pengguna (Bank Sampah)
     Route::get('/waste_banks', [AdminUserController::class, 'getAllWasteBank'])->name('waste_bank.list');
     Route::delete('/waste_bank/destroy/{waste_bank}', [AdminUserController::class, 'destroyWasteBank'])->name('waste_bank.destroy');
-
-    Route::get('/wastebank', function () {return view('admin.wastebank');})->name('admin.wastebank');
 
     // Kelola Artikel
     Route::get('/articles', [AdminArticleController::class, 'getAllArticle'])->name('article.list');

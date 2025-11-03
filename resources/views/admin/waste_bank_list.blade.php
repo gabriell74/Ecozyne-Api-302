@@ -61,8 +61,7 @@
 
                 </div>
             </div>
-            {{-- Paginati
-            on --}}
+            {{-- Pagination --}}
             <div class="mt-4">
                 {{ $communities->links() }}
             </div>

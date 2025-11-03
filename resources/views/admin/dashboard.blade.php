@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <h6 class="card-title mb-2" style="font-size: 0.9rem; opacity: 0.9;">Total Pengguna</h6>
-                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">1,248</h3>
+                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">{{ $user_total }}</h3>
                     <small style="opacity: 0.8;">↑ 12 dari bulan lalu</small>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <h6 class="card-title mb-2" style="font-size: 0.9rem; opacity: 0.9;">Pengajuan Bank Sampah</h6>
-                <h3 class="fw-bold mb-2" style="font-size: 2rem;">5</h3>
+                <h3 class="fw-bold mb-2" style="font-size: 2rem;">{{ $waste_bank_submission_total }}</h3>
                 <small style="opacity: 0.8;">Lihat Detail</small>
             </div>
         </div>
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <h6 class="card-title mb-2" style="font-size: 0.9rem; opacity: 0.9;">Total Artikel</h6>
-                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">156</h3>
+                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">{{ $article_total }}</h3>
                     <small style="opacity: 0.8;">↑ 5 artikel baru</small>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                         </div>
                     </div>
                     <h6 class="card-title mb-2" style="font-size: 0.9rem; opacity: 0.9;">Kegiatan</h6>
-                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">12</h3>
+                    <h3 class="fw-bold mb-2" style="font-size: 2rem;">{{ $activity_total }}</h3>
                     <small style="opacity: 0.8;">Sedang berjalan</small>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                                     <h6 class="fw-bold mb-1" style="color: #2B3A55;">Bank Sampah</h6>
                                     {{-- PERUBAHAN: Warna teks menjadi abu-abu (#6b7280) --}}
                                     <p class="mb-2 small" style="color: #6b7280;">90 akun terdaftar</p>
-                                    <a href="{{ route('admin.wastebank') }}" class="btn btn-sm rounded-pill px-3" style="background: #06b6d4; color: white; border: none; font-size: 0.85rem;">
+                                    <a href="{{ route('waste_bank.list') }}" class="btn btn-sm rounded-pill px-3" style="background: #06b6d4; color: white; border: none; font-size: 0.85rem;">
                                         Kelola Akun
                                     </a>
                                 </div>

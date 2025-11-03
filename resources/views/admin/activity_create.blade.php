@@ -1,4 +1,4 @@
-@extends('admin.dashboard')
+@extends('layout.admin')
 
 @section('title', 'Tambah Aktivitas')
 @section('header', 'Aktivitas')

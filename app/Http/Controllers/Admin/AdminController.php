@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
+use App\Models\Article;
+use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Models\WasteBankSubmission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -18,7 +22,11 @@ class AdminController extends Controller
     
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $user_total = User::count();
+        $article_total = Article::count();
+        $waste_bank_submission_total = WasteBankSubmission::count();
+        $activity_total = Activity::count();
+        return view('admin.dashboard', compact('user_total', 'article_total', 'waste_bank_submission_total', 'activity_total'));
     }
 
     public function profile()
