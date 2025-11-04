@@ -18,7 +18,6 @@
         </div>
     </div>
 
-    {{-- Pesan Sukses/Error --}}
     @if(session('success'))
         <div class="alert alert-success shadow-sm border-0 rounded-3 mt-3">
             {{ session('success') }}
@@ -30,10 +29,9 @@
         </div>
     @endif
 
-    {{-- Kartu Tabel --}}
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-4">
-            @if($submissions->isEmpty()) {{-- Asumsi ada variabel $submissions dari controller --}}
+            @if($submissions->isEmpty())
                 <div class="alert alert-info text-center shadow-sm border-0 rounded-3">
                     Belum ada pengajuan bank sampah yang tersedia.
                 </div>
@@ -100,9 +98,8 @@
                     </table>
                 </div>
 
-                {{-- Pagination --}}
                 <div class="mt-4 d-flex justify-content-center">
-                    {{ $submissions->links('pagination::bootstrap-5') }} {{-- Sesuaikan dengan gaya paginasi Anda --}}
+                    {{ $submissions->links('pagination::bootstrap-5') }}
                 </div>
             @endif
         </div>
@@ -110,9 +107,8 @@
 </div>
 
 <style>
-    /* Tambahan styling untuk konsistensi */
     .btn-outline-success {
-        border-color: #00C896; /* Warna hijau muda */
+        border-color: #00C896;
         color: #00C896;
     }
     .btn-outline-success:hover {
@@ -120,23 +116,23 @@
         color: #fff;
     }
     .badge.bg-warning {
-        background-color: #FFC107 !important; /* Warna kuning Bootstrap default */
-        color: #212529 !important; /* Agar teks kuning terlihat jelas */
+        background-color: #FFC107 !important;
+        color: #212529 !important;
     }
     .badge.bg-success {
-        background-color: #38A169 !important; /* Warna hijau Ecozyne */
+        background-color: #38A169 !important;
     }
     .badge.bg-danger {
-        background-color: #dc3545 !important; /* Warna merah Bootstrap default */
+        background-color: #dc3545 !important;
     }
     .table thead th {
-        border-bottom: 1px solid #e9ecef; /* Garis bawah pada header tabel */
+        border-bottom: 1px solid #e9ecef;
     }
     .table tbody tr:last-child {
-        border-bottom: none; /* Hilangkan border di baris terakhir tbody */
+        border-bottom: none;
     }
     .pagination .page-link {
-        color: #38A169; /* Warna link paginasi */
+        color: #38A169;
         border-color: #e9ecef;
     }
     .pagination .page-item.active .page-link {
@@ -145,7 +141,7 @@
         color: white;
     }
     .pagination .page-link:hover {
-        background-color: #E6FFF3; /* Latar belakang hover */
+        background-color: #E6FFF3;
         border-color: #38A169;
         color: #38A169;
     }

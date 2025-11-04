@@ -9,18 +9,27 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscussionQuestionController extends Controller
 {
-    public function getAllQuestion()
-    {
-        $user = Auth::user();
+   public function getAllQuestion(Request $request)
+   {
+        $user = Auth::guard('sanctum')->user();
 
         $questions = Question::with(['user:id,username'])
-            ->withExists([
-                'likes as is_liked' => function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                },
-            ])
+            ->withCount('likes')
+            ->when($user, function ($query) use ($user) {
+                $query->withExists([
+                    'likes as is_liked' => function ($likeQuery) use ($user) {
+                        $likeQuery->where('user_id', $user->id);
+                    },
+                ]);
+            })
             ->latest()
             ->get();
+
+        if (!$user) {
+            foreach ($questions as $question) {
+                $question->is_liked = false;
+            }
+        }
 
         return response()->json([
             "success" => true,
@@ -28,7 +37,7 @@ class DiscussionQuestionController extends Controller
             "data" => $questions
         ], 200);
     }
-    
+
     public function storeQuestion(Request $request)
     {
         $request->validate([
