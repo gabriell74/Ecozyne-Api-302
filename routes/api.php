@@ -20,12 +20,13 @@ Route::get('/admin/gallery', [GalleryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
 
+Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
+
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
       
-      Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
       Route::post('/question/store', [DiscussionQuestionController::class, 'storeQuestion']);
       Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
       Route::patch('/question/{question}/like', [DiscussionQuestionController::class, 'toggleLike']);

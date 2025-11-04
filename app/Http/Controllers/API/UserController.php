@@ -22,8 +22,21 @@ class UserController extends Controller
                 'username' => 'required',
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8',
-                'phone_number' => 'required|min:10',
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'regex:/[a-z]/',      // huruf kecil
+                    'regex:/[A-Z]/',      // huruf besar
+                    'regex:/[0-9]/',      // angka
+                    'regex:/[@$!%*?&._\-]/', // simbol
+                    'not_regex:/\s/', // tanpa spasi
+                ],   
+                'phone_number' => [
+                    'required',
+                    'min:10',
+                    'regex:/^[0-9]+$/'
+                ],
                 'address' => 'required',
                 'postal_code' => 'required',
                 'kelurahan' => 'required',
@@ -77,17 +90,106 @@ class UserController extends Controller
         }
     }
 
+    public function getProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $community = Community::where('user_id', $user->id)
+            ->with('address')
+            ->first();
+
+        if (!$community) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data profil tidak ditemukan',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'name' => $community->name,
+                'phone_number' => $community->phone_number,
+                'address' => $community->address->address ?? null,
+                'postal_code' => $community->address->postal_code ?? null,
+                'kelurahan' => $community->address->kelurahan_id ?? null,
+            ],
+        ], 200);
+    }
+
     public function editProfile(Request $request)
     {
-         $validated = $request->validate([
-                'username' => 'required',
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8',
-                'phone_number' => 'required|min:10',
-                'address' => 'required',
-                'postal_code' => 'required',
-                'kelurahan' => 'required',
-         ]);
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'username' => 'required',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[a-z]/',        // huruf kecil
+                'regex:/[A-Z]/',        // huruf besar
+                'regex:/[0-9]/',        // angka
+                'regex:/[@$!%*?&._\-]/', // simbol
+                'not_regex:/\s/',       // tanpa spasi
+            ],
+            'phone_number' => [
+                'required',
+                'min:10',
+                'regex:/^[0-9]+$/'
+            ],
+            'address' => 'required',
+            'postal_code' => 'required',
+            'kelurahan' => 'required',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $user->update([
+                'username' => $validated['username'],
+                'email' => $validated['email'],
+                'password' => bcrypt($validated['password']),
+            ]);
+
+            $community = Community::where('user_id', $user->id)->first();
+            if ($community) {
+                $community->update([
+                    'name' => $validated['name'],
+                    'phone_number' => $validated['phone_number'],
+                ]);
+
+                $address = Address::find($community->address_id);
+                if ($address) {
+                    $address->update([
+                        'address' => $validated['address'],
+                        'postal_code' => $validated['postal_code'],
+                        'kelurahan_id' => $validated['kelurahan'],
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil diperbarui',
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui profil',
+            ], 500);
+        }
     }
+
 }
