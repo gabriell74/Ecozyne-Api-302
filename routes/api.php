@@ -7,7 +7,6 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
-use App\Http\Controllers\Admin\AdminArtikelController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 
 Route::post('/register', [UserController::class, 'register']);
@@ -31,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
       Route::patch('/question/{question}/like', [DiscussionQuestionController::class, 'toggleLike']);
       Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
+
+      Route::get('/profile', [UserController::class, 'getProfile']);
 });
 
 /* 

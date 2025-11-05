@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Point;
 use App\Models\Address;
 use App\Models\Community;
+use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -90,35 +91,70 @@ class UserController extends Controller
         }
     }
 
-    public function getProfile(Request $request)
+   public function getProfile(Request $request)
     {
         $user = $request->user();
 
-        $community = Community::where('user_id', $user->id)
-            ->with('address')
+        $responseUser = [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'role' => $user->role,
+        ];
+
+        if ($user->role === 'community') {
+            $community = Community::with(['address:id,address,postal_code,kelurahan_id'])
+                ->where('user_id', $user->id)
+                ->select('id', 'user_id', 'name', 'phone_number', 'address_id')
+                ->first();
+
+            if ($community) {
+                $responseUser = array_merge($responseUser, [
+                    'name' => $community->name,
+                    'phone_number' => $community->phone_number,
+                    'address' => $community->address->address ?? null,
+                    'postal_code' => $community->address->postal_code ?? null,
+                    'kelurahan' => $community->address->kelurahan_id ?? null,
+                ]);
+            }
+        } elseif ($user->role === 'waste_bank') {
+            $wasteBank = WasteBank::with([
+                'wasteBankSubmission' => function($q) {
+                    $q->select('id','community_id','waste_bank_name','waste_bank_location','latitude','longitude')
+                    ->with(['community:id,name,phone_number,address_id', 
+                            'community.address:id,address,postal_code']);
+                }
+            ])
+            ->whereHas('wasteBankSubmission', function($q) use ($user) {
+                $q->whereIn('community_id', function($subQuery) use ($user) {
+                    $subQuery->select('id')
+                            ->from('community')
+                            ->where('user_id', $user->id);
+                });
+            })
             ->first();
 
-        if (!$community) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data profil tidak ditemukan',
-            ], 404);
+            if ($wasteBank && $wasteBank->wasteBankSubmission && $wasteBank->wasteBankSubmission->community) {
+                $community = $wasteBank->wasteBankSubmission->community;
+                $address = $community->address;
+
+                $responseUser = array_merge($responseUser, [
+                    'community_name' => $community->name,
+                    'community_phone' => $community->phone_number,
+                    'address' => $address->address ?? null,
+                    'postal_code' => $address->postal_code ?? null,
+                    'waste_bank_name' => $wasteBank->wasteBankSubmission->waste_bank_name,
+                    'waste_bank_location' => $wasteBank->wasteBankSubmission->waste_bank_location,
+                    'latitude' => $wasteBank->wasteBankSubmission->latitude,
+                    'longitude' => $wasteBank->wasteBankSubmission->longitude,
+                ]);
+            }
         }
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $user->id,
-                'username' => $user->username,
-                'email' => $user->email,
-                'role' => $user->role,
-                'name' => $community->name,
-                'phone_number' => $community->phone_number,
-                'address' => $community->address->address ?? null,
-                'postal_code' => $community->address->postal_code ?? null,
-                'kelurahan' => $community->address->kelurahan_id ?? null,
-            ],
-        ], 200);
+            'user' => $responseUser,
+        ]);
     }
 
     public function editProfile(Request $request)
