@@ -18,10 +18,10 @@
     <a href="{{ route('article.list') }}" class="{{ Route::is('article.list', 'article.create', 'article.show', 'article.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-chart-bar me-2"></i> Artikel
     </a>
-    <a href="{{ route('activity.list')}}" class="{{ Route::is('activity.list', 'activity.create', 'activity.show', 'activity.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
+    <a href="{{ route('activity.list') }}" class="{{ Route::is('activity.list', 'activity.create', 'activity.show', 'activity.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-hands-helping me-2"></i> Kegiatan Sosial
     </a>
-    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
+    <a href="{{ route('comic.list') }}" class="{{ Route::is('comic.list', 'comic.create', 'comic.show', 'comic.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-book-open me-2"></i> Komik
     </a>
     <a href="{{ route('reward.list') }}" class="{{ Route::is('reward.list', 'reward.create', 'reward.show', 'reward.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">

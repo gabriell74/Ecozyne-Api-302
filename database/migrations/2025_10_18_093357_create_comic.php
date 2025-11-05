@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('comic', function (Blueprint $table) {
             $table->id();
             $table->string('comic_title');
+            $table->string('cover_photo');
             $table->timestamps();
         });
     }

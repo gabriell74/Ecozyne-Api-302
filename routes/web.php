@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminComicController;
 use App\Http\Controllers\Admin\AdminRewardController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminActivityController;
@@ -16,11 +17,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
-    //kelola profile
+    // Kelola Profil
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
     Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('user.update.profile');
     
-    // konfirmasi bank sampah
+    // Konfirmasi Bank Sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
      Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
 
@@ -49,6 +50,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/activity/edit/{activity}', [AdminActivityController::class, 'edit'])->name('activity.edit');
     Route::put('activity/update/{activity}', [AdminActivityController::class, 'update'])->name('activity.update');
     Route::delete('/activity/destroy/{activity}', [AdminActivityController::class, 'destroy'])->name('activity.destroy');
+
+    // Kelola Komik
+    Route::get('/comics', [AdminComicController::class, 'getAllComic'])->name('comic.list');
+    Route::get('/comic/create', [AdminComicController::class, 'create'])->name('comic.create');
+    Route::post('/comic/store', [AdminComicController::class, 'store'])->name('comic.store');
+    Route::get('/comic/details/{comic}', [AdminComicController::class, 'show'])->name('comic.show');
+    Route::get('/comic/edit/{comic}', [AdminComicController::class, 'edit'])->name('comic.edit');
+    Route::put('comic/update/{comic}', [AdminComicController::class, 'update'])->name('comic.update');
+    Route::delete('/comic/destroy/{comic}', [AdminComicController::class, 'destroy'])->name('comic.destroy');
 
     // Kelola Reward
     Route::get('/rewards', [AdminRewardController::class, 'getAllReward'])->name('reward.list');

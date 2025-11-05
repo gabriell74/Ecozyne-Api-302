@@ -19,6 +19,7 @@ return new class extends Migration
                 ->on('comic')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->integer('comic_page');
             $table->string('photo');
             $table->timestamps();
         });

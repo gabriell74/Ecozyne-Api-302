@@ -83,41 +83,4 @@
         </div>
     @endif
 </div>
-
-<style>
-    /* Styling agar seragam dengan Daftar Artikel */
-    .hover-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-
-    .btn-success {
-        background-color: #38A169; /* Warna hijau tua dari tombol Tambah Artikel */
-        border: none;
-    }
-
-    .btn-success:hover {
-        background-color: #2F855A;
-    }
-
-    .btn-outline-success {
-        border-color: #00C896; /* Warna hijau muda */
-        color: #00C896;
-    }
-
-    .btn-outline-success:hover {
-        background-color: #00C896;
-        color: #fff;
-    }
-
-    .alert-success {
-        background-color: #E6FFF3; /* Latar belakang alert sukses */
-        color: #13855C;
-    }
-
-    .alert-info {
-        background-color: #E7F6F2; /* Latar belakang alert info */
-        color: #317773;
-    }
-</style>
 @endsection

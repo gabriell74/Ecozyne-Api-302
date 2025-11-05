@@ -83,7 +83,7 @@ class UserController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-            DB::rollBack();
+            DB::rollback();
             return response()->json([
                 'success' => false,
                 'message' => 'Pendaftaran Gagal',
@@ -219,7 +219,7 @@ class UserController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            DB::rollBack();
+            DB::rollback();
 
             return response()->json([
                 'success' => false,
