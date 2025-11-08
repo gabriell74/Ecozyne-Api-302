@@ -7,6 +7,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 
 Route::post('/register', [UserController::class, 'register']);
@@ -21,6 +22,8 @@ Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
 
 Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
 
+Route::get('/answers', [DiscussionAnswerController::class, 'getAllAnswer']);
+
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
@@ -32,6 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
 
       Route::get('/profile', [UserController::class, 'getProfile']);
+
+      Route::post('/answer/store', [DiscussionAnswerController::class, 'storeAnswer']);
+      Route::put('/answer/update/{answer}', [DiscussionAnswerController::class, 'updateAnswer']);
+      Route::delete('/answer/delete/{answer}', [DiscussionAnswerController::class, 'deleteAnswer']);
 });
 
 /* 
