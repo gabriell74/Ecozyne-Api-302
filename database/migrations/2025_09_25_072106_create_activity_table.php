@@ -16,8 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->mediumText('description');
             $table->string('photo');
+            $table->integer('location');
+            $table->integer('current_quota')->default(0);
             $table->integer('quota');
-            $table->date('duedate');
+            $table->date('start_date');
+            $table->date('due_date');
             $table->timestamps();
         });
     }

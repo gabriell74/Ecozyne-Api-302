@@ -36,8 +36,10 @@ class AdminActivityController extends Controller
             'title' => 'required',
             'description' => 'required',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+            'location' => 'required',
             'quota' => 'required',
-            'duedate' => 'required|date',
+            'start_date' => 'required|date',
+            'due_date' => 'required|date',
         ]);
 
         $path = $request->file('photo')->store('activity', 'public');
@@ -46,6 +48,8 @@ class AdminActivityController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $path,
+            'location' => $request->location,
+            'current_quota' => 0,
             'quota' => $request->quota,
             'duedate' => $request->duedate,
         ]);
@@ -78,14 +82,18 @@ class AdminActivityController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'location' => 'required',
             'quota' => 'required',
-            'duedate' => 'required|date',
+            'start_date' => 'required|date',
+            'due_date' => 'required|date',
         ]);
 
         $activity->title = $request->title;
         $activity->description = $request->description;
+        $activity->location = $request->location;
         $activity->quota = $request->quota;
-        $activity->duedate = $request->duedate;
+        $activity->start_date = $request->start_date;
+        $activity->due_date = $request->due_date;
 
         if ($request->hasFile('photo')) {
             if ($activity->photo) {

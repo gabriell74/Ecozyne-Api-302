@@ -41,6 +41,19 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="location" class="form-label fw-bold">Lokasi Aktivitas</label>
+                            <input type="text" 
+                                   name="location" 
+                                   id="location" 
+                                   class="form-control @error('location') is-invalid @enderror" 
+                                   placeholder="Masukkan lokasi aktivitas" 
+                                   value="{{ $activity->location }}">
+                            @error('location')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="quota" class="form-label fw-bold">Jumlah Kuota</label>
                             <input type="number" 
                                    name="quota" 
@@ -54,14 +67,27 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="duedate" class="form-label fw-bold">Tanggal Penutupan</label>
+                            <label for="start_date" class="form-label fw-bold">Tanggal Buka</label>
                             <input type="date" 
-                                   name="duedate" 
-                                   id="duedate" 
-                                   class="form-control @error('duedate') is-invalid @enderror" 
+                                   name="start_date" 
+                                   id="start_date" 
+                                   class="form-control @error('start_date') is-invalid @enderror" 
                                    placeholder="Masukkan judul aktivitas" 
-                                   value="{{ $activity->duedate }}">
-                            @error('duedate')
+                                   value="{{ $activity->start_date }}">
+                            @error('start_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label fw-bold">Tanggal Penutupan</label>
+                            <input type="date" 
+                                   name="due_date" 
+                                   id="due_date" 
+                                   class="form-control @error('due_date') is-invalid @enderror" 
+                                   placeholder="Masukkan judul aktivitas" 
+                                   value="{{ $activity->due_date }}">
+                            @error('due_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
