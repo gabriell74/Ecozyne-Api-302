@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->mediumText('description');
             $table->string('photo');
-            $table->integer('location');
+            $table->string('location');
             $table->integer('current_quota')->default(0);
             $table->integer('quota');
             $table->date('start_date');

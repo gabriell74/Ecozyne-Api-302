@@ -28,7 +28,10 @@ class ActivityTableSeeder extends Seeder
                 'description' => $faker->paragraph(3),
                 'photo' => 'activity_' . \Illuminate\Support\Str::slug($activity) . '.jpg',
                 'quota' => $faker->numberBetween(20, 100),
-                'duedate' => $faker->dateTimeBetween('+1 week', '+3 months')->format('Y-m-d'),
+                'location' =>'Batam',
+                'current_quota' => 0,
+                'start_date' => $faker->dateTimeBetween('+1 week', '+3 months')->format('Y-m-d'),
+                'due_date' => $faker->dateTimeBetween('+1 week', '+3 months')->format('Y-m-d'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
