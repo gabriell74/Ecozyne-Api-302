@@ -24,32 +24,15 @@ class DiscussionAnswerController extends Controller
         ], 200);
     }
 
-    public function storeAnswer(Request $request)
+    public function storeAnswer(Request $request, Question $question)
     {
         $request->validate([
-            'question_id' => 'required|exists:discussion_question,id',
             'answer' => 'required|string',
         ]);
 
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        $question = Question::find($request->question_id);
-        if (!$question) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pertanyaan tidak ditemukan'
-            ], 404);
-        }
-
         $answer = Answer::create([
-            'user_id' => $user->id,
-            'question_id' => $request->question_id,
+            'user_id' => Auth::id(),
+            'question_id' => $question->id,
             'answer' => $request->answer,
         ]);
 
@@ -67,13 +50,6 @@ class DiscussionAnswerController extends Controller
         ]);
 
         $user = $request->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthenticated.',
-            ], 401);
-        }
 
         if ($answer->user_id !== $user->id) {
             return response()->json([
