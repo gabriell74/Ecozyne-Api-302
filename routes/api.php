@@ -22,7 +22,7 @@ Route::get('/articles/latest', [ArticleController::class, 'latestArticles']);
 
 Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']);
 
-Route::get('/answers', [DiscussionAnswerController::class, 'getAllAnswer']);
+Route::get('/answers/{questionId}', [DiscussionAnswerController::class, 'getAllAnswer']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);

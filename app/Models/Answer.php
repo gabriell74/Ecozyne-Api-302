@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Answer extends Model
 {
-    protected $table = 'discussion_answers';
+    protected $table = 'discussion_answer';
 
     protected $fillable = [
+        'user_id',
         'question_id',
         'answer',
     ];

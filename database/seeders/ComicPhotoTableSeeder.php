@@ -14,6 +14,7 @@ class ComicPhotoTableSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             DB::table('comic_photo')->insert([
                 'comic_id' => $faker->numberBetween(1, 5),
+                'comic_page' => 1,
                 'photo' => 'comic_page_' . $i . '.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),

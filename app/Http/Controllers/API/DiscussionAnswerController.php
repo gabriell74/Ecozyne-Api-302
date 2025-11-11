@@ -10,35 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscussionAnswerController extends Controller
 {
-    public function getAllAnswer(Request $request)
+    public function getAllAnswer(Request $request, $questionId)
     {
-        $user = Auth::guard('sanctum')->user();
-        $questionId = $request->query('question_id');
-
         $answers = Answer::with(['user:id,username'])
-            ->when($questionId, function ($query) use ($questionId) {
-                $query->where('question_id', $questionId);
-            })
-            ->withCount('likes')
-            ->when($user, function ($query) use ($user) {
-                $query->withExists([
-                    'likes as is_liked' => function ($likeQuery) use ($user) {
-                        $likeQuery->where('user_id', $user->id);
-                    },
-                ]);
-            })
+            ->where('question_id', $questionId)
             ->latest()
             ->get();
 
-        if (!$user) {
-            foreach ($answers as $answer) {
-                $answer->is_liked = false;
-            }
-        }
-
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil jawaban",
+            "message" => "Berhasil mengambil jawaban", 
             "data" => $answers
         ], 200);
     }
@@ -46,7 +27,7 @@ class DiscussionAnswerController extends Controller
     public function storeAnswer(Request $request)
     {
         $request->validate([
-            'question_id' => 'required|exists:questions,id',
+            'question_id' => 'required|exists:discussion_question,id',
             'answer' => 'required|string',
         ]);
 
@@ -58,7 +39,6 @@ class DiscussionAnswerController extends Controller
             ], 401);
         }
 
-        // Cek apakah pertanyaan exists
         $question = Question::find($request->question_id);
         if (!$question) {
             return response()->json([
@@ -72,14 +52,6 @@ class DiscussionAnswerController extends Controller
             'question_id' => $request->question_id,
             'answer' => $request->answer,
         ]);
-
-        $answer = Answer::with(['user:id,username'])
-            ->withExists([
-                'likes as is_liked' => function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                },
-            ])
-            ->find($answer->id);
 
         return response()->json([
             'success' => true,

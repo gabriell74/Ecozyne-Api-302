@@ -22,6 +22,7 @@ class ComicTableSeeder extends Seeder
         foreach ($comics as $comic) {
             DB::table('comic')->insert([
                 'comic_title' => $comic,
+                'cover_photo' => 'foto',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
