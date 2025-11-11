@@ -80,9 +80,10 @@ class AdminComicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Comic $comic)
     {
-        //
+        $comic_photo = ComicPhoto::where('comic_id', $comic->id)->orderBy('comic_page', 'asc')->get();
+        return view('admin.comic_detail', compact('comic', 'comic_photo'));
     }
 
     /**
