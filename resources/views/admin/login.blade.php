@@ -23,15 +23,29 @@
             @error('email')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
-            <input class="form-control mt-3" name="password" type="password" placeholder="Kata Sandi">
+            <input class="form-control mt-3" name="password" type="password" placeholder="Kata Sandi" id="kata_sandi">
             @error('password')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
+            <div class="mt-3">
+                <input class="form-check-input me-1" type="checkbox" onclick="showPassword()" id="login_checkbox">
+                <label class="form-check-label" for="login_checkbox">Tampilkan Sandi</label>
+            </div>
             <div class="mt-3 d-flex justify-content-center">
                 <button type="submit" class="btn btn-lg" style="background-color: #55C173; color: #000;">Masuk</button>
             </div>
         </form>
     </div>
 </div>
+<script>
+    function showPassword() {
+    var x = document.getElementById("kata_sandi");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+    }
+</script>
 </body>
 </html>

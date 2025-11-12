@@ -82,8 +82,8 @@ class AdminComicController extends Controller
      */
     public function show(Comic $comic)
     {
-        $comic_photo = ComicPhoto::where('comic_id', $comic->id)->orderBy('comic_page', 'asc')->get();
-        return view('admin.comic_detail', compact('comic', 'comic_photo'));
+        $comic_photos = ComicPhoto::where('comic_id', $comic->id)->orderBy('comic_page', 'asc')->get();
+        return view('admin.comic_detail', compact('comic', 'comic_photos'));
     }
 
     /**

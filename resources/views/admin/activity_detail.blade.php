@@ -61,9 +61,30 @@
                     </div>
 
                     {{-- Deskripsi Kegiatan (PERUBAHAN PENTING DI SINI) --}}
-                    <h5 class="fw-bold mb-3" style="color: #4A5568;">Deskripsi Lengkap</h5>
+                    <h5 class="fw-bold" style="color: #4A5568;">Deskripsi Lengkap</h5>
                     <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
                         {!! $activity->description !!}
+                    </div>
+
+                    {{-- Lokasi Kegiatan --}}
+                    <h5 class="fw-bold mt-3" style="color: #4A5568;">Lokasi</h5>
+                    <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
+                        {{ $activity->location }}
+                    </div>
+
+                    <h5 class="fw-bold mt-3" style="color: #4A5568;">Kuota</h5>
+                    <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
+                        {{ $activity->current_quota }} / {{ $activity->quota }}
+                    </div>
+
+                    <h5 class="fw-bold mt-3" style="color: #4A5568;">Tanggal Mulai</h5>
+                    <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
+                        {{ $activity->start_date }}
+                    </div>
+
+                    <h5 class="fw-bold mt-3" style="color: #4A5568;">Tanggal Selesai</h5>
+                    <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
+                        {{ $activity->due_date }}
                     </div>
 
                 </div>

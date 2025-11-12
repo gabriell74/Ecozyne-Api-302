@@ -51,7 +51,8 @@ class AdminActivityController extends Controller
             'location' => $request->location,
             'current_quota' => 0,
             'quota' => $request->quota,
-            'duedate' => $request->duedate,
+            'start_date' => $request->start_date,
+            'due_date' => $request->due_date,
         ]);
 
         return redirect()->route('activity.list')->with('success', 'Berhasil menambah kegiatan!');
