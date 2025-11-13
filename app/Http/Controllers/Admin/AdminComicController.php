@@ -51,16 +51,14 @@ class AdminComicController extends Controller
 
             if ($request->hasFile('photo')) {
                 $pageNumber = 1;
-        
-                foreach($request->file('photo') as $file) {
-                    $pageFileName = time() . '_page_' . $pageNumber . '_' . $file->getClientOriginalName();
-                    
-                    $file->storeAs('comic/comic_pages', $pageFileName, 'public');
-                    
+
+                foreach ($request->file('photo') as $file) {
+                    $pageFileName = $file->store('comic/comic_pages', 'public');
+
                     $comic->comicPhotos()->create([
                         'comic_page' => $pageNumber,
                         'photo' => $pageFileName,
-                    ]); 
+                    ]);
 
                     $pageNumber++;
                 }

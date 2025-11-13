@@ -24,41 +24,24 @@ class ActivityController extends Controller
         ], 200);
     }
 
-    public function activityRegister(Activity $activity) 
+    public function activityRegister(Request $request, Activity $activity) 
     {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
+        $user = $request->user();
 
         $community = $user->community;
-        $user_id = $user->id;
-        $current_quota = $activity->current_quota;
-        $quota = $activity->quota;
 
-        if ($current_quota < $quota) {
-            
-            ActivityRegistration::create([
-                'activity_id' => $activity->id,
-                'community_id' => $community->id
-            ]);
-
-            $current_quota += $current_quota;
-            return response()->json([
-                'success' => true,
-                "message" => "Berhasil mandaftar kegiatan"
-            ]);
-
-        } elseif ($current_quota == $quota) {
-            return response()->json([
-                'success' => true,
-                "message" => "Maaf kuota kegiatan penuh"
-            ]);
+        if (!$community) {
+            return response()->json(['message' => 'Tidak terdaftar sebagai komunitas'], 404);
         }
 
-        $activity->save();
+        $registration = ActivityRegistration::create([
+            'activity_id' => $activity->id,
+            'community_id' => $community->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Pendaftaran Berhasil', 
+            'data' => $registration,
+        ]);
     }
 }

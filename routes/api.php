@@ -2,11 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ComicController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 
@@ -24,6 +26,9 @@ Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']
 
 Route::get('/answers/{questionId}', [DiscussionAnswerController::class, 'getAllAnswer']);
 
+Route::get('/comics', [ComicController::class, 'getAllComic']);
+Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
+
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
@@ -39,6 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::post('/answer/store', [DiscussionAnswerController::class, 'storeAnswer']);
       Route::put('/answer/update/{answer}', [DiscussionAnswerController::class, 'updateAnswer']);
       Route::delete('/answer/delete/{answer}', [DiscussionAnswerController::class, 'deleteAnswer']);
+
+      Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
+
 });
 
 /* 
