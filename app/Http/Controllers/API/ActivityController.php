@@ -24,14 +24,27 @@ class ActivityController extends Controller
         ], 200);
     }
 
-    public function activityRegister(Request $request, Activity $activity) 
-    {
+   public function activityRegister(Request $request, Activity $activity) 
+   {
         $user = $request->user();
-
         $community = $user->community;
 
         if (!$community) {
-            return response()->json(['message' => 'Tidak terdaftar sebagai komunitas'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak terdaftar sebagai komunitas'
+            ], 404);
+        }
+
+        $isRegistered = ActivityRegistration::where('activity_id', $activity->id)
+            ->where('community_id', $community->id)
+            ->exists();
+
+        if ($isRegistered) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah terdaftar pada aktivitas ini'
+            ], 409);
         }
 
         $registration = ActivityRegistration::create([
@@ -40,8 +53,10 @@ class ActivityController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Pendaftaran Berhasil', 
+            'success' => true,
+            'message' => 'Pendaftaran Berhasil',
             'data' => $registration,
-        ]);
+        ], 200);
     }
+
 }
