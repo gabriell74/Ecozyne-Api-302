@@ -24,7 +24,7 @@ class DiscussionAnswerController extends Controller
         ], 200);
     }
 
-    public function storeAnswer(Request $request, Question $question)
+    public function storeAnswer(Request $request, $questionId)
     {
         $request->validate([
             'answer' => 'required|string',
@@ -32,9 +32,11 @@ class DiscussionAnswerController extends Controller
 
         $answer = Answer::create([
             'user_id' => Auth::id(),
-            'question_id' => $question->id,
+            'question_id' => $questionId,
             'answer' => $request->answer,
         ]);
+
+        $answer->load(['user:id,username']);
 
         return response()->json([
             'success' => true,
@@ -62,42 +64,13 @@ class DiscussionAnswerController extends Controller
             'answer' => $request->answer,
         ]);
 
+        $answer->load(['user:id,username']);
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil memperbarui jawaban',
             'data' => $answer,
         ], 200);
-    }
-
-    public function toggleLike(Answer $answer)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-
-        $isLiked = $answer->likes()->where('user_id', $user->id)->exists();
-
-        if ($isLiked) {
-            $answer->likes()->where('user_id', $user->id)->delete();
-            $status = false;
-        } else {
-            $answer->likes()->create(['user_id' => $user->id]);
-            $status = true;
-        }
-
-        $totalLike = $answer->likes()->count();
-        $answer->update(['total_like' => $totalLike]);
-
-        return response()->json([
-            'success' => true,
-            'message' => $status ? 'Liked' : 'Unliked',
-            'is_liked' => $status,
-            'total_like' => $totalLike,
-        ]);
     }
 
     public function deleteAnswer(Answer $answer)

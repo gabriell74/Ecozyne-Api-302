@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::get('/profile', [UserController::class, 'getProfile']);
 
-      Route::post('/answer/store', [DiscussionAnswerController::class, 'storeAnswer']);
+      Route::post('/answer/store/{questionId}', [DiscussionAnswerController::class, 'storeAnswer']);
       Route::put('/answer/update/{answer}', [DiscussionAnswerController::class, 'updateAnswer']);
       Route::delete('/answer/delete/{answer}', [DiscussionAnswerController::class, 'deleteAnswer']);
 
