@@ -17,6 +17,8 @@ class Activity extends Model
         'location',
         'current_quota',
         'quota',
+        'registration_start_date',
+        'registration_due_date',
         'start_date',
         'due_date',
     ];

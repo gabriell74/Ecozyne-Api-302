@@ -12,10 +12,15 @@ class ActivityController extends Controller
 {
     public function getAllActivity() 
     {
-        $activities = Activity::latest()->get()->map(function ($activity) {
-            $activity->photo = asset('storage/' . $activity->photo);
-            return $activity;
-        });
+        $today = now()->toDateString();
+
+        $activities = Activity::where('due_date', '>=', $today)
+            ->orderBy('start_date', 'asc')
+            ->get()
+            ->map(function ($activity) {
+                $activity->photo = asset('storage/' . $activity->photo);
+                return $activity;
+            });
 
         return response()->json([
             "success" => true,
@@ -25,7 +30,7 @@ class ActivityController extends Controller
     }
 
    public function activityRegister(Request $request, Activity $activity) 
-   {
+    {
         $user = $request->user();
         $community = $user->community;
 
@@ -34,6 +39,13 @@ class ActivityController extends Controller
                 'success' => false,
                 'message' => 'Tidak terdaftar sebagai komunitas'
             ], 404);
+        }
+
+        if ($activity->current_quota >= $activity->quota) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kuota aktivitas sudah penuh'
+            ], 409); // conflict
         }
 
         $isRegistered = ActivityRegistration::where('activity_id', $activity->id)
@@ -52,11 +64,12 @@ class ActivityController extends Controller
             'community_id' => $community->id,
         ]);
 
+        Activity::where('id', $activity->id)->increment('current_quota');
+
         return response()->json([
             'success' => true,
             'message' => 'Pendaftaran Berhasil',
             'data' => $registration,
         ], 200);
     }
-
 }

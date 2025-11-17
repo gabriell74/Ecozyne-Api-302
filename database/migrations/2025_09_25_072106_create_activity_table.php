@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('location');
             $table->integer('current_quota')->default(0);
             $table->integer('quota');
+            $table->date('registration_start_date');
+            $table->date('registration_due_date');
             $table->date('start_date');
             $table->date('due_date');
             $table->timestamps();

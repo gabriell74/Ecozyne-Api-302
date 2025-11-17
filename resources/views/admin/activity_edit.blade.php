@@ -67,7 +67,32 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="start_date" class="form-label fw-bold">Tanggal Buka</label>
+                            <label for="registration_start_date" class="form-label fw-bold">Tanggal Pembukaan Pendaftaran</label>
+                            <input type="date" 
+                                   name="registration_start_date" 
+                                   id="registration_start_date" 
+                                   class="form-control @error('registration_start_date') is-invalid @enderror" 
+                                   placeholder="Masukkan judul aktivitas" 
+                                   value="{{ $activity->registration_start_date }}">
+                            @error('registration_start_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registration_due_date" class="form-label fw-bold">Tanggal Penutupan Pendaftaran</label>
+                            <input type="date" 
+                                   name="registration_due_date" 
+                                   id="registration_due_date" 
+                                   class="form-control @error('registration_due_date') is-invalid @enderror" 
+                                   placeholder="Masukkan judul aktivitas" 
+                                   value="{{ $activity->registration_due_date }}">
+                            @error('registration_due_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label fw-bold">Tanggal Mulai</label>
                             <input type="date" 
                                    name="start_date" 
                                    id="start_date" 
@@ -80,7 +105,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="due_date" class="form-label fw-bold">Tanggal Penutupan</label>
+                            <label for="due_date" class="form-label fw-bold">Tanggal Selesai</label>
                             <input type="date" 
                                    name="due_date" 
                                    id="due_date" 
@@ -134,8 +159,4 @@
 @endsection
 
 @section('script')
-    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
-    <script> 
-        var editor = new FroalaEditor('#description');
-    </script>
 @endsection

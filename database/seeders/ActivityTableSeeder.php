@@ -30,6 +30,8 @@ class ActivityTableSeeder extends Seeder
                 'quota' => $faker->numberBetween(20, 100),
                 'location' =>'Batam',
                 'current_quota' => 0,
+                'registration_start_date' => $faker->dateTimeBetween('now', '+1 week')->format('Y-m-d'),
+                'registration_due_date' => $faker->dateTimeBetween('+1 week', '+1 month')->format('Y-m-d'),
                 'start_date' => $faker->dateTimeBetween('+1 week', '+3 months')->format('Y-m-d'),
                 'due_date' => $faker->dateTimeBetween('+1 week', '+3 months')->format('Y-m-d'),
                 'created_at' => now(),

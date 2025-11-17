@@ -26,6 +26,8 @@ Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']
 
 Route::get('/answers/{questionId}', [DiscussionAnswerController::class, 'getAllAnswer']);
 
+Route::get('/activities', [ActivityController::class, 'getAllActivity']);
+
 Route::get('/comics', [ComicController::class, 'getAllComic']);
 Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 

@@ -38,9 +38,12 @@ class AdminActivityController extends Controller
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
             'location' => 'required',
             'quota' => 'required',
-            'start_date' => 'required|date',
-            'due_date' => 'required|date',
+            'registration_start_date' => 'required|date|before_or_equal:registration_due_date',
+            'registration_due_date' => 'required|date|after_or_equal:registration_start_date',
+            'start_date' => 'required|date|before_or_equal:due_date',
+            'due_date' => 'required|date|after_or_equal:start_date',
         ]);
+
 
         $path = $request->file('photo')->store('activity', 'public');
 
@@ -51,6 +54,8 @@ class AdminActivityController extends Controller
             'location' => $request->location,
             'current_quota' => 0,
             'quota' => $request->quota,
+            'registration_start_date' => $request->registration_start_date,
+            'registration_due_date' => $request->registration_due_date,
             'start_date' => $request->start_date,
             'due_date' => $request->due_date,
         ]);
@@ -85,14 +90,20 @@ class AdminActivityController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'location' => 'required',
             'quota' => 'required',
-            'start_date' => 'required|date',
-            'due_date' => 'required|date',
+
+            'registration_start_date' => 'required|date|before_or_equal:registration_due_date',
+            'registration_due_date' => 'required|date|after_or_equal:registration_start_date',
+
+            'start_date' => 'required|date|before_or_equal:due_date',
+            'due_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         $activity->title = $request->title;
         $activity->description = $request->description;
         $activity->location = $request->location;
         $activity->quota = $request->quota;
+        $activity->registration_start_date = $request->registration_start_date;
+        $activity->registration_due_date = $request->registration_due_date;
         $activity->start_date = $request->start_date;
         $activity->due_date = $request->due_date;
 
