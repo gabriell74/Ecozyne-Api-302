@@ -7,8 +7,8 @@
     <a href="{{ route('admin.dashboard') }}" class="{{ Route::is('admin.dashboard') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-home me-2"></i> Dashboard
     </a>
-    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
-      <i class="fas fa-exchange-alt me-2"></i> Tukar Poin
+    <a href="{{ route('admin.exchange_reward_list') }}" class="{{ Route::is('admin.exchange_reward_list') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
+      <i class="fas fa-exchange-alt me-2"></i> Tukar Hadiah
     </a>
     <a href="#submenu-pengguna" data-bs-toggle="collapse" class="list-group-item list-group-item-action border-0 py-3"><i class="fas fa-users me-2"></i> Pengguna</a>
       <div class="{{ Route::is('community.list') || Route::is('waste_bank.list') ? '' : 'collapse' }} list-group-item border-0 py-0" id="submenu-pengguna">
