@@ -16,7 +16,7 @@ class ExchangeTransactionTableSeeder extends Seeder
                 'exchange_id' => $faker->numberBetween(1, 10),
                 'reward_id' => $faker->numberBetween(1, 7),
                 'amount' => $faker->numberBetween(1, 3),
-                'unit_point' => $faker->numberBetween(100, 500),
+                'total_unit_point' => $faker->numberBetween(100, 500),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

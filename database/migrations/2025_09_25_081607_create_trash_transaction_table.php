@@ -19,8 +19,16 @@ return new class extends Migration
                 ->on('waste_bank')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->integer('poin_earned');
-            $table->integer('trash_weight');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->enum('status', ['rejected', 'pending', 'approved'])->default('pending');
+            $table->text('rejectionReason')->nullable();
+            $table->integer('poin_earned')->nullable();
+            $table->integer('trash_weight')->nullable();
             $table->timestamps();
         });
     }

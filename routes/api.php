@@ -9,6 +9,7 @@ use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\API\ActivityController;
+use App\Http\Controllers\api\PointExchangeController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 
@@ -31,6 +32,8 @@ Route::get('/activities', [ActivityController::class, 'getAllActivity']);
 Route::get('/comics', [ComicController::class, 'getAllComic']);
 Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 
+Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
+
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
@@ -49,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
 
+      Route::post('/exchange/{reward}', [PointExchangeController::class, 'exchangeReward']);
 });
 
 /* 

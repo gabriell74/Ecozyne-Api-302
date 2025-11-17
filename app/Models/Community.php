@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Address;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Community extends Model
 {
@@ -27,5 +29,15 @@ class Community extends Model
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function exchanges(): HasMany
+    {
+        return $this->hasMany(Exchange::class);
+    }
+
+    public function point(): HasOne
+    {
+        return $this->hasOne(Point::class);
     }
 }

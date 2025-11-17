@@ -26,7 +26,7 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->integer('amount');
-            $table->integer('unit_point');
+            $table->integer('total_unit_point');
             $table->timestamps();
         });
     }

@@ -15,4 +15,9 @@ class Reward extends Model
         'stock',
         'unit_point',
     ];
+
+    public function exchangeTransactions()
+    {
+        return $this->hasMany(ExchangeTransaction::class);
+    }
 }

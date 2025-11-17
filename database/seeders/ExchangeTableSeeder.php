@@ -14,7 +14,7 @@ class ExchangeTableSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             DB::table('exchange')->insert([
                 'community_id' => $faker->numberBetween(1, 20),
-                'exchange_status' => $faker->randomElement(['pending', 'completed', 'cancelled']),
+                'exchange_status' => $faker->randomElement(['rejected', 'pending', 'approved']),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

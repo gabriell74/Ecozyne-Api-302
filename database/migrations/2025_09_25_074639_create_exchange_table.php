@@ -19,7 +19,7 @@ return new class extends Migration
                 ->on('community')
                 ->onDelate('cascade')
                 ->onUpdate('cascade');
-            $table->string('exchange_status');
+            $table->enum('exchange_status', ['rejected', 'pending', 'approved'])->default('pending');
             $table->timestamps();
         });
     }
