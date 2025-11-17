@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExchangeTransaction extends Model
 {
-    protected $table = 'exchange_registration';
+    protected $table = 'exchange_transaction';
     
     protected $fillable = [
         'exchange_id',

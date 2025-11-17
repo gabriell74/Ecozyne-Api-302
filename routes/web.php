@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminComicController;
 use App\Http\Controllers\Admin\AdminRewardController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Admin\AdminExchangeRewardController;
 use App\Http\Controllers\Admin\WasteBankSubmissionController;
 
 Route::get('/', [AdminAuthController::class, 'loginPage'])->name('login');
@@ -23,8 +24,11 @@ Route::middleware('auth')->group(function () {
     
     // Konfirmasi Bank Sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
-     Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
+    Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
 
+    // Konfirmasi Penukaran Hadiah
+    Route::get('/exchange_reward', [AdminExchangeRewardController::class, 'getAllExchangeReward'])->name('admin.exchange_reward_list');
+    
     // Kelola Pengguna (Komunitas)
     Route::get('/communities', [AdminUserController::class, 'getAllCommunity'])->name('community.list');
     Route::delete('/community/destroy/{community}', [AdminUserController::class, 'destroyCommunity'])->name('community.destroy');
