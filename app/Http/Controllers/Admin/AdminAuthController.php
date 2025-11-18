@@ -12,7 +12,7 @@ class AdminAuthController extends Controller
 {
     public function loginPage() 
     {
-        if (Auth::check()) {
+        if (Auth::check() && Auth::user()->role === 'admin') {
             return redirect('/dashboard');
         }
 
@@ -44,6 +44,10 @@ class AdminAuthController extends Controller
             ])->onlyInput('password');
         }
 
+        if ($user->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses ditolak: kamu bukan admin!');
+        }
+        
         // Kalau lolos semua, baru autentikasi
         Auth::login($user);
         $request->session()->regenerate();

@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\WasteBankSubmissionController;
 Route::get('/', [AdminAuthController::class, 'loginPage'])->name('login');
 Route::post('/login/process', [AdminAuthController::class, 'login'])->name('login.process');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth_admin')->group(function () {
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
