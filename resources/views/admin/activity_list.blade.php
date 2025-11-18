@@ -36,10 +36,9 @@
                         {{-- Tombol Hapus --}}
                         <form action="{{ route('activity.destroy', $activity->id)}}" 
                               class="position-absolute top-0 end-0 m-2" 
-                              method="post" style="z-index: 10;">
+                              method="post" style="z-index: 10;" id="delete_form"> 
                             @csrf @method('delete')
-                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="submit"
-                                    onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?');">
+                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="button" onclick="confirmDelete()">
                                 <i class="fas fa-trash"></i> 
                             </button>
                         </form>

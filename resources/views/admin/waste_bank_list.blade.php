@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Kelola Komunitas - Ecozyne')
+@section('title', 'Kelola Bank Sampah - Ecozyne')
 
 @section('content')
 <div class="container-fluid py-4 page-komunitas" 
@@ -42,16 +42,14 @@
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
                                 <div>
-                                    <h5 class="fw-bold mb-1 text-#001d16" style="font-size: 1rem;">Username : {{ $waste_bank->user->username }}</h5>
                                     <h6 class="fw-semibold mb-1 text-#001d16" style="font-size: 1rem;">Nama Bank Sampah : {{ $waste_bank->wasteBankSubmission->waste_bank_name }}</h6>
                                     <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Lokasi : {{ $waste_bank->wasteBankSubmission->location }}</p>
-                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Email : {{ $waste_bank->user->email }}</p>
                                     <small class="text-light-50" style="font-size: 0.75rem;">Tanggal Pendaftaran : {{ $waste_bank->created_at->format('d M Y') }}</small>
                                 </div>
                             </div>
-                            <form action="{{ route('waste_bank.destroy', $waste_bank->id)}}" method="post" style="z-index: 10;">
+                            <form action="{{ route('waste_bank.destroy', $waste_bank->id)}}" method="post" style="z-index: 10;" id="delete_form">
                                 @csrf @method('delete')
-                                <button class="btn btn-outline-danger btn-sm rounded-pill" type="submit">
+                                <button class="btn btn-outline-danger btn-sm rounded-pill" type="button" onclick="confirmDelete()">
                                     <i class="fas fa-trash me-1"></i>Hapus
                                 </button>
                             </form>
@@ -63,7 +61,7 @@
             </div>
             {{-- Pagination --}}
             <div class="mt-4">
-                {{ $communities->links() }}
+                {{ $waste_banks->links() }}
             </div>
         @endif
         </div>

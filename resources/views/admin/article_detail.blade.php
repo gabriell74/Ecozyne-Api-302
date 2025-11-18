@@ -55,9 +55,9 @@
                             <i class="fas fa-edit me-2"></i> Edit 
                         </a>
                         {{-- Asumsi route destroy adalah 'article.destroy' --}}
-                        <form action="{{ route('article.destroy', $article->id)}}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel ini secara permanen?');">
+                        <form action="{{ route('article.destroy', $article->id)}}" method="post" id="delete_form">
                             @csrf @method('delete')
-                            <button class="btn btn-outline-danger rounded-pill px-4" type="submit">
+                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete()">
                                 <i class="fas fa-trash-alt me-2"></i> Hapus
                             </button>
                         </form>

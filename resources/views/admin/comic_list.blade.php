@@ -36,10 +36,9 @@
                         {{-- Tombol Hapus --}}
                         <form action="{{ route('comic.destroy', $comic->id)}}" 
                               class="position-absolute top-0 end-0 m-2" 
-                              method="post" style="z-index: 10;">
+                              method="post" style="z-index: 10;" id="delete_form">
                             @csrf @method('delete')
-                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="submit"
-                                    onsubmit="return confirm('Yakin ingin menghapus kegiatan ini?');">
+                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="button" onclick="confirmDelete()">
                                 <i class="fas fa-trash"></i> 
                             </button>
                         </form>
@@ -50,7 +49,7 @@
                                  style="height: 180px; overflow: hidden;">
                                 <img src="{{ asset('storage/' . $comic->cover_photo) }}" 
                                      class="card-img-top" 
-                                     alt="{{ $comic->comic_title     }}" 
+                                     alt="{{ $comic->comic_title }}" 
                                      style="height: 100%; width: 100%; object-fit: contain;">
                             </div>
                         @else
@@ -78,10 +77,6 @@
                                     <i class=""></i>Lihat Detail
                                 </a>
                                 
-                                {{-- Tombol Edit --}}
-                                <a href="{{ route('comic.edit', $comic->id) }}" class="btn btn-outline-success btn-sm rounded-circle">
-                                    <i class="fas fa-edit"></i>
-                                </a>
                             </div>
                         </div>
                     </div>

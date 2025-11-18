@@ -30,12 +30,9 @@
 
                     {{-- Tombol Aksi (Edit dan Hapus) --}}
                     <div class="d-flex mb-4 border-bottom pb-3">
-                        <a href="{{ route('comic.edit', $comic->id) }}" class="btn btn-outline-primary rounded-pill me-3 px-4">
-                            <i class="fas fa-edit me-2"></i> Edit 
-                        </a>
-                        <form action="{{ route('comic.destroy', $comic->id)}}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel ini secara permanen?');">
+                        <form action="{{ route('comic.destroy', $comic->id)}}" method="post" id="delete_form">
                             @csrf @method('delete')
-                            <button class="btn btn-outline-danger rounded-pill px-4" type="submit">
+                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete()">
                                 <i class="fas fa-trash-alt me-2"></i> Hapus
                             </button>
                         </form>

@@ -60,8 +60,6 @@ Route::middleware('auth_admin')->group(function () {
     Route::get('/comic/create', [AdminComicController::class, 'create'])->name('comic.create');
     Route::post('/comic/store', [AdminComicController::class, 'store'])->name('comic.store');
     Route::get('/comic/details/{comic}', [AdminComicController::class, 'show'])->name('comic.show');
-    Route::get('/comic/edit/{comic}', [AdminComicController::class, 'edit'])->name('comic.edit');
-    Route::put('comic/update/{comic}', [AdminComicController::class, 'update'])->name('comic.update');
     Route::delete('/comic/destroy/{comic}', [AdminComicController::class, 'destroy'])->name('comic.destroy');
 
     // Kelola Reward

@@ -7,6 +7,7 @@ use App\Models\ComicPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class AdminComicController extends Controller
 {
@@ -85,26 +86,32 @@ class AdminComicController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Comic $comic)
     {
-        //
+        try {
+            DB::beginTransaction();
+    
+            foreach ($comic->comicPhotos as $photo) {
+                if ($photo->photo && Storage::disk('public')->exists($photo->photo)) {
+                    Storage::disk('public')->delete($photo->photo);
+                }
+            }
+
+            if ($comic->cover_photo && Storage::disk('public')->exists($comic->cover_photo)) {
+                Storage::disk('public')->delete($comic->cover_photo);
+            }
+            
+            $comic->comicPhotos()->delete();
+            $comic->delete();
+            DB::commit();
+
+            return redirect()->route('comic.list')->with('success', 'Berhasil menghapus komik!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('comics.list')->with('error', 'Gagal menghapus komik, silahkan coba lagi');
+        }
+
     }
 }
