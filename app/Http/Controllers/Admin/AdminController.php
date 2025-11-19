@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Comic;
+use App\Models\Reward;
 use App\Models\Article;
 use App\Models\Activity;
+use App\Models\Community;
+use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\WasteBankSubmission;
@@ -22,11 +27,41 @@ class AdminController extends Controller
     
     public function dashboard()
     {
+        // User
         $user_total = User::count();
+        $community_total = Community::count();
+        $waste_bank_total = WasteBank::count();
+        $user_this_month = User::whereMonth('created_at', Carbon::now()->month)
+                           ->whereYear('created_at', Carbon::now()->year)
+                           ->count();
+        // Artikel
+        $latest_article = Article::latest()->take(3)->get();
         $article_total = Article::count();
+        $article_this_month = Article::whereMonth('created_at', Carbon::now()->month)
+                              ->whereYear('created_at', Carbon::now()->year)
+                              ->count();
+        // Pengajuan Bank Sampah
         $waste_bank_submission_total = WasteBankSubmission::count();
+        $waste_bank_submission_this_month = WasteBankSubmission::whereMonth('created_at', Carbon::now()->month)
+                                            ->whereYear('created_at', Carbon::now()->year)
+                                            ->count();
+        // Kegiatan Sosial
         $activity_total = Activity::count();
-        return view('admin.dashboard', compact('user_total', 'article_total', 'waste_bank_submission_total', 'activity_total'));
+        $activity_this_month = Activity::whereMonth('created_at', Carbon::now()->month)
+                               ->whereYear('created_at', Carbon::now()->year)
+                               ->count();
+        // Komik
+        $latest_comic = Comic::latest()->take(2)->get();
+
+        // Hadiah
+        $latest_reward = Reward::latest()->take(2)->get();
+        
+        return view('admin.dashboard', compact(
+            'user_total', 'article_total', 'waste_bank_submission_total', 'activity_total',
+            'user_this_month', 'article_this_month', 'waste_bank_submission_this_month', 'activity_this_month',
+            'community_total', 'waste_bank_total', 'latest_article', 'latest_comic', 'latest_reward',
+            
+        ));
     }
 
     public function profile()
