@@ -14,7 +14,7 @@ class ActivityController extends Controller
     {
         $today = now()->toDateString();
 
-        $activities = Activity::where('due_date', '>=', $today)
+        $activities = Activity::where('registration_due_date', '>=', $today)
             ->orderBy('start_date', 'asc')
             ->get()
             ->map(function ($activity) {
@@ -29,8 +29,47 @@ class ActivityController extends Controller
         ], 200);
     }
 
-   public function activityRegister(Request $request, Activity $activity) 
+    public function getLatestActivity()
     {
+        $today = now()->toDateString();
+
+        $activity = Activity::where('registration_due_date', '>=', $today)
+            ->latest()
+            ->first();
+
+        if ($activity) {
+            $activity->photo = asset('storage/' . $activity->photo);
+        }
+
+        return response()->json([
+            "success" => true,
+            "message" => "Berhasil mengambil aktivitas terbaru",
+            "data" => $activity
+        ], 200);
+    }
+
+    public function getCompletedActivity()
+    {
+        $today = now()->toDateString();
+
+        $activities = Activity::where('due_date', '<', $today)
+            ->orderBy('due_date', 'desc')
+            ->get()
+            ->map(function ($activity) {
+                $activity->photo = asset('storage/' . $activity->photo);
+                return $activity;
+            });
+
+        return response()->json([
+            "success" => true,
+            "message" => "Berhasil mengambil data aktivitas yang telah selesai",
+            "data" => $activities
+        ]);
+    }
+
+
+   public function activityRegister(Request $request, Activity $activity) 
+   {
         $user = $request->user();
         $community = $user->community;
 
@@ -41,11 +80,18 @@ class ActivityController extends Controller
             ], 404);
         }
 
+        if (now()->toDateString() > $activity->registration_due_date) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Masa pendaftaran untuk aktivitas ini telah berakhir'
+            ], 422);
+        }
+
         if ($activity->current_quota >= $activity->quota) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kuota aktivitas sudah penuh'
-            ], 409); // conflict
+            ], 409);
         }
 
         $isRegistered = ActivityRegistration::where('activity_id', $activity->id)

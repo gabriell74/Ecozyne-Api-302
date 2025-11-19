@@ -22,11 +22,19 @@ class ActivityTableSeeder extends Seeder
             'Pelatihan Kompos Rumahan'
         ];
 
+        $activitiesPhoto = [
+            'activity.png',
+            'activity2.png',
+            'activity3.png',
+            'activity4.png',
+            'activity5.png',
+        ];
+
         foreach ($activities as $activity) {
             DB::table('activity')->insert([
                 'title' => $activity,
                 'description' => $faker->paragraph(3),
-                'photo' => 'activity_' . \Illuminate\Support\Str::slug($activity) . '.jpg',
+                'photo' => 'activity/' . $activitiesPhoto[array_rand($activitiesPhoto)],
                 'quota' => $faker->numberBetween(20, 100),
                 'location' =>'Batam',
                 'current_quota' => 0,

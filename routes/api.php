@@ -28,9 +28,11 @@ Route::get('/questions', [DiscussionQuestionController::class, 'getAllQuestion']
 Route::get('/answers/{questionId}', [DiscussionAnswerController::class, 'getAllAnswer']);
 
 Route::get('/activities', [ActivityController::class, 'getAllActivity']);
+Route::get('/activities/latest', [ActivityController::class, 'getLatestActivity']);
+Route::get('/activities/completed', [ActivityController::class, 'getCompletedActivity']);
 
-Route::get('/comics', [ComicController::class, 'getAllComic']);
-Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
+// Route::get('/comics', [ComicController::class, 'getAllComic']);
+// Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 
