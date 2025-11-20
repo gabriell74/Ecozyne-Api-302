@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Edit Hadiah')
+@section('title', 'Ubah Hadiah')
 @section('header', 'Hadiah')
 
 @section('content')

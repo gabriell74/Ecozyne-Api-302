@@ -1,6 +1,7 @@
 @extends('layout.admin')
 
-@section('title', 'Kelola Bank Sampah - Ecozyne')
+@section('title', 'Kelola Komunitas')
+@section('header', 'Komunitas')
 
 @section('content')
 <div class="container-fluid py-4 page-komunitas" 

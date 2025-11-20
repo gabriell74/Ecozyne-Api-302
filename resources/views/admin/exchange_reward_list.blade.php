@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Konfirmasi Tukar Hadiah - Ecozyne')
+@section('title', 'Konfirmasi Tukar Hadiah')
 
 @section('content')
 <div class="container-fluid py-4 page-komunitas" 

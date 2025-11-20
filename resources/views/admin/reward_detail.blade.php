@@ -1,6 +1,6 @@
 @extends('layout.admin')
 
-@section('title', 'Detail Reward')
+@section('title', 'Detail Hadiah:' . $reward->nama_hadiah)
 @section('header', 'Reward')
 
 @section('content')

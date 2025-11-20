@@ -20,7 +20,7 @@ Route::middleware('auth_admin')->group(function () {
     
     // Kelola Profil
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('user.update.profile');
+    Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile_update');
     
     // Konfirmasi Bank Sampah
     Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
@@ -71,5 +71,6 @@ Route::middleware('auth_admin')->group(function () {
     Route::put('/reward/update/{reward}', [AdminRewardController::class, 'update'])->name('reward.update');
     Route::delete('/reward/destroy/{reward}', [AdminRewardController::class, 'destroy'])->name('reward.destroy');
 
+    // Logout
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 });

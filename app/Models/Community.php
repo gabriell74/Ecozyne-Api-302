@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Address;
+use App\Models\WasteBankSubmission;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Community extends Model
 {
@@ -39,5 +40,10 @@ class Community extends Model
     public function point(): HasOne
     {
         return $this->hasOne(Point::class);
+    }
+
+    public function wasteBankSubmission(): HasOne
+    {
+        return $this->hasOne(WasteBankSubmission::class);
     }
 }
