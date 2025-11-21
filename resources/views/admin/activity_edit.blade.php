@@ -1,7 +1,7 @@
 @extends('layout.admin')
 
-@section('title', 'Ubah Aktivitas')
-@section('header', 'Aktivitas')
+@section('title', 'Ubah Kegiatan')
+@section('header', 'Kegiatan')
 
 @section('content')
 <div class="container mt-4">

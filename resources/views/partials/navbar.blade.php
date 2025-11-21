@@ -6,7 +6,7 @@
       <i class="fas fa-bars"></i>
     </button>
 
-    <h5 class="mb-0 fw-bold">@yield('header','Dasbor')</h5>
+    <h5 class="mb-0 fw-bold">@yield('header','Dashbor Ecozyne')</h5>
 
     {{-- Toggle Navbar di mobile --}}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
@@ -14,18 +14,8 @@
     </button>
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
-      <form class="d-flex me-3 my-2 my-lg-0" style="max-width: 250px;">
-        <div class="input-group">
-          <input type="text" class="form-control rounded-pill-start border-end-0" placeholder="Search">
-          <span class="input-group-text bg-transparent border-start-0 rounded-pill-end"><i class="fas fa-search"></i></span>
-        </div>
-      </form>
-
-      {{-- Ikon Notifikasi --}}
-      <a href="#" class="text-secondary me-3 my-auto"><i class="fas fa-bell fa-lg"></i></a>
-      
-      <a href="{{ route('admin.profile') }}" class="text-secondary me-3 my-auto d-none d-lg-block" title="Profil Admin">
-        <i class="fas fa-user-circle fa-lg"></i>
+      <a href="{{ route('admin.profile') }}" class="text-secondary me-3 my-auto d-none d-lg-block text-decoration-none" title="Profil Admin">
+        <i class="fas fa-user-circle fa-2xl"></i> Kelola Profil 
       </a>
     </div>
   </div>
