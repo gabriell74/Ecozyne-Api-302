@@ -24,7 +24,7 @@ class ActivityController extends Controller
 
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil data aktivitas",
+            "message" => "Berhasil mengambil data kegiatan",
             "data" => $activities
         ], 200);
     }
@@ -43,7 +43,7 @@ class ActivityController extends Controller
 
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil aktivitas terbaru",
+            "message" => "Berhasil mengambil kegiatan terbaru",
             "data" => $activity
         ], 200);
     }
@@ -62,9 +62,9 @@ class ActivityController extends Controller
 
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil data aktivitas yang telah selesai",
+            "message" => "Berhasil mengambil data kegiatan yang telah selesai",
             "data" => $activities
-        ]);
+        ], 200);
     }
 
 
@@ -83,14 +83,14 @@ class ActivityController extends Controller
         if (now()->toDateString() > $activity->registration_due_date) {
             return response()->json([
                 'success' => false,
-                'message' => 'Masa pendaftaran untuk aktivitas ini telah berakhir'
+                'message' => 'Masa pendaftaran untuk kegiatan ini telah berakhir'
             ], 422);
         }
 
         if ($activity->current_quota >= $activity->quota) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kuota aktivitas sudah penuh'
+                'message' => 'Kuota kegiatan sudah penuh'
             ], 409);
         }
 
@@ -101,7 +101,7 @@ class ActivityController extends Controller
         if ($isRegistered) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda sudah terdaftar pada aktivitas ini'
+                'message' => 'Sudah terdaftar di kegiatan ini'
             ], 409);
         }
 
