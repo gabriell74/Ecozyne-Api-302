@@ -102,60 +102,67 @@ class UserController extends Controller
             'role' => $user->role,
         ];
 
-        if ($user->role === 'community') {
-            $community = Community::with(['address:id,address,postal_code,kelurahan_id'])
-                ->where('user_id', $user->id)
-                ->select('id', 'user_id', 'name', 'phone_number', 'address_id')
-                ->first();
+        $community = Community::with([
+            'address:id,address,postal_code,kelurahan_id',
+            'address.kelurahan:id,kelurahan,kecamatan_id',
+            'address.kelurahan.kecamatan:id,kecamatan',
+            'point:id,community_id,point,expired_point',
+        ])
+        ->where('user_id', $user->id)
+        ->select('id','user_id','address_id','photo','phone_number','name')
+        ->first();
 
-            if ($community) {
-                $responseUser = array_merge($responseUser, [
-                    'name' => $community->name,
-                    'phone_number' => $community->phone_number,
+        if ($community) {
+            $responseUser['community'] = [
+                'name' => $community->name,
+                'phone_number' => $community->phone_number,
+                'address' => [
                     'address' => $community->address->address ?? null,
                     'postal_code' => $community->address->postal_code ?? null,
-                    'kelurahan' => $community->address->kelurahan_id ?? null,
-                ]);
-            }
-        } elseif ($user->role === 'waste_bank') {
+                    'kelurahan' => $community->address->kelurahan->kelurahan ?? null,
+                    'kecamatan' => $community->address->kelurahan->kecamatan->kecamatan ?? null,
+                ],
+                'photo' => $community->photo ? asset('storage/'.$community->photo) : null,
+                'point' => $community->point->point ?? 0,
+                'expired_point' => $community->point->expired_point ?? null,
+            ];
+        }
+
+        /* ===========================
+        ROLE: WASTE BANK
+        ============================*/
+        if ($user->role === 'waste_bank' && $community) {
+
             $wasteBank = WasteBank::with([
                 'wasteBankSubmission' => function($q) {
-                    $q->select('id','community_id','waste_bank_name','waste_bank_location','latitude','longitude')
-                    ->with(['community:id,name,phone_number,address_id', 
-                            'community.address:id,address,postal_code']);
+                    $q->select(
+                        'id','community_id',
+                        'waste_bank_name','waste_bank_location',
+                        'latitude','longitude'
+                    );
                 }
             ])
-            ->whereHas('wasteBankSubmission', function($q) use ($user) {
-                $q->whereIn('community_id', function($subQuery) use ($user) {
-                    $subQuery->select('id')
-                            ->from('community')
-                            ->where('user_id', $user->id);
-                });
+            ->whereHas('wasteBankSubmission', function($q) use ($community) {
+                $q->where('community_id', $community->id);
             })
             ->first();
 
-            if ($wasteBank && $wasteBank->wasteBankSubmission && $wasteBank->wasteBankSubmission->community) {
-                $community = $wasteBank->wasteBankSubmission->community;
-                $address = $community->address;
-
-                $responseUser = array_merge($responseUser, [
-                    'community_name' => $community->name,
-                    'community_phone' => $community->phone_number,
-                    'address' => $address->address ?? null,
-                    'postal_code' => $address->postal_code ?? null,
+            if ($wasteBank && $wasteBank->wasteBankSubmission) {
+                $responseUser['waste_bank'] = [
                     'waste_bank_name' => $wasteBank->wasteBankSubmission->waste_bank_name,
                     'waste_bank_location' => $wasteBank->wasteBankSubmission->waste_bank_location,
                     'latitude' => $wasteBank->wasteBankSubmission->latitude,
                     'longitude' => $wasteBank->wasteBankSubmission->longitude,
-                ]);
+                ];
             }
         }
 
         return response()->json([
             'success' => true,
             'user' => $responseUser,
-        ]);
+        ], 200);
     }
+
 
     public function editProfile(Request $request)
     {

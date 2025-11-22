@@ -21,11 +21,11 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('waste_bank_name');
             $table->string('waste_bank_location');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->double('latitude');
+            $table->double('longitude');
             $table->string('file_document');
             $table->string('notes');
-            $table->string('status');
+            $table->enum('status', ['rejected', 'pending', 'approved']);
             $table->timestamps();
         });
     }
