@@ -35,7 +35,7 @@ Route::get('/activities/completed', [ActivityController::class, 'getCompletedAct
 // Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
-Route::get('/rewards/{reward}', [PointExchangeController::class, 'getRewardById']);
+Route::get('/rewards/{reward}', [PointExchangeController::class, 'getRewardStockById']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
 
-      Route::post('/exchange/{reward}', [PointExchangeController::class, 'exchangeReward']);
+      Route::post('/exchange/{rewardId}', [PointExchangeController::class, 'exchangeReward']);
 });
 
 /* 

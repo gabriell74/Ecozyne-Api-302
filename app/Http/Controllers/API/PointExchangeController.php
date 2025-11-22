@@ -25,14 +25,16 @@ class PointExchangeController extends Controller
         ], 200);
     }
 
-    public function getRewardById(Reward $reward)
+    public function getRewardStockById(int $rewardId)
     {
-        $reward->photo = asset('storage/' . $reward->photo);
+        $rewardStock = Reward::select('id','stock')
+            ->where('id', $rewardId
+            )->first(); 
 
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil mendapatkan data hadiah',
-            'data' => $reward,
+            'message' => 'Berhasil mendapatkan data stok hadiah',
+            'data' => $rewardStock,
         ], 200);
     }
 
