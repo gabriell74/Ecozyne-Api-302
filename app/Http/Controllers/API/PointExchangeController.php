@@ -13,7 +13,21 @@ class PointExchangeController extends Controller
 {
     public function getAllRewards()
     {
-        $reward = Reward::inRandomOrder()->get();
+        $reward = Reward::inRandomOrder()->get()->map(function ($reward) {
+            $reward->photo = asset('storage/' . $reward->photo);
+            return $reward;
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil mendapatkan data hadiah',
+            'data' => $reward,
+        ], 200);
+    }
+
+    public function getRewardById(Reward $reward)
+    {
+        $reward->photo = asset('storage/' . $reward->photo);
 
         return response()->json([
             'success' => true,

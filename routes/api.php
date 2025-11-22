@@ -35,6 +35,7 @@ Route::get('/activities/completed', [ActivityController::class, 'getCompletedAct
 // Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
+Route::get('/rewards/{reward}', [PointExchangeController::class, 'getRewardById']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
