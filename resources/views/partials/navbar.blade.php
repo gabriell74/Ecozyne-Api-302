@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-3 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-4 sticky-top">
   <div class="container-fluid">
 
     {{-- Tombol toggle sidebar (untuk layar kecil) --}}
