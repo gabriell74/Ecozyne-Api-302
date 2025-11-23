@@ -3,71 +3,201 @@
 @section('title', 'Konfirmasi Tukar Hadiah')
 
 @section('content')
-<div class="container-fluid py-4 page-komunitas" 
-     style="background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%); min-height: 100vh;">
-    <div class="row">
+<div class="container-fluid py-4 bg-light rounded">
+
+    <!-- Header Card -->
+    <div class="row mb-4">
         <div class="col-12">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"></li>
-                        </ol>
-                    </nav>
-                    <h4 class="fw-bold mb-0" style="color:#343C6A">Konfirmasi Tukar Hadiah</h4>
-                    <p class="text-muted mb-0">999 Komunitas Menunggu Konfirmasi Penukaran Hadiah</p>
+            <div class="card border-0 shadow-lg rounded-4" style="background-color: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <div>
+                            <h3 class="fw-bold mb-2 text-success">
+                                <i class="fas fa-gift me-2 text-success"></i>
+                                Konfirmasi Tukar Hadiah
+                            </h3>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-clock me-1"></i>
+                                <strong>{{ $exchanges->total() }}</strong> Komunitas Menunggu Konfirmasi Penukaran Hadiah
+                            </p>
+                        </div>
+                        <div class="mt-3 mt-md-0">
+                            <span class="badge rounded-pill px-4 py-2 fs-6" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); backdrop-filter: blur(10px); transition: all 0.3s ease;"">
+                                <i class="fas fa-inbox me-1"></i>Total: {{ $exchanges->total() }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            @if(session('success'))
-                <div class="alert alert-success shadow-sm border-0 rounded-3 mt-3">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <!-- Alert Success -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-lg border-0 rounded-4 mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-            @if($exchange_rewards->isEmpty())
-                <div class="alert alert-info text-center shadow-sm border-0 rounded-3">
-                    Belum ada komunitas yang menukar hadiah
-                </div>
-            @else <!-- Card List Komunitas -->
-                <div class="card border-0 shadow-sm rounded-4" 
-                    style="background-color: #f5f8f3d2; color: #00000087;">
-                    <div class="card-body p-0">
+    @if($exchanges->isEmpty())
+        <div class="card border-0 shadow-lg rounded-4 text-center py-5">
+            <div class="card-body">
+                <i class="fas fa-inbox text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                <h5 class="mt-4 text-muted">Belum ada komunitas yang menukar hadiah</h5>
+                <p class="text-muted">Data penukaran hadiah akan muncul di sini</p>
+            </div>
+        </div>
+    @else
+        <!-- Accordion -->
+        <div class="accordion" id="exchangeAccordion">
+            @foreach($exchanges as $index => $exchange)
+            <div class="accordion-item border-0 shadow-sm rounded-3 mb-3" style="background-color: rgba(255, 255, 255, 0.75);">
+                <h2 class="accordion-header" id="heading{{ $index }}">
+                    <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}" aria-expanded="false" aria-controls="collapse{{ $index }}" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                        <div class="d-flex align-items-center justify-content-between w-100 me-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-circle me-3" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <strong class="d-block">{{ $exchange->community->user->username }}</strong>
+                                    <small style="opacity: 0.9;">{{ $exchange->community->name }}</small>
+                                </div>
+                            </div>
+                            <div>
+                                @php
+                                    $statusConfig = match($exchange->exchange_status) {
+                                        'pending' => ['class' => 'bg-warning text-dark', 'icon' => 'fa-clock'],
+                                        'approved' => ['class' => 'bg-success text-white', 'icon' => 'fa-check-circle'],
+                                        'rejected' => ['class' => 'bg-danger text-white', 'icon' => 'fa-times-circle'],
+                                        default => ['class' => 'bg-secondary text-white', 'icon' => 'fa-question-circle'],
+                                    };
+                                @endphp
+                                <span class="badge {{ $statusConfig['class'] }} rounded-pill px-3 py-2">
+                                    <i class="fas {{ $statusConfig['icon'] }} me-1"></i>
+                                    {{ strtoupper($exchange->exchange_status) }}
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse{{ $index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $index }}">
+                    <div class="accordion-body p-4" style="background-color: rgba(255, 255, 255, 0.85);">
+                        
+                        <!-- Detail Hadiah -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-success">
+                                <i class="fas fa-gift me-2 text-success"></i>Detail Hadiah
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead style="background-color: #f8f9fa;">
+                                        <tr>
+                                            <th class="border-0">Nama Hadiah</th>
+                                            <th class="border-0 text-center">Jumlah</th>
+                                            <th class="border-0 text-center">Total Poin</th>
+                                            <th class="border-0 text-center">Sisa Stok</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($exchange->exchangeTransactions as $transaction)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-box me-2 text-success"></i>
+                                                    <span>{{ $transaction->reward->reward_name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge rounded-pill px-2 bg-success">
+                                                    {{ $transaction->amount }}x
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success rounded-pill px-2">
+                                                    <i class="fas fa-coins me-1"></i>{{ number_format($transaction->total_unit_point) }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-info rounded-pill px-2">
+                                                    {{ $transaction->reward->stock }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                        <!-- Komunitas 1 -->
-                        @foreach($exchange_rewards as $exchange_reward)
-                        <div class="border-bottom border-secondary p-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
-                                    <div>
-                                        <h5 class="fw-bold mb-1 text-#001d16" style="font-size: 1rem;">Username : {{ $exchange_reward->exchange->community->users->username }}</h5>
-                                        <h6 class="fw-semibold mb-1 text-#001d16" style="font-size: 1rem;">Nama Komunitas : {{ $exchange_reward->exchange->community->name }}</h6>
-                                        <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Nama Hadiah : {{ $exchange_reward->reward->reward_name }}</p>
-                                        <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Jumlah Hadiah : {{ $exchange_reward->amount }}</p>
-                                        <small class="text-light-50" style="font-size: 0.75rem;">Tanggal Pendaftaran : {{ $exchange_reward->created_at->format('d M Y') }}</small>
+                        <!-- Alamat Pengiriman -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-success">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>Alamat Pengiriman
+                            </h6>
+                            <div class="card border-0 shadow-sm" style="background-color: rgba(248, 249, 250, 0.8);">
+                                <div class="card-body p-3">
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-road me-2 mt-1 text-success"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Alamat</small>
+                                                    <span class="fw-bold">{{ optional($exchange->community->address)->address ?? '-' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-building me-2 mt-1 text-success"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Kelurahan</small>
+                                                    <span class="fw-bold">{{ optional(optional($exchange->community->address)->kelurahan)->kelurahan ?? '-' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-city me-2 mt-1 text-success"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Kecamatan</small>
+                                                    <span class="fw-bold">{{ optional(optional(optional($exchange->community->address)->kelurahan)->kecamatan)->kecamatan ?? '-' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <form action="" method="post" style="z-index: 10;">
-                                    @csrf @method('delete')
-                                    <button class="btn btn-outline-danger btn-sm rounded-pill" type="submit">
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="d-flex justify-content-between align-items-center flex-wrap pt-3 border-top">
+                            <div class="text-muted">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                <small>{{ $exchange->created_at->format('d M Y, H:i') }}</small>
+                            </div>
+                            <div class="mt-2 mt-md-0">
+                                <form action="" method="post" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                         <i class="fas fa-trash me-1"></i>Hapus
                                     </button>
                                 </form>
                             </div>
                         </div>
-                        @endforeach
-
                     </div>
                 </div>
-
-                {{-- Pagination --}}
-                <div class="mt-4">
-                    {{ $exchange_rewards->links() }}
-                </div>
-            @endif
+            </div>
+            @endforeach
         </div>
-    </div>
+
+        <!-- Pagination -->
+        <div class="mt-4 d-flex justify-content-center">
+            <div class="card border-0 shadow-lg rounded-4 p-2">
+                {{ $exchanges->links() }}
+            </div>
+        </div>
+    @endif
 </div>
 @endsection

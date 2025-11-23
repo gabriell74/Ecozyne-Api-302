@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reward extends Model
 {
@@ -16,7 +17,7 @@ class Reward extends Model
         'unit_point',
     ];
 
-    public function exchangeTransactions()
+    public function exchangeTransactions(): HasMany
     {
         return $this->hasMany(ExchangeTransaction::class);
     }
