@@ -31,13 +31,22 @@
         </div>
     </div>
 
-    @if(session('success'))
+     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-lg border-0 rounded-4 mb-4" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show shadow-lg border-0 rounded-4 mb-4" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
 
     @if($exchanges->isEmpty())
         <div class="card border-0 shadow-lg rounded-4 text-center py-5">
@@ -72,7 +81,7 @@
                                 @endphp
                                 <span class="badge {{ $statusConfig['class'] }} rounded-pill px-3 py-2">
                                     <i class="fas {{ $statusConfig['icon'] }} me-1"></i>
-                                    {{ strtoupper($exchange->exchange_status) }}
+                                    {{ strtoupper($exchange->exchange_status_label) }}
                                 </span>
                             </div>
                         </div>
@@ -138,7 +147,7 @@
                                                 <i class="fas fa-road me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">Alamat</small>
-                                                    <span class="fw-bold">{{ optional($exchange->community->address)->address ?? '-' }}</span>
+                                                    <span class="fw-bold">{{ $exchange->community->address->address ?? '-' }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -147,7 +156,7 @@
                                                 <i class="fas fa-building me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">Kelurahan</small>
-                                                    <span class="fw-bold">{{ optional(optional($exchange->community->address)->kelurahan)->kelurahan ?? '-' }}</span>
+                                                    <span class="fw-bold">{{ $exchange->community->address->kelurahan->kelurahan ?? '-' }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -156,7 +165,7 @@
                                                 <i class="fas fa-city me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">Kecamatan</small>
-                                                    <span class="fw-bold">{{ optional(optional(optional($exchange->community->address)->kelurahan)->kecamatan)->kecamatan ?? '-' }}</span>
+                                                    <span class="fw-bold">{{ $exchange->community->address->kelurahan->kecamatan->kecamatan ?? '-' }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -170,15 +179,24 @@
                                 <i class="fas fa-calendar-alt me-2"></i>
                                 <small>{{ $exchange->created_at->format('d M Y, H:i') }}</small>
                             </div>
+                            @if ($exchange->exchange_status === 'pending')
                             <div class="mt-2 mt-md-0">
-                                <form action="" method="post" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                <form action="{{ route('admin.exchange_reward_approval', $exchange->id) }}" method="post" class="d-inline">
                                     @csrf
-                                    @method('delete')
-                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                                        <i class="fas fa-trash me-1"></i>Hapus
+                                    @method('PUT')
+                                    <button type="submit" name="exchange_status" value="rejected" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                        <i class="fas fa-times me-1"></i>Tolak
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.exchange_reward_approval', $exchange->id) }}" method="post" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" name="exchange_status" value="approved" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                                        <i class="fas fa-check me-1"></i>Setujui
                                     </button>
                                 </form>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

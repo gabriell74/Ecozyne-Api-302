@@ -80,6 +80,7 @@ Route::middleware('auth_admin')->group(function () {
 
     // Konfirmasi Penukaran Hadiah
     Route::get('/exchange_reward', [AdminExchangeRewardController::class, 'getAllExchangeReward'])->name('admin.exchange_reward_list');
+    Route::put('/exchange_reward/approval/{exchange}', [AdminExchangeRewardController::class, 'rewardExchangeApproval'])->name('admin.exchange_reward_approval');
 
     // Logout
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
