@@ -73,9 +73,11 @@ class AdminArticleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'required|string',
         ]);
 
         $article->title = $request->title;
+        $article->description = $request->description;
 
         if ($request->hasFile('photo')) {
             if ($article->photo) {
