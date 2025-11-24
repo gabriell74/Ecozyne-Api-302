@@ -115,28 +115,4 @@ class PointExchangeController extends Controller
             ], 500);
         }
     }
-
-    public function rewardExchangeHistory(Request $request)
-    {
-        $user = $request->user();
-        $community = $user->community;
-
-        if (!$community) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tidak terdaftar sebagai komunitas'
-            ], 404);
-        }
-
-        $exchangeHistory = Exchange::with(['exchangeTransactions.reward'])
-            ->where('community_id', $community->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Berhasil mendapatkan riwayat penukaran hadiah',
-            'data' => $exchangeHistory,
-        ], 200);
-    }
 }

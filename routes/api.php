@@ -9,6 +9,7 @@ use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\API\ActivityController;
+use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\api\PointExchangeController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\DiscussionQuestionController;
@@ -56,7 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
 
       Route::post('/reward/exchange/{reward}', [PointExchangeController::class, 'exchangeReward']);
-      Route::get('/reward/exchange/history', [PointExchangeController::class, 'rewardExchangeHistory']);
+
+      Route::get('/reward/exchange/history', [CommunityHistoryController::class, 'rewardExchangeHistory']);
+      Route::get('/point/income/history', [CommunityHistoryController::class, 'pointIncomeHistory']);
 });
 
 /* 
