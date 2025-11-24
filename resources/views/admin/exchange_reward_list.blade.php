@@ -17,7 +17,7 @@
                             </h3>
                             <p class="text-muted mb-0">
                                 <i class="fas fa-clock me-1"></i>
-                                <strong>{{ $exchanges->total() }}</strong> Komunitas Menunggu Konfirmasi Penukaran Hadiah
+                                <strong>{{ $pendingCount }}</strong> Komunitas Menunggu Konfirmasi Penukaran Hadiah
                             </p>
                         </div>
                         <div class="mt-3 mt-md-0">

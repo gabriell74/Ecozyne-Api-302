@@ -21,7 +21,9 @@ class AdminExchangeRewardController extends Controller
         ->orderBy('created_at', 'asc')
         ->paginate(8);
 
-        return view('admin.exchange_reward_list', compact('exchanges'));
+        $pendingCount = Exchange::where('exchange_status', 'pending')->count();
+
+        return view('admin.exchange_reward_list', compact('exchanges', 'pendingCount'));
     }
 
     public function rewardExchangeApproval(Request $request, Exchange $exchange)
