@@ -37,4 +37,9 @@ class WasteBank extends Model
     {
         return $this->hasMany(TrashTransaction::class);
     }
+
+    public function ecoEnzymeTrackings(): HasMany
+    {
+        return $this->hasMany(EcoEnzymeTracking::class);
+    }
 }
