@@ -21,7 +21,7 @@
     <a href="{{ route('activity.list') }}" class="{{ Route::is('activity.list', 'activity.create', 'activity.show', 'activity.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-hands-helping me-2"></i> Kegiatan Sosial
     </a>
-    <a href="" class="list-group-item list-group-item-action border-0 py-3">
+    <a href="{{ route('gallery.list') }}" class="{{ Route::is('gallery.list', 'gallery.create', 'gallery.show', 'gallery.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-image me-2"></i> Galeri
     </a>
     <a href="{{ route('reward.list') }}" class="{{ Route::is('reward.list', 'reward.create', 'reward.show', 'reward.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">

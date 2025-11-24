@@ -46,6 +46,7 @@ class AdminController extends Controller
                                             ->whereYear('created_at', Carbon::now()->year)
                                             ->count();
         // Kegiatan Sosial
+        $latest_activity = Activity::latest()->take(2)->get();
         $activity_total = Activity::count();
         $activity_this_month = Activity::whereMonth('created_at', Carbon::now()->month)
                                ->whereYear('created_at', Carbon::now()->year)
@@ -59,8 +60,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact(
             'user_total', 'article_total', 'waste_bank_submission_total', 'activity_total',
             'user_this_month', 'article_this_month', 'waste_bank_submission_this_month', 'activity_this_month',
-            'community_total', 'waste_bank_total', 'latest_article', 'latest_comic', 'latest_reward',
-            
+            'community_total', 'waste_bank_total', 'latest_article', 'latest_comic', 'latest_reward', 'latest_activity',
         ));
     }
 

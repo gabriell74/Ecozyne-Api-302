@@ -180,39 +180,26 @@
                 <div class="card-header bg-transparent border-0 py-4 px-4">
                     {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
                     <h5 class="fw-bold mb-0" style="color: #2B3A55;">
-                        <i class="fas fa-hands-helping me-2" style="color: #f59e0b;"></i>Kegiatan Terbaru
+                        <i class="fas fa-hands-helping me-2" style="color: rgba(16, 185, 129, 1);"></i>Kegiatan Terbaru
                     </h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="timeline">
+                        @foreach($latest_activity as $activity)
                         <div class="timeline-item mb-4">
                             <div class="d-flex">
-                                <div class="timeline-badge me-3" style="width: 40px; height: 40px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <div class="timeline-badge me-3" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(16, 185, 129, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                     <i class="fas fa-tree text-white"></i>
                                 </div>
                                 <div class="flex-grow-1">
                                     {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
-                                    <h6 class="fw-bold mb-1" style="color: #2B3A55;">Menanam Pohon</h6>
+                                    <h6 class="fw-bold mb-1" style="color: #2B3A55;">{{ $activity->title }}</h6>
                                     {{-- PERUBAHAN: Warna teks menjadi abu-abu (#6b7280) --}}
-                                    <p class="mb-2 small" style="color: #6b7280;">12 Agustus 2025</p>
-                                    <span class="badge rounded-pill px-3" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; font-size: 0.75rem;">Aktif</span>
+                                    <p class="mb-2 small" style="color: #6b7280;">{{ $activity->created_at->format('d-m-Y') }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="timeline-item">
-                            <div class="d-flex">
-                                <div class="timeline-badge me-3" style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <i class="fas fa-water text-white"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
-                                    <h6 class="fw-bold mb-1" style="color: #2B3A55;">Bersih Pantai</h6>
-                                    {{-- PERUBAHAN: Warna teks menjadi abu-abu (#6b7280) --}}
-                                    <p class="mb-2 small" style="color: #6b7280;">15 Agustus 2025</p>
-                                    <span class="badge rounded-pill px-3" style="background: rgba(16, 185, 129, 0.2); color: #1f8b46; font-size: 0.75rem;">Coming Soon</span>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                     <div class="text-center mt-4"> 
                         <a href="{{ route('activity.list') }}" class="btn rounded-pill w-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; font-weight: 500; padding: 0.75rem;">Kelola Kegiatan</a>
@@ -225,7 +212,7 @@
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
                     {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
                     <h5 class="fw-bold mb-0" style="color: #2B3A55;">
-                        <i class="fas fa-gift me-2" style="color: #ec4899;"></i>Katalog Hadiah
+                        <i class="fas fa-gift me-2" style="color: #f59e0b;"></i>Katalog Hadiah
                     </h5>
                 </div>
                 <div class="card-body p-4">
@@ -257,7 +244,7 @@
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
                     {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
                     <h5 class="fw-bold mb-0" style="color: #2B3A55;">
-                        <i class="fas fa-book-open me-2" style="color: #06b6d4;"></i>Komik Terbaru
+                        <i class="fas fa-book-open me-2" style="color: #10b981;"></i>Komik Terbaru
                     </h5>
                 </div>
                 <div class="card-body p-4">
@@ -271,7 +258,7 @@
                                 {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
                                 <h6 class="fw-bold mb-1" style="color: #2B3A55;">{{ $comic->comic_title }}</h6>
                                 {{-- PERUBAHAN: Warna teks menjadi abu-abu (#6b7280) --}}
-                                <small style="color: #6b7280;">{{ $comic->created_at }}</small>
+                                <small style="color: #6b7280;">{{ $comic->created_at->format('d-m-Y') }}</small>
                             </div>
                         </div>
                     </div>

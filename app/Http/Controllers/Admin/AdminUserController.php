@@ -72,7 +72,7 @@ class AdminUserController extends Controller
             DB::commit();
             return redirect()->route('waste_bank.list')->with('success', 'Akun bank sampah berhasil dihapus');
         } catch (\Exception $e) {
-            DB::rollbacK();
+            DB::rollback();
             return redirect()->route('waste_bank.list')->with('fail', 'Akun bank sampah gagal dihapus, Silahkan coba lagi');
         }
     }
