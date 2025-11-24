@@ -9,9 +9,10 @@ use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\API\ActivityController;
-use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\api\PointExchangeController;
+use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\API\DiscussionAnswerController;
+use App\Http\Controllers\API\EcoEnzymeTrackingController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 
 Route::post('/register', [UserController::class, 'register']);
@@ -60,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::get('/reward/exchange/history', [CommunityHistoryController::class, 'rewardExchangeHistory']);
       Route::get('/point/income/history', [CommunityHistoryController::class, 'pointIncomeHistory']);
+
+      Route::get('/eco-enzyme-tracking/get-all-batches', [EcoEnzymeTrackingController::class, 'getAllBatches']);
+      Route::post('/eco-enzyme-tracking/store-batch', [EcoEnzymeTrackingController::class, 'storeBatch']);
 });
 
 /* 
