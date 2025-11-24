@@ -5,7 +5,6 @@
 @section('content')
 <div class="container-fluid py-4 bg-light rounded">
 
-    <!-- Header Card -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-0 shadow-lg rounded-4" style="background-color: rgba(255, 255, 255, 0.95);">
@@ -32,7 +31,6 @@
         </div>
     </div>
 
-    <!-- Alert Success -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-lg border-0 rounded-4 mb-4" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -50,7 +48,6 @@
             </div>
         </div>
     @else
-        <!-- Accordion -->
         <div class="accordion" id="exchangeAccordion">
             @foreach($exchanges as $index => $exchange)
             <div class="accordion-item border-0 shadow-sm rounded-3 mb-3" style="background-color: rgba(255, 255, 255, 0.75);">
@@ -84,7 +81,6 @@
                 <div id="collapse{{ $index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $index }}">
                     <div class="accordion-body p-4" style="background-color: rgba(255, 255, 255, 0.85);">
                         
-                        <!-- Detail Hadiah -->
                         <div class="mb-4">
                             <h6 class="fw-bold mb-3 text-success">
                                 <i class="fas fa-gift me-2 text-success"></i>Detail Hadiah
@@ -130,7 +126,6 @@
                             </div>
                         </div>
 
-                        <!-- Alamat Pengiriman -->
                         <div class="mb-4">
                             <h6 class="fw-bold mb-3 text-success">
                                 <i class="fas fa-map-marker-alt text-danger me-2"></i>Alamat Pengiriman
@@ -170,7 +165,6 @@
                             </div>
                         </div>
 
-                        <!-- Footer -->
                         <div class="d-flex justify-content-between align-items-center flex-wrap pt-3 border-top">
                             <div class="text-muted">
                                 <i class="fas fa-calendar-alt me-2"></i>
