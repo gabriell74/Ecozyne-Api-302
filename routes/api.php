@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ComicsController;
 use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
@@ -33,8 +34,7 @@ Route::get('/activities', [ActivityController::class, 'getAllActivity']);
 Route::get('/activities/latest', [ActivityController::class, 'getLatestActivity']);
 Route::get('/activities/completed', [ActivityController::class, 'getCompletedActivity']);
 
-// Route::get('/comics', [ComicController::class, 'getAllComic']);
-// Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
+Route::get('/comics', [ComicsController::class, 'getAllComics']);
 
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardStockById']);
