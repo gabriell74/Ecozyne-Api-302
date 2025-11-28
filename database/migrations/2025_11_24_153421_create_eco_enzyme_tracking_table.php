@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('batch_name');
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('notes')->nullable()->default('Tidak ada Catatan');
+            $table->string('notes')->default('Tidak ada Catatan');
             $table->timestamps();
 
             $table->foreign('waste_bank_id')
