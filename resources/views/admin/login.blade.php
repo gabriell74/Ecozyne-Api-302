@@ -27,9 +27,16 @@
             width: 100vw;
         }
 
+        .left-panel img {
+            width: 150px;          
+            height: auto;
+            object-fit: contain;  
+            filter: drop-shadow(0 0 8px rgba(58, 56, 56, 0.7)); 
+        }
+
         .left-panel {
-            background-color: #55C173;
-            color: #fff;
+            background-color: #3ab65d;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -40,7 +47,7 @@
         }
 
         .right-panel {
-            background-color: #edededff;
+            background-color: #d3e6d8;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,7 +90,7 @@
             <img src="{{ asset('images/ecozyne_logo.png') }}" alt="Logo Ecozyne" class="mb-4" style="width: 120px;">
             <h2 class="fw-bold mb-3">Ecozyne</h2>
             <p class="fs-6">
-                Masuk sekarang untuk mengelola data lingkungan Anda dan berkontribusi pada planet yang lebih baik.
+                Masuk sekarang untuk mengelola data lingkungan
             </p>
         </div>
     </div>

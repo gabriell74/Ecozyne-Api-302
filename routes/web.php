@@ -75,8 +75,8 @@ Route::middleware('auth_admin')->group(function () {
     Route::delete('/gallery/destroy/{gallery}', [AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
 
     // Konfirmasi Bank Sampah
-    Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
-    Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
+    Route::get('/confir', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
+    Route::get('/confir/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
 
     // Konfirmasi Penukaran Hadiah
     Route::get('/exchange_reward', [AdminExchangeRewardController::class, 'getAllExchangeReward'])->name('admin.exchange_reward_list');

@@ -27,7 +27,7 @@
     <a href="{{ route('reward.list') }}" class="{{ Route::is('reward.list', 'reward.create', 'reward.show', 'reward.edit') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-gift me-2"></i> Katalog Hadiah
     </a>
-    <a href="" class="list-group-item list-group-item-action border-0 py-3">
+    <a href="{{ route('admin.confir_bank')}}" class="list-group-item list-group-item-action border-0 py-3">
       <i class="fas fa-user-clock me-2"></i> Konfirmasi Bank Sampah
     </a>
     <a href="{{ route('admin.exchange_reward_list') }}" class="{{ Route::is('admin.exchange_reward_list') ? 'active' : '' }} list-group-item list-group-item-action border-0 py-3">
