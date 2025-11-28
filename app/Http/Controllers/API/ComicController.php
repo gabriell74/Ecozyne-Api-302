@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Comic;
+use App\Models\ComicPhoto;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ComicController extends Controller
 {
-    // 🔹 1. Ambil daftar semua komik (tanpa foto halaman)
-    public function getAllComic()
+    public function getAllComics()
     {
         $comics = Comic::select('id', 'comic_title', 'cover_photo', 'created_at', 'updated_at')->get();
 
@@ -29,34 +30,31 @@ class ComicController extends Controller
         });
 
         return response()->json([
+            'success' => true,
             'message' => 'Daftar komik berhasil diambil',
             'data' => $mappedComics
         ], 200);
     }
 
-    // 🔹 2. Ambil detail komik berdasarkan ID (termasuk foto halaman)
     public function getComicById($id)
     {
-        $comic = Comic::with('comicPhotos')->find($id);
+        $photos = ComicPhoto::where('comic_id', $id)
+            ->orderBy('comic_page', 'asc')
+            ->get(['id', 'comic_page', 'photo']);
 
-        if (!$comic) {
+        if ($photos->isEmpty()) {
             return response()->json([
-                'message' => 'Komik tidak ditemukan'
+                'message' => 'Foto komik tidak ditemukan',
             ], 404);
         }
 
-        $mappedComic = [
-            'id' => $comic->id,
-            'title' => $comic->comic_title,
-            'cover_photo' => asset('storage/' . $comic->cover_photo),
-            'photos' => $comic->comicPhotos->map(fn($photo) => asset('storage/' . $photo->photo)),
-            'created_at' => $comic->created_at,
-            'updated_at' => $comic->updated_at,
-        ];
-
         return response()->json([
-            'message' => 'Detail komik berhasil diambil',
-            'data' => $mappedComic
+            'success' => true,
+            'message' => 'Foto komik berhasil diambil',
+            'data' => [
+                'comic_id' => $id,
+                'photos' => $photos->map(fn($p) => asset('storage/' . $p->photo)),
+            ]
         ], 200);
     }
 }
