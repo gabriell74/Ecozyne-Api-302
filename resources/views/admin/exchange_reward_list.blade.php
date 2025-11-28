@@ -181,14 +181,14 @@
                             </div>
                             @if ($exchange->exchange_status === 'pending')
                             <div class="mt-2 mt-md-0">
-                                <form action="{{ route('admin.exchange_reward_approval', $exchange->id) }}" method="post" class="d-inline">
+                                <form action="{{ route('exchange_reward.approval', $exchange->id) }}" method="post" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" name="exchange_status" value="rejected" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                         <i class="fas fa-times me-1"></i>Tolak
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.exchange_reward_approval', $exchange->id) }}" method="post" class="d-inline">
+                                <form action="{{ route('exchange_reward.approval', $exchange->id) }}" method="post" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" name="exchange_status" value="approved" class="btn btn-outline-success btn-sm rounded-pill px-3">

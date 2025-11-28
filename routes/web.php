@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminGalleryController;
 use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminExchangeRewardController;
-use App\Http\Controllers\Admin\WasteBankSubmissionController;
+use App\Http\Controllers\Admin\AdminWasteBankSubmissionController;
 
 Route::get('/', [AdminAuthController::class, 'loginPage'])->name('login');
 Route::post('/login/process', [AdminAuthController::class, 'login'])->name('login.process');
@@ -75,12 +75,12 @@ Route::middleware('auth_admin')->group(function () {
     Route::delete('/gallery/destroy/{gallery}', [AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
 
     // Konfirmasi Bank Sampah
-    Route::get('/konfirmasi', [WasteBankSubmissionController::class, 'confirBank'])->name('admin.confir_bank');
-    Route::get('/konfirmasi/{id}', [WasteBankSubmissionController::class, 'show'])->name('bank_sampah.show');
+    Route::get('/waste_bank_submission', [AdminWasteBankSubmissionController::class, 'getAllWasteBankSubmission'])->name('waste_bank_submission.list');
+    Route::put('/waste_bank_submission/approval/{waste_bank_submission}', [AdminWasteBankSubmissionController::class, 'wasteBankSubmissionApproval'])->name('waste_bank_submission.approval');
 
     // Konfirmasi Penukaran Hadiah
-    Route::get('/exchange_reward', [AdminExchangeRewardController::class, 'getAllExchangeReward'])->name('admin.exchange_reward_list');
-    Route::put('/exchange_reward/approval/{exchange}', [AdminExchangeRewardController::class, 'rewardExchangeApproval'])->name('admin.exchange_reward_approval');
+    Route::get('/exchange_reward', [AdminExchangeRewardController::class, 'getAllExchangeReward'])->name('exchange_reward.list');
+    Route::put('/exchange_reward/approval/{exchange}', [AdminExchangeRewardController::class, 'rewardExchangeApproval'])->name('exchange_reward.approval');
 
     // Logout
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');

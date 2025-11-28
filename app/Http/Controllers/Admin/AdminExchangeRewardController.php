@@ -10,7 +10,8 @@ use App\Http\Controllers\Controller;
 
 class AdminExchangeRewardController extends Controller
 {
-    public function getAllExchangeReward() {
+    public function getAllExchangeReward() 
+    {
         $exchanges = Exchange::with([
             'community:id,user_id,address_id,name,photo',
             'community.user:id,username',
