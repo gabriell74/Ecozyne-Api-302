@@ -164,7 +164,7 @@ class UserController extends Controller
     }
 
 
-    public function editProfile(Request $request)
+    public function updateProfile(Request $request)
     {
         $user = $request->user();
 
@@ -172,16 +172,6 @@ class UserController extends Controller
             'username' => 'required',
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/[a-z]/',        // huruf kecil
-                'regex:/[A-Z]/',        // huruf besar
-                'regex:/[0-9]/',        // angka
-                'regex:/[@$!%*?&._\-]/', // simbol
-                'not_regex:/\s/',       // tanpa spasi
-            ],
             'phone_number' => [
                 'required',
                 'min:10',
@@ -198,7 +188,6 @@ class UserController extends Controller
             $user->update([
                 'username' => $validated['username'],
                 'email' => $validated['email'],
-                'password' => bcrypt($validated['password']),
             ]);
 
             $community = Community::where('user_id', $user->id)->first();
@@ -223,9 +212,15 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Profil berhasil diperbarui',
-            ]);
+            ], 200);
 
-        } catch (\Exception $e) {
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors(),
+            ], 422);
+        }  catch (\Exception $e) {
             DB::rollback();
 
             return response()->json([

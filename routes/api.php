@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
+
+      Route::put('/update-profile', [UserController::class, 'updateProfile']);
       
       Route::post('/question/store', [DiscussionQuestionController::class, 'storeQuestion']);
       Route::put('/question/update/{question}', [DiscussionQuestionController::class, 'updateQuestion']);
