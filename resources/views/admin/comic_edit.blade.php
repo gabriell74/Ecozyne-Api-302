@@ -1,7 +1,7 @@
 @extends('layout.admin')
 
-@section('title', 'Ubah Foto')
-@section('header', 'Foto')
+@section('title', 'Ubah Komik')
+@section('header', 'Komik')
 
 @section('content')
 <div class="container mt-4">
@@ -9,32 +9,31 @@
         <div class="col-lg-8 col-md-10 col-sm-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Ubah Foto</h5>
+                    <h5 class="mb-0">Ubah Komik</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('gallery.update', $gallery->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('comic.update', $comic->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf @method('PUT')
-
                         <div class="mb-3">
-                            <label for="description" class="form-label fw-bold">Deskripsi Foto</label>
-                            <textarea name="description" 
-                                      id="description" 
-                                      rows="5" 
-                                      class="form-control @error('description') is-invalid @enderror" 
-                                      placeholder="Tuliskan isi artikel..." 
-                                    >{{ $gallery->description }}</textarea>
-                            @error('description')
+                            <label for="comic_title" class="form-label fw-bold">Judul Komik</label>
+                            <input type="text" 
+                                   name="comic_title" 
+                                   id="comic_title" 
+                                   class="form-control @error('comic_title') is-invalid @enderror" 
+                                   placeholder="Masukkan judul komik" 
+                                   value="{{ $comic->comic_title }}">
+                            @error('comic_title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                        <div class="mb-3">
-                            <label for="photo" class="form-label fw-bold">Foto</label>
+                            <label for="photo" class="form-label fw-bold">Foto Cover Komik</label>
 
-                            @if ($gallery->photo)
+                            @if ($comic->cover_photo)
                                 <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $gallery->photo) }}" 
-                                        alt="Foto" 
+                                    <img src="{{ asset('storage/' . $comic->cover_photo) }}" 
+                                        alt="Foto cover Komik" 
                                         width="150" 
                                         class="rounded">
                                 </div>
@@ -44,22 +43,22 @@
                             @endif
 
                             <input type="file" 
-                                name="photo" 
-                                id="photo" 
-                                class="form-control @error('photo') is-invalid @enderror" 
+                                name="cover_photo" 
+                                id="cover_photo" 
+                                class="form-control @error('cover_photo') is-invalid @enderror" 
                                 accept="image/*">
-                            @error('photo')
+                            @error('cover_photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <div id="preview_foto"></div>
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('gallery.list') }}" class="btn btn-outline-dark">
+                            <a href="{{ route('comic.list') }}" class="btn btn-outline-dark">
                                 <i class="fas fa-arrow-left me-2"></i> Kembali
                             </a>
                             <button type="submit" class="btn bg-success text-white">
-                                <i class="bi bi-save"></i> Simpan Foto
+                                <i class="bi bi-save"></i> Simpan Komik
                             </button>
                         </div>
                     </form>
@@ -69,9 +68,10 @@
     </div>
 </div>
 @endsection
+
 @section('script')
 <script>
-    document.getElementById('photo').addEventListener('change', function(event) {
+    document.getElementById('cover_photo').addEventListener('change', function(event) {
         let preview = document.getElementById('preview_foto');
         preview.innerHTML = ''; // kosongkan dulu
         let files = event.target.files;

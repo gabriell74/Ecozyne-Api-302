@@ -21,7 +21,7 @@ Route::middleware('auth_admin')->group(function () {
     
     // Kelola Profil
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    Route::put('profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile_update');
+    Route::put('/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile_update');
         
     // Kelola Pengguna (Komunitas)
     Route::get('/communities', [AdminUserController::class, 'getAllCommunity'])->name('community.list');
@@ -37,7 +37,7 @@ Route::middleware('auth_admin')->group(function () {
     Route::post('/article/store', [AdminArticleController::class, 'store'])->name('article.store');
     Route::get('/article/details/{article}', [AdminArticleController::class, 'show'])->name('article.show');
     Route::get('/article/edit/{article}', [AdminArticleController::class, 'edit'])->name('article.edit');
-    Route::put('article/update/{article}', [AdminArticleController::class, 'update'])->name('article.update');
+    Route::put('/article/update/{article}', [AdminArticleController::class, 'update'])->name('article.update');
     Route::delete('/article/destroy/{article}', [AdminArticleController::class, 'destroy'])->name('article.destroy');
 
     // Kelola Komik
@@ -45,6 +45,10 @@ Route::middleware('auth_admin')->group(function () {
     Route::get('/comic/create', [AdminComicController::class, 'create'])->name('comic.create');
     Route::post('/comic/store', [AdminComicController::class, 'store'])->name('comic.store');
     Route::get('/comic/details/{comic}', [AdminComicController::class, 'show'])->name('comic.show');
+    Route::get('/comic/edit/{comic}', [AdminComicController::class, 'edit'])->name('comic.edit');
+    Route::put('/comic/update/{comic}', [AdminComicController::class, 'update'])->name('comic.update');
+    Route::get('/comic_photo/edit/{comic_photo}', [AdminComicController::class, 'editComicPhoto'])->name('comic_photo.edit');
+    Route::put('/comic_photo/update/{comic_photo}', [AdminComicController::class, 'updateComicPhoto'])->name('comic_photo.update');
     Route::delete('/comic/destroy/{comic}', [AdminComicController::class, 'destroy'])->name('comic.destroy');
 
     // Kelola Kegiatan Sosial
@@ -53,7 +57,7 @@ Route::middleware('auth_admin')->group(function () {
     Route::post('/activity/store', [AdminActivityController::class, 'store'])->name('activity.store');
     Route::get('/activity/details/{activity}', [AdminActivityController::class, 'show'])->name('activity.show');
     Route::get('/activity/edit/{activity}', [AdminActivityController::class, 'edit'])->name('activity.edit');
-    Route::put('activity/update/{activity}', [AdminActivityController::class, 'update'])->name('activity.update');
+    Route::put('/activity/update/{activity}', [AdminActivityController::class, 'update'])->name('activity.update');
     Route::delete('/activity/destroy/{activity}', [AdminActivityController::class, 'destroy'])->name('activity.destroy');
 
     // Kelola Hadiah

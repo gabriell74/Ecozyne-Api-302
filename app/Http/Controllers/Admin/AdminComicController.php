@@ -86,6 +86,67 @@ class AdminComicController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Comic $comic)
+    {
+        return view('admin.comic_edit', compact('comic'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Comic $comic)
+    {
+        $request->validate([
+            'comic_title' => 'required',
+            'cover_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:8192',
+        ]);
+
+        $comic->comic_title = $request->comic_title;
+        
+        if ($request->hasFile('cover_photo')) {
+            if ($comic->cover_photo) {
+                Storage::delete('public/' . $comic->cover_photo);
+            }
+
+            $path = $request->file('cover_photo')->store('comic', 'public');
+            $comic->cover_photo = $path;
+        }
+
+        $comic->save();
+
+        return redirect()->route('comic.list')->with('success', 'Komik berhasil diperbarui!');
+    }
+
+    public function editComicPhoto(ComicPhoto $comic_photo)
+    {
+        return view('admin.comic_photo_edit', compact('comic_photo'));
+    }
+
+    public function updateComicPhoto(Request $request, ComicPhoto $comic_photo)
+    {
+        $request->validate([
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:8192',
+        ]);
+
+        if (!$request->hasFile('photo')) {
+            return redirect()->route('comic.show', $comic_photo->comic_id)->with('success', 'Komik berhasil diperbarui');
+        } elseif ($request->hasFile('photo')) {
+            if ($comic_photo->photo) {
+                Storage::delete('public/' . $comic_photo->photo);
+            }
+
+            $path = $request->file('photo')->store('comic/comic_pages', 'public');
+            $comic_photo->photo = $path;
+        }
+
+        $comic_photo->save();
+
+        return redirect()->route('comic.show', $comic_photo->comic_id)->with('success', 'Komik berhasil diperbarui!');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Comic $comic)

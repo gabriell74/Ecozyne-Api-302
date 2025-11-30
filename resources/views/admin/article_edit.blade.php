@@ -63,6 +63,7 @@
                             @error('photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <div id="preview_foto"></div>
                         </div>
 
                         <div class="d-flex justify-content-between">
@@ -79,4 +80,26 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+    document.getElementById('photo').addEventListener('change', function(event) {
+        let preview = document.getElementById('preview_foto');
+        preview.innerHTML = ''; // kosongkan dulu
+        let files = event.target.files;
+        for (let file of files) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let img = document.createElement('img');
+                img.src = e.target.result;
+                img.width = 250 ;
+                img.style.borderRadius = '8px';
+                img.style.objectFit = 'cover';
+                preview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 @endsection

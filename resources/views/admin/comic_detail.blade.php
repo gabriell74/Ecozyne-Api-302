@@ -14,6 +14,14 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show shadow-lg border-0 rounded-4 mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
 {{-- Kartu Konten Utama dengan Shadow dan Rounded Edge yang menonjol --}}
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
         <div class="row g-0">
@@ -27,10 +35,14 @@
                     <p class="text-muted mb-4" style="font-size: 0.95rem;">
                         <i class=""></i> Dipublikasikan: {{ $comic->created_at->format('d M Y') }}
                     </p>
+                    <p>*Klik pada foto untuk mengganti halaman komik</p>
 
                     {{-- Tombol Aksi (Edit dan Hapus) --}}
                     <div class="d-flex mb-4 border-bottom pb-3">
-                        <form action="{{ route('comic.destroy', $comic->id)}}" method="post" id="delete_form">
+                        <a href="{{ route('comic.edit', $comic->id) }}" class="btn btn-outline-primary rounded-pill me-3 px-4">
+                            <i class="fas fa-edit me-2"></i> Edit 
+                        </a>
+                        <form action="{{ route('comic.destroy', $comic->id) }}" method="post" id="delete_form">
                             @csrf @method('delete')
                             <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete()">
                                 <i class="fas fa-trash-alt me-2"></i> Hapus
@@ -48,10 +60,12 @@
             <div class="col-12 col-md-12">
                 @foreach($comic_photos as $comic_photo)
                     {{-- Gambar Artikel --}}
-                    <img src="{{ asset('storage/' . $comic_photo->photo) }}" 
-                        class="img-fluid comic-img" 
-                        alt="{{ $comic_photo->photo }}" 
-                        style="width: 100%; object-fit: cover;"> {{-- Dihapus beberapa style agar lebih rapi --}}
+                    <a href="{{ route('comic_photo.edit', $comic_photo->id) }} ">
+                        <img src="{{ asset('storage/' . $comic_photo->photo) }}" 
+                            class="img-fluid comic-img" 
+                            alt="{{ $comic_photo->photo }}" 
+                            style="width: 100%; object-fit: cover;"> 
+                    </a>
                 @endforeach
             </div>
         </div>
