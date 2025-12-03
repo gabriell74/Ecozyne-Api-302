@@ -21,6 +21,7 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('waste_bank_name');
             $table->string('waste_bank_location');
+            $table->string('photo');
             $table->double('latitude');
             $table->double('longitude');
             $table->string('file_document');

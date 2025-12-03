@@ -16,6 +16,7 @@ class WasteBankSubmission extends Model
         'community_id',
         'waste_bank_name',
         'waste_bank_location',
+        'photo',
         'latitude',
         'longitude',
         'file_document',

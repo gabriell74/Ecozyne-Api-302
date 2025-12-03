@@ -79,7 +79,7 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
+                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {

@@ -14,6 +14,7 @@ use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\EcoEnzymeTrackingController;
 use App\Http\Controllers\API\DiscussionQuestionController;
+use App\Http\Controllers\API\WasteBankSubmissionController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
@@ -66,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::get('/eco-enzyme-tracking/get-all-batches', [EcoEnzymeTrackingController::class, 'getAllBatches']);
       Route::post('/eco-enzyme-tracking/store-batch', [EcoEnzymeTrackingController::class, 'storeBatch']);
+
+      Route::post('/waste-bank-submission/store', [WasteBankSubmissionController::class, 'storeWasteBankSubmission']);
 });
 
 /* 
