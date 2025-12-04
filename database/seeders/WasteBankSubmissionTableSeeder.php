@@ -16,6 +16,7 @@ class WasteBankSubmissionTableSeeder extends Seeder
                 'community_id' => $faker->numberBetween(1, 20),
                 'waste_bank_name' => $faker->company() . ' Waste Bank',
                 'waste_bank_location' => $faker->address(),
+                'photo' => 'poto',
                 'latitude' => $faker->latitude(-6.8, -6.9),
                 'longitude' => $faker->longitude(107.5, 107.7),
                 'file_document' => 'document_' . $i . '.pdf',

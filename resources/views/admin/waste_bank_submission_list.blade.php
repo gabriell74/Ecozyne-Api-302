@@ -213,7 +213,7 @@
                                                 <i class="fas fa-file-pdf me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">File Dokumen Pengajuan</small>
-                                                    <span class="fw-bold">{{ $waste_bank_submission->file_document }}</span>
+                                                    <span class="fw-bold">{{ ($waste_bank_submission->file_document) }}</span>
                                                 </div>
                                             </div>
                                         </div>
