@@ -44,4 +44,23 @@ class WasteBankSubmissionController extends Controller
             'data' => $wasteBankSubmission,
         ], 201);
     }
+
+    public function getSubmissionHistory(Request $request)
+    {
+        $user = $request->user();
+        $communityId = $user->community->id;
+        $submissions = WasteBankSubmission::where('community_id', $communityId)
+                        ->get()
+                        ->map(function ($submission) {
+                            $submission->photo = asset('storage/' . $submission->photo);
+                            $submission->file_document = asset('storage/' . $submission->file_document);
+                            return $submission;
+                        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat pengajuan bank sampah berhasil diambil.',
+            'data' => $submissions,
+        ], 200);
+    }
 }

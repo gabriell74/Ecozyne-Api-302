@@ -12,12 +12,12 @@ class EcoEnzymeTrackingController extends Controller
     {
         $user = $request->user();
         $community = $user->community;
-        $wasteBankId = $community->wasteBankSubmission->wasteBank->id;
+        $wasteBankId = $community->wasteBankSubmission?->wasteBank?->id;
 
         if (!$wasteBankId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akun komunitas tidak memiliki bank sampah yang terdaftar',
+                'message' => 'Akun tidak memiliki Bank Sampah yang terdaftar',
             ], 404);
         }
 
@@ -34,12 +34,12 @@ class EcoEnzymeTrackingController extends Controller
     {
         $user = $request->user();
         $community = $user->community;
-        $wasteBankId = $community->wasteBankSubmission->wasteBank->id;
+        $wasteBankId = $community->wasteBankSubmission?->wasteBank?->id;
 
         if (!$wasteBankId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akun komunitas tidak memiliki bank sampah yang terdaftar',
+                'message' => 'Akun tidak memiliki Bank Sampah yang terdaftar',
             ], 404);
         }
 

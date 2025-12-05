@@ -181,10 +181,11 @@ return [
 
         'title' => 'Judul',
         'description' => 'Deskripsi',
-        'photo' => 'Foto kegiatan',
+        'photo' => 'Foto',
         'location' => 'Lokasi kegiatan',
         'quota' => 'Kuota',
         'current_quota' => 'Kuota sekarang',
+        'file_document' => 'Dokumen file',
 
         'registration_start_date' => 'Tanggal mulai pendaftaran',
         'registration_due_date' => 'Tanggal berakhir pendaftaran',
