@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AdminComicController extends Controller
 {
@@ -16,8 +17,7 @@ class AdminComicController extends Controller
      */
     public function getAllComic()
     {
-        $comics = Comic::latest()->paginate(8); 
-
+        $comics = Comic::latest()->paginate(8);
         return view('admin.comic_list', compact('comics'));
     }
 
@@ -37,28 +37,44 @@ class AdminComicController extends Controller
         $request->validate([
             'comic_title' => 'required',
             'cover_photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
-            'photo' => 'required|array|min:1',
-            'photo.*' => 'required|image|mimes:jpg,jpeg,png|max:8192',
+            'photo'       => 'required|array|min:1',
+            'photo.*'     => 'required|image|mimes:jpg,jpeg,png|max:8192',
         ]);
 
         try {
-            $cover_path = $request->file('cover_photo')->store('comic', 'public');
             DB::beginTransaction();
-            
+
+           
+            $coverFile = $request->file('cover_photo');
+
+            $coverImage = Image::read($coverFile)
+                ->scaleDown(width: 1080)
+                ->toJpeg(75);
+
+            $coverFileName = 'comic/' . uniqid('cover_') . '.jpg';
+            Storage::disk('public')->put($coverFileName, $coverImage);
+
             $comic = Comic::create([
                 'comic_title' => $request->comic_title,
-                'cover_photo' => $cover_path,
+                'cover_photo' => $coverFileName,
             ]);
 
+            
             if ($request->hasFile('photo')) {
                 $pageNumber = 1;
 
                 foreach ($request->file('photo') as $file) {
-                    $pageFileName = $file->store('comic/comic_pages', 'public');
+
+                    $img = Image::read($file)
+                        ->scaleDown(width: 1080)
+                        ->toJpeg(75);
+
+                    $pageFileName = 'comic/comic_pages/' . uniqid('page_') . '.jpg';
+                    Storage::disk('public')->put($pageFileName, $img);
 
                     $comic->comicPhotos()->create([
                         'comic_page' => $pageNumber,
-                        'photo' => $pageFileName,
+                        'photo'      => $pageFileName,
                     ]);
 
                     $pageNumber++;
@@ -67,12 +83,14 @@ class AdminComicController extends Controller
 
             DB::commit();
 
-            return redirect()->route('comic.list')->with('success', 'Berhasil menambah komik!');
+            return redirect()->route('comic.list')
+                ->with('success', 'Berhasil menambah komik!');
 
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             dd($e->getMessage());
-            return redirect()->route('comic.list')->with('fail', 'Gagal menambah komik!');
+            return redirect()->route('comic.list')
+                ->with('fail', 'Gagal menambah komik!');
         }
     }
 
@@ -81,7 +99,10 @@ class AdminComicController extends Controller
      */
     public function show(Comic $comic)
     {
-        $comic_photos = ComicPhoto::where('comic_id', $comic->id)->orderBy('comic_page', 'asc')->get();
+        $comic_photos = ComicPhoto::where('comic_id', $comic->id)
+            ->orderBy('comic_page', 'asc')
+            ->get();
+
         return view('admin.comic_detail', compact('comic', 'comic_photos'));
     }
 
@@ -104,19 +125,30 @@ class AdminComicController extends Controller
         ]);
 
         $comic->comic_title = $request->comic_title;
-        
+
         if ($request->hasFile('cover_photo')) {
+
             if ($comic->cover_photo) {
-                Storage::delete('public/' . $comic->cover_photo);
+                Storage::disk('public')->delete($comic->cover_photo);
             }
 
-            $path = $request->file('cover_photo')->store('comic', 'public');
+            $file = $request->file('cover_photo');
+
+            $img = Image::read($file)
+                ->scaleDown(width: 1080)
+                ->toJpeg(75);
+
+            $path = 'comic/' . uniqid('cover_') . '.jpg';
+
+            Storage::disk('public')->put($path, $img);
+
             $comic->cover_photo = $path;
         }
 
         $comic->save();
 
-        return redirect()->route('comic.list')->with('success', 'Komik berhasil diperbarui!');
+        return redirect()->route('comic.list')
+            ->with('success', 'Komik berhasil diperbarui!');
     }
 
     public function editComicPhoto(ComicPhoto $comic_photo)
@@ -131,19 +163,30 @@ class AdminComicController extends Controller
         ]);
 
         if (!$request->hasFile('photo')) {
-            return redirect()->route('comic.show', $comic_photo->comic_id)->with('success', 'Komik berhasil diperbarui');
-        } elseif ($request->hasFile('photo')) {
-            if ($comic_photo->photo) {
-                Storage::delete('public/' . $comic_photo->photo);
-            }
-
-            $path = $request->file('photo')->store('comic/comic_pages', 'public');
-            $comic_photo->photo = $path;
+            return redirect()
+                ->route('comic.show', $comic_photo->comic_id)
+                ->with('success', 'Komik berhasil diperbarui');
         }
 
+        if ($comic_photo->photo) {
+            Storage::disk('public')->delete($comic_photo->photo);
+        }
+
+        $file = $request->file('photo');
+
+        $compressed = Image::read($file)
+            ->scaleDown(width: 1080)
+            ->toJpeg(75);
+
+        $path = 'comic/comic_pages/' . uniqid('page_') . '.jpg';
+        Storage::disk('public')->put($path, $compressed);
+
+        $comic_photo->photo = $path;
         $comic_photo->save();
 
-        return redirect()->route('comic.show', $comic_photo->comic_id)->with('success', 'Komik berhasil diperbarui!');
+        return redirect()
+            ->route('comic.show', $comic_photo->comic_id)
+            ->with('success', 'Komik berhasil diperbarui!');
     }
 
     /**
@@ -153,7 +196,7 @@ class AdminComicController extends Controller
     {
         try {
             DB::beginTransaction();
-    
+
             foreach ($comic->comicPhotos as $photo) {
                 if ($photo->photo && Storage::disk('public')->exists($photo->photo)) {
                     Storage::disk('public')->delete($photo->photo);
@@ -163,16 +206,16 @@ class AdminComicController extends Controller
             if ($comic->cover_photo && Storage::disk('public')->exists($comic->cover_photo)) {
                 Storage::disk('public')->delete($comic->cover_photo);
             }
-            
+
             $comic->comicPhotos()->delete();
             $comic->delete();
+
             DB::commit();
 
             return redirect()->route('comic.list')->with('success', 'Berhasil menghapus komik!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('comics.list')->with('error', 'Gagal menghapus komik, silahkan coba lagi');
+            return redirect()->route('comic.list')->with('error', 'Gagal menghapus komik, silahkan coba lagi');
         }
-
     }
 }
