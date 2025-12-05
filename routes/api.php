@@ -10,6 +10,8 @@ use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\api\PointExchangeController;
+use App\Http\Controllers\API\OrderCommunityController;
+use App\Http\Controllers\API\OrderWasteBankController;
 use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\EcoEnzymeTrackingController;
@@ -70,6 +72,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::post('/waste-bank-submission/store', [WasteBankSubmissionController::class, 'storeWasteBankSubmission']);
       Route::get('/waste-bank-submission/history', [WasteBankSubmissionController::class, 'getSubmissionHistory']);
+
+      Route::prefix('orders/community')->group(function () {
+        Route::get('/', [OrderCommunityController::class, 'getOrdersByCommunity']);
+        Route::post('{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
+      });
+
+      Route::prefix('orders/wastebank')->group(function () {
+        Route::get('/', [OrderWasteBankController::class, 'getOrdersByWasteBank']);
+        Route::post('{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
+        Route::post('{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
+        Route::post('{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
+      });
 });
 
 /* 
