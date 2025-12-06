@@ -138,7 +138,8 @@ class UserController extends Controller
                     $q->select(
                         'id','community_id',
                         'waste_bank_name','waste_bank_location',
-                        'latitude','longitude'
+                        'latitude','longitude',
+                        'file_document','notes',
                     );
                 }
             ])
@@ -153,6 +154,8 @@ class UserController extends Controller
                     'waste_bank_location' => $wasteBank->wasteBankSubmission->waste_bank_location,
                     'latitude' => $wasteBank->wasteBankSubmission->latitude,
                     'longitude' => $wasteBank->wasteBankSubmission->longitude,
+                    'file_document' => $wasteBank->wasteBankSubmission->file_document,
+                    'notes' => $wasteBank->wasteBankSubmission->notes,
                 ];
             }
         }
