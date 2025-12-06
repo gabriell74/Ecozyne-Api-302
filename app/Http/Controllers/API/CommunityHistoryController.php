@@ -23,11 +23,20 @@ class CommunityHistoryController extends Controller
 
         $exchangeHistory = Exchange::with([
             'exchangeTransactions:id,exchange_id,reward_id,amount,total_unit_point',
-            'exchangeTransactions.reward:id,reward_name',
+            'exchangeTransactions.reward:id,reward_name,photo',
             ])
             ->where('community_id', $community->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($exchange) {
+                $exchange->exchangeTransactions->map(function ($transaction) {
+                    if ($transaction->reward && $transaction->reward->photo) {
+                        $transaction->reward->photo = asset('storage/' . $transaction->reward->photo);
+                    }
+                    return $transaction;
+                });
+                return $exchange;
+            });
 
         return response()->json([
             'success' => true,
