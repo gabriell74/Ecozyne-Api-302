@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ComicController;
 use App\Http\Controllers\API\RegionController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\api\PointExchangeController;
 use App\Http\Controllers\API\OrderCommunityController;
@@ -84,6 +85,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
         Route::post('{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
+
+      Route::get('/products', [ProductController::class, 'getAllProduct']);
+      Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
 });
 
 /* 

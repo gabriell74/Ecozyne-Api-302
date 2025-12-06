@@ -16,6 +16,9 @@ class Order extends Model
     protected $fillable = [
         'community_id',
         'waste_bank_id',
+        'order_customer',
+        'order_phone_number',
+        'order_address',
         'status_order',
         'status_payment',
         'cancellation_reason',

@@ -41,7 +41,7 @@ class AdminExchangeRewardController extends Controller
 
         try {
             DB::transaction(function () use ($request, $exchange) {
-
+    
                 $transaction = $exchange->exchangeTransactions->first();
                 $reward = $transaction->reward;
 

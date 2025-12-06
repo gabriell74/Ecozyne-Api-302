@@ -25,6 +25,9 @@ return new class extends Migration
                 ->on('waste_bank')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->string('order_customer');
+            $table->string('order_phone_number', 20);
+            $table->text('order_address');
             $table->enum('status_order', ['pending', 'processed', 'delivered', 'cancelled']);
             $table->text('cancellation_reason')->nullable();
             $table->enum('status_payment', ['pending', 'paid', 'failed']);
