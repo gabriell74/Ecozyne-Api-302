@@ -15,7 +15,7 @@ class OrderTableSeeder extends Seeder
             DB::table('order')->insert([
                 'community_id' => $faker->numberBetween(1, 20),
                 'waste_bank_id' => $faker->numberBetween(1, 5),
-                'status_order' => $faker->randomElement(['pending', 'processing', 'completed', 'cancelled']),
+                'status_order' => $faker->randomElement(['pending', 'processed', 'delivered', 'cancelled']),
                 'status_payment' => $faker->randomElement(['pending', 'paid', 'failed']),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'updated_at' => now(),
