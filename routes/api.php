@@ -10,6 +10,7 @@ use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\GalleryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ActivityController;
+use App\Http\Controllers\API\WasteBankController;
 use App\Http\Controllers\api\PointExchangeController;
 use App\Http\Controllers\API\OrderCommunityController;
 use App\Http\Controllers\API\OrderWasteBankController;
@@ -42,6 +43,9 @@ Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardStockById']);
+
+Route::get('waste-banks', [WasteBankController::class, 'getAllWasteBank']);
+Route::get('waste-bank/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
@@ -88,6 +92,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::get('/products', [ProductController::class, 'getAllProduct']);
       Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
+
+
 });
 
 /* 
