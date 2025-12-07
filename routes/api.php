@@ -18,6 +18,7 @@ use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\EcoEnzymeTrackingController;
 use App\Http\Controllers\API\DiscussionQuestionController;
+use App\Http\Controllers\API\ProductWasteBankController;
 use App\Http\Controllers\API\WasteBankSubmissionController;
 
 Route::post('/register', [UserController::class, 'register']);
@@ -93,6 +94,13 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::get('/products', [ProductController::class, 'getAllProduct']);
       Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
 
+      Route::prefix('wastebank/products')->group(function () {
+        Route::get('/', [ProductWasteBankController::class, 'getWasteBankProducts']);
+        Route::get('/{id}', [ProductWasteBankController::class, 'getWasteBankProductDetail']);
+        Route::post('/', [ProductWasteBankController::class, 'createWasteBankProduct']);
+        Route::put('/{id}', [ProductWasteBankController::class, 'updateWasteBankProduct']);
+        Route::delete('/{id}', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
+      });
 
 });
 
