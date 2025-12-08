@@ -37,7 +37,7 @@ class ProductWasteBankController extends Controller
         if (!$wasteBankSubmission) {
             $this->errorResponse = response()->json([
                 'success' => false,
-                'message' => 'Pengajuan Bank Sampah belum disetujui'
+                'message' => 'Waste Bank belum disetujui'
             ], 404);
             return;
         }
@@ -47,7 +47,7 @@ class ProductWasteBankController extends Controller
         if (!$wasteBank) {
             $this->errorResponse = response()->json([
                 'success' => false,
-                'message' => 'Bank Sampah tidak ditemukan'
+                'message' => 'Waste Bank tidak ditemukan'
             ], 404);
             return;
         }
@@ -67,13 +67,13 @@ class ProductWasteBankController extends Controller
 
         foreach ($products as $product) {
             if($product->photo) {
-                $product->photo = asset('storage/' . $product->photo);
+                $product->photo_url = asset('storage/' . $product->photo);
             }
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil mengambil produk bank sampah',
+            'message' => 'Berhasil mengambil produk waste bank',
             'data' => $products
         ], 200);
     }
@@ -96,7 +96,7 @@ class ProductWasteBankController extends Controller
         }
 
         if ($product->photo) {
-            $product->photo = asset('storage/' . $product->photo);
+            $product->photo_url = asset('storage/' . $product->photo);
         }
 
         return response()->json([
@@ -115,7 +115,7 @@ class ProductWasteBankController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'photo' => 'required|image|mimes:jpeg,jpg,png|max:5024',
         ]);
