@@ -13,7 +13,7 @@ class WasteBankController extends Controller
     public function getAllWasteBank()
     {
         $wastebanks = WasteBank::latest()->get()->map(function ($wastebank) {
-            return $wastebank;
+            return $wastebank->load('wasteBankSubmission');
         });
 
         return response()->json([
