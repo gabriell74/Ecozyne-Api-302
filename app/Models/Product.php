@@ -21,6 +21,11 @@ class Product extends Model
         'photo',
     ];
 
+    protected $casts = [
+        'price' => 'float',
+        'stock' => 'integer',
+    ];
+
     public function wasteBank(): BelongsTo
     {
         return $this->belongsTo(WasteBank::class);
