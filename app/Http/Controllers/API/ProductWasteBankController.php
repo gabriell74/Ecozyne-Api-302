@@ -67,7 +67,7 @@ class ProductWasteBankController extends Controller
 
         foreach ($products as $product) {
             if($product->photo) {
-                $product->photo_url = asset('storage/' . $product->photo);
+                $product->photo = asset('storage/' . $product->photo);
             }
         }
 
@@ -96,7 +96,7 @@ class ProductWasteBankController extends Controller
         }
 
         if ($product->photo) {
-            $product->photo_url = asset('storage/' . $product->photo);
+            $product->photo = asset('storage/' . $product->photo);
         }
 
         return response()->json([
