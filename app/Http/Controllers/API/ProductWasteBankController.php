@@ -131,7 +131,7 @@ class ProductWasteBankController extends Controller
             'photo' => $photoPath,
         ]);
 
-        $product->photo_url = asset('storage/' . $product->photo);
+        $product->photo = asset('storage/' . $product->photo);
 
         return response()->json([
             'success' => true,
@@ -178,7 +178,7 @@ class ProductWasteBankController extends Controller
 
         $product->update($dataToUpdate);
 
-        $product->photo_url = asset('storage/' . $product->photo);
+        $product->photo = asset('storage/' . $product->photo);
 
         return response()->json([
             'success' => true,
