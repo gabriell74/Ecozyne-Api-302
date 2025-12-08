@@ -45,8 +45,8 @@ Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardStockById']);
 
-Route::get('waste-banks', [WasteBankController::class, 'getAllWasteBank']);
-Route::get('waste-bank/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
+Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
+Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
@@ -84,22 +84,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
       });
 
-      Route::prefix('orders/wastebank')->group(function () {
+      Route::prefix('/orders/waste-bank')->group(function () {
         Route::get('/', [OrderWasteBankController::class, 'getOrdersByWasteBank']);
-        Route::post('{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
-        Route::post('{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
-        Route::post('{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
+        Route::post('/{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
+        Route::post('/{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
+        Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
 
       Route::get('/products', [ProductController::class, 'getAllProduct']);
       Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
 
-      Route::prefix('wastebank/products')->group(function () {
+      Route::prefix('/waste-bank/products')->group(function () {
         Route::get('/', [ProductWasteBankController::class, 'getWasteBankProducts']);
         Route::get('/{id}', [ProductWasteBankController::class, 'getWasteBankProductDetail']);
-        Route::post('/', [ProductWasteBankController::class, 'createWasteBankProduct']);
-        Route::put('/{id}', [ProductWasteBankController::class, 'updateWasteBankProduct']);
-        Route::delete('/{id}', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
+        Route::post('/create', [ProductWasteBankController::class, 'createWasteBankProduct']);
+        Route::put('/{id}/update', [ProductWasteBankController::class, 'updateWasteBankProduct']);
+        Route::delete('/{id}/delete', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
       });
 
 });

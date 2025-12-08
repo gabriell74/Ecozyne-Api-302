@@ -21,7 +21,7 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('product_name');
             $table->string('description');
-            $table->integer('price');
+            $table->double('price');
             $table->integer('stock');
             $table->string('photo');
             $table->timestamps();
