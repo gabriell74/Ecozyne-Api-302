@@ -160,7 +160,7 @@ class ProductWasteBankController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:5024',
         ]);
