@@ -34,6 +34,16 @@ class OrderCommunityController extends Controller
                 return 'other';
             });
 
+        //  Logging activity
+        activity()
+            ->causedBy($user)
+            ->withProperties([
+                'community_id' => $community->id,
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ])
+            ->log('User mengambil daftar pesanan komunitas');
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil mendapatkan data pesanan',
@@ -69,6 +79,18 @@ class OrderCommunityController extends Controller
                 ->first();
 
             if (!$order) {
+
+                //  Logging gagal
+                activity()
+                    ->causedBy($user)
+                    ->withProperties([
+                        'order_id' => $orderId,
+                        'reason' => $request->reason,
+                        'ip' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                    ])
+                    ->log('Gagal membatalkan pesanan (tidak ditemukan / unauthorized)');
+
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -77,6 +99,19 @@ class OrderCommunityController extends Controller
             }
 
             if (!in_array($order->status_order, ['Pending'])) {
+
+                // Logging gagal karena status tidak valid
+                activity()
+                    ->causedBy($user)
+                    ->withProperties([
+                        'order_id' => $order->id,
+                        'current_status' => $order->status_order,
+                        'reason' => $request->reason,
+                        'ip' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                    ])
+                    ->log('User mencoba membatalkan pesanan tetapi status sudah tidak valid');
+
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -90,6 +125,18 @@ class OrderCommunityController extends Controller
             ]);
 
             DB::commit();
+
+            //  Logging sukses
+            activity()
+                ->causedBy($user)
+                ->withProperties([
+                    'order_id' => $order->id,
+                    'new_status' => 'Canceled',
+                    'reason' => $request->reason,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('Pesanan berhasil dibatalkan');
 
             return response()->json([
                 'success' => true,
@@ -105,6 +152,17 @@ class OrderCommunityController extends Controller
             DB::rollBack();
             report($e);
 
+            //  Logging error sistem
+            activity()
+                ->causedBy($user)
+                ->withProperties([
+                    'order_id' => $orderId,
+                    'error_message' => $e->getMessage(),
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('Terjadi kesalahan saat pembatalan pesanan');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan, silakan coba lagi',
@@ -112,9 +170,6 @@ class OrderCommunityController extends Controller
         }
     }
 
-    /**
-     * Format response per item
-     */
     protected function formatData(Order $order)
     {
         $transaction = $order->productTransaction->first();

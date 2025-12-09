@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class ProductWasteBankController extends Controller
 {
@@ -99,6 +100,12 @@ class ProductWasteBankController extends Controller
             $product->photo = asset('storage/' . $product->photo);
         }
 
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->event('lihat produk')
+            ->log('Melihat detail produk ' . $product->product_name);
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil mengambil detail produk',
@@ -130,6 +137,17 @@ class ProductWasteBankController extends Controller
             'stock' => $request->stock,
             'photo' => $photoPath,
         ]);
+
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->event('create')
+            ->withProperties([
+                'product_name' => $request->product_name,
+                'price' => $request->price,
+                'stock' => $request->stock
+            ])
+            ->log('Menambahkan produk baru');
 
         $product->photo = asset('storage/' . $product->photo);
 
@@ -165,6 +183,7 @@ class ProductWasteBankController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:5024',
         ]);
 
+        $oldData = $product->toArray();
         $dataToUpdate = $request->only(['product_name', 'description', 'price', 'stock']);
 
         if ($request->hasFile('photo')) {
@@ -177,6 +196,16 @@ class ProductWasteBankController extends Controller
         }
 
         $product->update($dataToUpdate);
+
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->event('update')
+            ->withProperties([
+                'before' => $oldData,
+                'after' => $dataToUpdate
+            ])
+            ->log('Memperbarui produk');
 
         $product->photo = asset('storage/' . $product->photo);
 
@@ -203,6 +232,16 @@ class ProductWasteBankController extends Controller
                 'message' => 'Produk tidak ditemukan'
             ], 404);
         }
+
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->event('delete')
+            ->withProperties([
+                'product_name' => $product->product_name,
+                'price' => $product->price
+            ])
+            ->log('Menghapus produk');
 
         if ($product->photo) {
             Storage::disk('public')->delete($product->photo);

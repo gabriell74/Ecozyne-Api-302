@@ -70,6 +70,16 @@ class UserController extends Controller
             ]);
 
             DB::commit();
+            activity()
+                ->causedBy($user)
+                ->performedOn($user)
+                ->event('register')
+                ->withProperties([
+                    'email' => $user->email,
+                    'community' => $community->name,
+                    'phone_number' => $community->phone_number
+                ])
+                ->log('User telah melakukan registrasi');
 
             return response()->json([
                 'success' => true,
@@ -165,8 +175,7 @@ class UserController extends Controller
         ], 200);
     }
 
-
-    public function updateProfile(Request $request)
+        public function updateProfile(Request $request)
     {
         $user = $request->user();
 
@@ -187,42 +196,50 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            $before = [
+                'username' => $user->username,
+                'email' => $user->email
+            ];
+
             $user->update([
                 'username' => $validated['username'],
                 'email' => $validated['email'],
             ]);
 
             $community = Community::where('user_id', $user->id)->first();
+
             if ($community) {
+                $before['community'] = [
+                    'name' => $community->name,
+                    'phone_number' => $community->phone_number,
+                ];
+
                 $community->update([
                     'name' => $validated['name'],
                     'phone_number' => $validated['phone_number'],
                 ]);
-
-                $address = Address::find($community->address_id);
-                if ($address) {
-                    $address->update([
-                        'address' => $validated['address'],
-                        'postal_code' => $validated['postal_code'],
-                        'kelurahan_id' => $validated['kelurahan'],
-                    ]);
-                }
             }
 
             DB::commit();
+
+            /** ACTIVITY LOG */
+            activity()
+                ->causedBy($user)
+                ->performedOn($user)
+                ->event('update_profile')
+                ->withProperties([
+                    'before' => $before,
+                    'after' => $validated,
+                ])
+                ->log('User memperbarui profil');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Profil berhasil diperbarui',
             ], 200);
 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors(),
-            ], 422);
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
+
             DB::rollback();
 
             return response()->json([
@@ -231,5 +248,4 @@ class UserController extends Controller
             ], 500);
         }
     }
-
 }

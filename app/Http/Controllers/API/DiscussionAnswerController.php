@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Answer;
-use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +16,18 @@ class DiscussionAnswerController extends Controller
             ->latest()
             ->get();
 
+        activity()
+            ->causedBy($request->user())
+            ->withProperties([
+                'question_id' => $questionId,
+                'ip'          => $request->ip(),
+                'user_agent'  => $request->userAgent(),
+            ])
+            ->log('User mengambil semua jawaban');
+
         return response()->json([
             "success" => true,
-            "message" => "Berhasil mengambil jawaban", 
+            "message" => "Berhasil mengambil jawaban",
             "data" => $answers
         ], 200);
     }
@@ -38,6 +46,17 @@ class DiscussionAnswerController extends Controller
 
         $answer->load(['user:id,username']);
 
+        activity()
+            ->causedBy($request->user())
+            ->performedOn($answer)
+            ->withProperties([
+                'question_id' => $questionId,
+                'answer'      => $request->answer,
+                'ip'          => $request->ip(),
+                'user_agent'  => $request->userAgent(),
+            ])
+            ->log('User menambah jawaban');
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menambah jawaban',
@@ -54,6 +73,16 @@ class DiscussionAnswerController extends Controller
         $user = $request->user();
 
         if ($answer->user_id !== $user->id) {
+            activity()
+                ->causedBy($user)
+                ->performedOn($answer)
+                ->withProperties([
+                    'reason'     => 'Unauthorized update attempt',
+                    'ip'         => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('Gagal memperbarui jawaban');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized.',
@@ -66,6 +95,16 @@ class DiscussionAnswerController extends Controller
 
         $answer->load(['user:id,username']);
 
+        activity()
+            ->causedBy($user)
+            ->performedOn($answer)
+            ->withProperties([
+                'new_answer' => $request->answer,
+                'ip'         => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ])
+            ->log('User memperbarui jawaban');
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil memperbarui jawaban',
@@ -73,10 +112,21 @@ class DiscussionAnswerController extends Controller
         ], 200);
     }
 
-    public function deleteAnswer(Answer $answer)
+    public function deleteAnswer(Request $request, Answer $answer)
     {
         $user = Auth::user();
+
         if ($answer->user_id !== $user->id) {
+            activity()
+                ->causedBy($user)
+                ->performedOn($answer)
+                ->withProperties([
+                    'reason'     => 'Unauthorized delete attempt',
+                    'ip'         => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('Gagal menghapus jawaban');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -84,6 +134,15 @@ class DiscussionAnswerController extends Controller
         }
 
         $answer->delete();
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($answer)
+            ->withProperties([
+                'ip'         => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ])
+            ->log('User menghapus jawaban');
 
         return response()->json([
             'success' => true,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\EcoEnzymeTracking;
 use App\Http\Controllers\Controller;
+use function Spatie\Activitylog\activity;
 
 class EcoEnzymeTrackingController extends Controller
 {
@@ -15,6 +16,14 @@ class EcoEnzymeTrackingController extends Controller
         $wasteBankId = $community->wasteBankSubmission?->wasteBank?->id;
 
         if (!$wasteBankId) {
+            activity()
+                ->causedBy($user)
+                ->event('failed-get-batch')
+                ->withProperties([
+                    'reason' => 'Waste bank not registered',
+                ])
+                ->log('Gagal mengambil data batch eco-enzyme');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Akun tidak memiliki Bank Sampah yang terdaftar',
@@ -22,6 +31,14 @@ class EcoEnzymeTrackingController extends Controller
         }
 
         $batches = EcoEnzymeTracking::where('waste_bank_id', $wasteBankId)->get();
+
+        activity()
+            ->causedBy($user)
+            ->event('get-batch')
+            ->withProperties([
+                'batch_count' => $batches->count()
+            ])
+            ->log('Berhasil mengambil batch eco-enzyme');
 
         return response()->json([
             'success' => true,
@@ -37,6 +54,14 @@ class EcoEnzymeTrackingController extends Controller
         $wasteBankId = $community->wasteBankSubmission?->wasteBank?->id;
 
         if (!$wasteBankId) {
+            activity()
+                ->causedBy($user)
+                ->event('failed-create-batch')
+                ->withProperties([
+                    'reason' => 'Waste bank not registered',
+                ])
+                ->log('Gagal menambahkan batch eco-enzyme');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Akun tidak memiliki Bank Sampah yang terdaftar',
@@ -53,6 +78,17 @@ class EcoEnzymeTrackingController extends Controller
         $validatedData['waste_bank_id'] = $wasteBankId;
 
         $ecoEnzymeTracking = EcoEnzymeTracking::create($validatedData);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($ecoEnzymeTracking) // <= subject
+            ->event('create-batch')
+            ->withProperties([
+                'batch_name' => $ecoEnzymeTracking->batch_name,
+                'start_date' => $ecoEnzymeTracking->start_date,
+                'end_date' => $ecoEnzymeTracking->end_date,
+            ])
+            ->log('Berhasil membuat batch eco-enzyme');
 
         return response()->json([
             'success' => true,

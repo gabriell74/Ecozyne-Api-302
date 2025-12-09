@@ -28,8 +28,8 @@ class PointExchangeController extends Controller
     public function getRewardStockById(int $rewardId)
     {
         $rewardStock = Reward::select('id','stock')
-            ->where('id', $rewardId
-            )->first(); 
+            ->where('id', $rewardId)
+            ->first();
 
         return response()->json([
             'success' => true,
@@ -49,6 +49,13 @@ class PointExchangeController extends Controller
         ]);
 
         if (!$community) {
+            activity()
+                ->causedBy($user)
+                ->event('exchange_failed')
+                ->performedOn($reward)
+                ->withProperties(['reason' => 'community_not_found'])
+                ->log('Penukaran gagal: pengguna bukan komunitas');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Tidak terdaftar sebagai komunitas'
@@ -56,6 +63,13 @@ class PointExchangeController extends Controller
         }
 
         if ($reward->stock <= 0) {
+            activity()
+                ->causedBy($user)
+                ->event('exchange_failed')
+                ->performedOn($reward)
+                ->withProperties(['reason' => 'empty_stock'])
+                ->log('Penukaran gagal: stok kosong');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Stok hadiah tidak mencukupi'
@@ -63,6 +77,16 @@ class PointExchangeController extends Controller
         }
 
         if ($reward->stock < $request->amount) {
+            activity()
+                ->causedBy($user)
+                ->event('exchange_failed')
+                ->performedOn($reward)
+                ->withProperties([
+                    'requested_amount' => $request->amount,
+                    'stock' => $reward->stock
+                ])
+                ->log('Penukaran gagal: stok tidak cukup');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Jumlah penukaran melebihi stok hadiah',
@@ -70,6 +94,16 @@ class PointExchangeController extends Controller
         }
 
         if ($community->point->point < $request->total_unit_point) {
+            activity()
+                ->causedBy($user)
+                ->event('exchange_failed')
+                ->performedOn($reward)
+                ->withProperties([
+                    'point_needed' => $request->total_unit_point,
+                    'current_point' => $community->point->point
+                ])
+                ->log('Penukaran gagal: poin tidak mencukupi');
+
             return response()->json([
                 'success' => false,
                 'message' => 'Poin tidak mencukupi',
@@ -95,6 +129,17 @@ class PointExchangeController extends Controller
 
             DB::commit();
 
+            activity()
+                ->causedBy($user)
+                ->event('exchange_success')
+                ->performedOn($exchange)
+                ->withProperties([
+                    'reward_id' => $reward->id,
+                    'amount' => $request->amount,
+                    'total_point_used' => $request->total_unit_point
+                ])
+                ->log('Penukaran poin berhasil');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Penukaran sedang diproses',
@@ -107,6 +152,13 @@ class PointExchangeController extends Controller
         } catch (\Throwable $e) {
 
             DB::rollBack();
+
+            activity()
+                ->causedBy($user)
+                ->event('exchange_error')
+                ->performedOn($reward)
+                ->withProperties(['error' => $e->getMessage()])
+                ->log('Penukaran gagal karena error sistem');
 
             return response()->json([
                 'success' => false,

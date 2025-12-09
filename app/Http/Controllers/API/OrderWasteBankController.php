@@ -40,6 +40,15 @@ class OrderWasteBankController extends Controller
                     };
                 });
 
+            //  LOG
+            activity()
+                ->causedBy($request->user())
+                ->withProperties([
+                    'waste_bank_id' => $wasteBank->id,
+                    'ip'           => $request->ip(),
+                ])
+                ->log('Mengambil daftar pesanan oleh waste bank');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil mendapatkan data pesanan',
@@ -130,6 +139,19 @@ class OrderWasteBankController extends Controller
             $order->update($dataUpdate);
 
             DB::commit();
+
+            //  LOG
+            activity()
+                ->causedBy($request->user())
+                ->performedOn($order)
+                ->withProperties([
+                    'order_id'       => $order->id,
+                    'old_status'     => $order->status_order,
+                    'new_status'     => $targetStatus,
+                    'reason'         => $reason,
+                    'ip'             => $request->ip(),
+                ])
+                ->log("Mengubah status pesanan menjadi {$targetStatus}");
 
             return response()->json([
                 'success' => true,

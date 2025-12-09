@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscussionQuestionController extends Controller
 {
-   public function getAllQuestion(Request $request)
-   {
+    public function getAllQuestion(Request $request)
+    {
         $user = Auth::guard('sanctum')->user();
-
         $questions = Question::with(['user:id,username'])
             ->withCount('likes')
             ->when($user, function ($query) use ($user) {
@@ -25,17 +24,11 @@ class DiscussionQuestionController extends Controller
             ->latest()
             ->get();
 
-        if (!$user) {
-            foreach ($questions as $question) {
-                $question->is_liked = false;
-            }
-        }
-
         return response()->json([
             "success" => true,
             "message" => "Berhasil mengambil pertanyaan",
             "data" => $questions
-        ], 200);
+        ]);
     }
 
     public function storeQuestion(Request $request)
@@ -45,25 +38,20 @@ class DiscussionQuestionController extends Controller
         ]);
 
         $user = Auth::user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
 
         $question = Question::create([
             'user_id' => $user->id,
             'question' => $request->question,
         ]);
 
-        $question = Question::with(['user:id,username'])
-        ->withExists([
-            'likes as is_liked' => function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            },
-        ])
-        ->find($question->id);
+        activity()
+            ->causedBy($user)
+            ->performedOn($question)
+            ->withProperties([
+                'question_id' => $question->id,
+                'question_text' => $request->question,
+            ])
+            ->log('User membuat pertanyaan baru');
 
         return response()->json([
             'success' => true,
@@ -80,23 +68,21 @@ class DiscussionQuestionController extends Controller
 
         $user = $request->user();
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthenticated.',
-            ], 401);
-        }
-
-        if ($question->user_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized.',
-            ], 403);
-        }
+        $oldQuestion = $question->question;
 
         $question->update([
             'question' => $request->question,
         ]);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($question)
+            ->withProperties([
+                'question_id' => $question->id,
+                'before' => $oldQuestion,
+                'after' => $request->question,
+            ])
+            ->log('User memperbarui pertanyaan');
 
         return response()->json([
             'success' => true,
@@ -108,49 +94,53 @@ class DiscussionQuestionController extends Controller
     public function toggleLike(Question $question)
     {
         $user = Auth::user();
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
 
         $isLiked = $question->likes()->where('user_id', $user->id)->exists();
 
         if ($isLiked) {
             $question->likes()->where('user_id', $user->id)->delete();
             $status = false;
+
+            activity()
+                ->causedBy($user)
+                ->performedOn($question)
+                ->log('User membatalkan like');
         } else {
             $question->likes()->create(['user_id' => $user->id]);
             $status = true;
-        }
 
-        $totalLike = $question->likes()->count();
-        $question->update(['total_like' => $totalLike]);
+            activity()
+                ->causedBy($user)
+                ->performedOn($question)
+                ->log('User memberikan like');
+        }
 
         return response()->json([
             'success' => true,
             'message' => $status ? 'Liked' : 'Unliked',
             'is_liked' => $status,
-            'total_like' => $totalLike,
         ]);
     }
 
     public function deleteQuestion(Question $question)
     {
         $user = Auth::user();
-        if ($question->user_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
-        }
+        $deletedData = $question;
 
         $question->delete();
 
+        activity()
+            ->causedBy($user)
+            ->performedOn($deletedData)
+            ->withProperties([
+                'question_id' => $deletedData->id,
+                'text' => $deletedData->question
+            ])
+            ->log('User menghapus pertanyaan');
+
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil menghapus pertanyaan',
-        ], 200);
+            'message' => 'Berhasil menghapus pertanyaan'
+        ]);
     }
 }

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Models\WasteBankSubmission;
 use App\Http\Controllers\Controller;
+use App\Models\WasteBankSubmission;
+use Spatie\Activitylog\Models\Activity;
 
 class WasteBankSubmissionController extends Controller
 {
@@ -38,17 +39,27 @@ class WasteBankSubmissionController extends Controller
             'status' => 'pending',
         ]);
 
+        activity()
+            ->performedOn($wasteBankSubmission)
+            ->causedBy($user)
+            ->withProperties([
+                'attributes' => $wasteBankSubmission->toArray()
+            ])
+            ->log('Pengguna mengajukan Bank Sampah');
+
         return response()->json([
             'success' => true,
-            'message' => 'Pengajuan bank sampah berhasil dikirim dan sedang dalam proses peninjauan.',
+            'message' => 'Pengajuan bank sampah sedang diproses.',
             'data' => $wasteBankSubmission,
         ], 201);
     }
+
 
     public function getSubmissionHistory(Request $request)
     {
         $user = $request->user();
         $communityId = $user->community->id;
+
         $submissions = WasteBankSubmission::where('community_id', $communityId)
                         ->get()
                         ->map(function ($submission) {
@@ -57,9 +68,16 @@ class WasteBankSubmissionController extends Controller
                             return $submission;
                         });
 
+        activity()
+            ->causedBy($user)
+            ->withProperties([
+                'result_count' => $submissions->count()
+            ])
+            ->log('Melihat riwayat pengajuan bank sampah');
+
         return response()->json([
             'success' => true,
-            'message' => 'Riwayat pengajuan bank sampah berhasil diambil.',
+            'message' => 'Riwayat pengajuan ditemukan.',
             'data' => $submissions,
         ], 200);
     }
