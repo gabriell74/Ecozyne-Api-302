@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\EcoEnzymeTracking;
 use App\Http\Controllers\Controller;
-use function Spatie\Activitylog\activity;
 
 class EcoEnzymeTrackingController extends Controller
 {

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityRegistration;
 use Illuminate\Support\Facades\Auth;
-use function Spatie\Activitylog\activity;
 
 class ActivityController extends Controller
 {
