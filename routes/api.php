@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::delete('/answer/delete/{answer}', [DiscussionAnswerController::class, 'deleteAnswer']);
 
       Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
+      Route::get('/activities/registration/history', [ActivityController::class, 'getCommunityActivityRegistrations']);
+      Route::get('/activities/{id}/is-registered', [ActivityController::class, 'checkRegistrationStatus']);
 
       Route::post('/reward/exchange/{reward}', [PointExchangeController::class, 'exchangeReward']);
 

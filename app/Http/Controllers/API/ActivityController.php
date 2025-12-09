@@ -118,4 +118,48 @@ class ActivityController extends Controller
             'data' => $registration,
         ], 200);
     }
+
+    public function getCommunityActivityRegistrations(Request $request)
+    {
+        $user = $request->user();
+        $community = $user->community;
+
+        if (!$community) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak terdaftar sebagai komunitas'
+            ], 404);
+        }
+
+        $registrations = ActivityRegistration::where('community_id', $community->id)
+            ->with('activity')
+            ->latest('created_at')
+            ->get()
+            ->map(function ($registration) {
+                $registration->activity->photo = asset('storage/' . $registration->activity->photo);
+                return $registration;
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil mengambil data pendaftaran kegiatan',
+            'data' => $registrations,
+        ], 200);
+    }
+
+    public function checkRegistrationStatus(Request $request, $activityId)
+    {
+        $user = $request->user();
+        $community = $user->community;
+
+        $isRegistered = ActivityRegistration::where('community_id', $community->id)
+            ->where('activity_id', $activityId)
+            ->exists();
+
+        return response()->json([
+            'registered' => $isRegistered
+        ]);
+    }
+
+
 }
