@@ -18,8 +18,20 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+
             $user = Auth::user();
             $token = $user->createToken('auth-token')->plainTextToken;
+
+            activity()
+                ->causedBy($user)
+                ->performedOn($user)
+                ->event('login-success')
+                ->withProperties([
+                    'email' => $user->email,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('User berhasil login');
 
             return response()->json([
                 'success' => true,
@@ -28,10 +40,18 @@ class AuthController extends Controller
             ]);
         }
 
+        activity()
+            ->event('login-failed')
+            ->withProperties([
+                'email' => $request->email,
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ])
+            ->log('Percobaan login gagal');
+
         return response()->json([
             'success' => false,
             'message' => 'Email atau password salah.'
         ], 401);
     }
 }
-
