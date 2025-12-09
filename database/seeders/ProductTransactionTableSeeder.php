@@ -17,6 +17,9 @@ class ProductTransactionTableSeeder extends Seeder
                 'product_id' => $faker->numberBetween(1, 5),
                 'price' => $faker->numberBetween(15000, 100000),
                 'amount' => $faker->numberBetween(1, 5),
+                'order_customer' => $faker->name(),
+                'order_phone_number' => $faker->phoneNumber(),
+                'order_address' => $faker->address(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
