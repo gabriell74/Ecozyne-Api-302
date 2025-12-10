@@ -23,7 +23,7 @@ class AdminAuth
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('login')->with('error', 'Akses ditolak: kamu bukan admin!');
         }
-
+        
         return $next($request);
     }
 }

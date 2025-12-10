@@ -81,7 +81,13 @@
                                     class="btn btn-success rounded-pill px-3 py-1">
                                     <i class=""></i>Lihat Detail
                                 </a>
-                                
+
+                                {{-- Tombol Daftar Pengguna --}}
+                                <a href="{{ route('activity.member', $activity->id) }}" 
+                                    class="btn btn-outline-success rounded-pill px-3 py-1">
+                                    <i class=""></i>Daftar Pengguna
+                                </a>
+
                                 {{-- Tombol Edit --}}
                                 <a href="{{ route('activity.edit', $activity->id) }}" class="btn btn-outline-success btn-sm rounded-circle">
                                     <i class="fas fa-edit"></i>
