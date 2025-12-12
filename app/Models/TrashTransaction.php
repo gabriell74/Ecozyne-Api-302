@@ -15,10 +15,16 @@ class TrashTransaction extends Model
         'user_id',
         'poin_earned',
         'trash_weight',
+        'rejectionReason'
     ];
 
     public function wasteBank(): BelongsTo
     {
         return $this->belongsTo(WasteBank::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
