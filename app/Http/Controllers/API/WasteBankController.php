@@ -12,16 +12,30 @@ class WasteBankController extends Controller
 {
     public function getAllWasteBank()
     {
-        $wastebanks = WasteBank::latest()->get()->map(function ($wastebank) {
-            return $wastebank->load('wasteBankSubmission');
-        });
+        $wasteBanks = WasteBankSubmission::where('status', 'approved')
+            ->latest()
+            ->get([
+                'id',
+                'community_id',
+                'waste_bank_name',
+                'waste_bank_location',
+                'photo',
+                'latitude',
+                'longitude',
+                'file_document',
+                'notes',
+                'status',
+                'created_at',
+                'updated_at'
+            ]);
 
         return response()->json([
             "success" => true,
-            "massage" => "Berhasil mengambil list bank sampah",
-            "data" => $wastebanks
-        ], 200); 
+            "message" => "Berhasil mengambil list bank sampah",
+            "data" => $wasteBanks
+        ], 200);
     }
+
 
     public function wasteBankDetail(WasteBank $wasteBank)
     {
