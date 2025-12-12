@@ -1,9 +1,11 @@
 <?php
 namespace Database\Seeders;
 
+use Illuminate\Http\File;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityTableSeeder extends Seeder
 {
@@ -13,28 +15,21 @@ class ActivityTableSeeder extends Seeder
         
         $activities = [
             'Gerakan Bersih-Bersih Sungai',
+            'Aksi pungut Sampah Pantai',
+            'Pelatihan Kompos Rumahan',
             'Workshop Daur Ulang Plastik',
             'Penanaman Pohon Serentak',
-            'Edukasi Pemilahan Sampah',
-            'Kompetisi Kreasi Daur Ulang',
-            'Aksi pungut Sampah Pantai',
-            'Seminar Zero Waste Lifestyle',
-            'Pelatihan Kompos Rumahan'
         ];
 
-        $activitiesPhoto = [
-            'activity.png',
-            'activity2.png',
-            'activity3.png',
-            'activity4.png',
-            'activity5.png',
-        ];
+        for ($i = 1; $i <= 5; $i++) {
+            $sourcePath = public_path("images/foto/activity{$i}.png");
+            $storedPath = Storage::disk('public')->putFile('activity', new File($sourcePath));
+            $activityTitle = $activities[$i - 1];
 
-        foreach ($activities as $activity) {
             DB::table('activity')->insert([
-                'title' => $activity,
+                'title' => $activityTitle,
                 'description' => $faker->paragraph(3),
-                'photo' => 'activity/' . $activitiesPhoto[array_rand($activitiesPhoto)],
+                'photo' => $storedPath,
                 'quota' => $faker->numberBetween(20, 100),
                 'location' =>'Batam',
                 'current_quota' => 0,
@@ -45,6 +40,21 @@ class ActivityTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        }
+
+        $activityIds = DB::table('activity')->pluck('id')->toArray();
+
+        for ($i = 1; $i <= 10; $i++) {
+            $activityId = $faker->randomElement($activityIds);
+
+            DB::table('activity_registration')->insert([
+                'activity_id' => $activityId,
+                'community_id' => $faker->numberBetween(1, 20),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('activity')->where('id', $activityId)->increment('current_quota', 1);
         }
     }
 }

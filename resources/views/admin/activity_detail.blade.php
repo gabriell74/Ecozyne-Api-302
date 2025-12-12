@@ -64,8 +64,8 @@
 
                     <h5 class="fw-bold mt-3" style="color: #4A5568;">Kuota</h5>
                     <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">
-                        {{ $activity->current_quota }} / {{ $activity->quota }}
-                    </div>
+                        {{ $activity->current_quota }} / {{ $activity->quota }} -> <a href="{{ route('activity.member', $activity->id) }}">Daftar Pengguna</a>
+                    </div>  
 
                     <h5 class="fw-bold mt-3" style="color: #4A5568;">Tanggal Pembukaan Pendaftaran</h5>
                     <div class="card-text text-secondary activity-description-content" style="font-size: 1rem;">

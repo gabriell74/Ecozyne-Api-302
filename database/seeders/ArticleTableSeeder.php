@@ -1,9 +1,11 @@
 <?php
 namespace Database\Seeders;
 
+use Illuminate\Http\File;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleTableSeeder extends Seeder
 {
@@ -12,24 +14,23 @@ class ArticleTableSeeder extends Seeder
         $faker = Faker::create('id_ID');
         
         $articles = [
-            'Cara Memilah Sampah yang Benar untuk Pemula',
-            'Manfaat Daur Ulang Plastik bagi Lingkungan',
-            '5 Langkah Mudah Mengurangi Sampah Rumah Tangga',
-            'Inovasi Baru dalam Pengolahan Sampah Organik',
-            'Mengenal Jenis-Jenis Plastik dan Cara Daur Ulangnya',
-            'Tips Membuat Kompos dari Sampah Dapur',
-            'Dampak Sampah Plastik terhadap Ekosistem Laut',
-            'Gerakan Zero Waste: Mulai dari Hal Kecil'
+            'Apa itu eco enzyme?',
+            'What is eco enzyme?',
+            'Manfaat eco enzyme bagi kehidupan sehari-hari',
         ];
 
-        foreach ($articles as $article) {
+        for ($i = 1; $i <= 3; $i++) {
+            $sourcePath = public_path("images/foto/article{$i}.png");
+            $storedPath = Storage::disk('public')->putFile('article', new File($sourcePath));
+            $article = $articles[$i - 1];
+
             DB::table('article')->insert([
                 'title' => $article,
                 'description' => $faker->text(500),
-                'photo' => 'article_' . \Illuminate\Support\Str::slug($article) . '.jpg',
+                'photo' => $storedPath,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-        }
+        };
     }
 }

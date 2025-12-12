@@ -65,8 +65,12 @@
                                 Tersedia: {{ $reward->stock ?? 'N/A' }} unit
                             </p>
 
-                            <div class="d-flex justify-content-end align-items-center mt-2">
-                                {{-- Tombol Lihat Detail dihapus di sini --}}
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <a href="{{ route('reward.show', $reward->id) }}" 
+                                    class="btn btn-success rounded-pill px-3 py-1">
+                                    <i class=""></i>Lihat Detail
+                                </a>
+
                                 <a href="{{ route('reward.edit', $reward->id) }}" 
                                    class="btn btn-outline-success btn-sm rounded-circle">
                                     <i class="fas fa-edit"></i>

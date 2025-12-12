@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Activity;
+use App\Models\Community;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ActivityRegistration;
 use Illuminate\Support\Facades\Storage;
 
 class AdminActivityController extends Controller
@@ -43,7 +45,6 @@ class AdminActivityController extends Controller
             'start_date' => 'required|date|before_or_equal:due_date',
             'due_date' => 'required|date|after_or_equal:start_date',
         ]);
-
 
         $path = $request->file('photo')->store('activity', 'public');
 
@@ -133,5 +134,15 @@ class AdminActivityController extends Controller
         $activity->delete();
 
         return redirect()->route('activity.list')->with('success', 'Berhasil menghapus aktivitas!');
+    }
+
+    public function getActivityMember($activity_id)
+    {
+        $activity_registration = ActivityRegistration::where('activity_id', $activity_id)->get();
+        $community_ids = $activity_registration->pluck('community_id');
+        $communities = Community::whereIn('id', $community_ids)->paginate(8);
+        $community_total = $communities->count();
+
+        return view('admin.activity_member', compact('communities', 'community_total'));
     }
 }

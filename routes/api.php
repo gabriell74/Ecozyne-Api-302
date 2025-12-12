@@ -19,7 +19,9 @@ use App\Http\Controllers\API\DiscussionAnswerController;
 use App\Http\Controllers\API\EcoEnzymeTrackingController;
 use App\Http\Controllers\API\DiscussionQuestionController;
 use App\Http\Controllers\API\ProductWasteBankController;
+use App\Http\Controllers\API\TrashTransactionController;
 use App\Http\Controllers\API\WasteBankSubmissionController;
+use App\Models\TrashTransaction;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
@@ -104,6 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}/delete', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
       });
 
+      Route::post('/trash-transaction/{id}', [TrashTransactionController::class, 'trashTransactionByCommunity']);
 });
 
 /* 

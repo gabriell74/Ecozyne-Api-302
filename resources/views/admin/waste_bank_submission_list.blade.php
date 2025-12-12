@@ -186,7 +186,7 @@
                                                 <i class="fas fa-map-pin me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">Latitude</small>
-                                                    <span class="fw-bold">{{ $waste_bank_submission->latitude}}</span>
+                                                    <span class="fw-bold">{{ $waste_bank_submission->latitude }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -204,7 +204,7 @@
                                                 <i class="far fa-note-sticky me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">Catatan</small>
-                                                    <span class="fw-bold">{{ $waste_bank_submission->community->address->address }}</span>
+                                                    <span class="fw-bold">{{ $waste_bank_submission->notes }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,7 +213,7 @@
                                                 <i class="fas fa-file-pdf me-2 mt-1 text-success"></i>
                                                 <div>
                                                     <small class="text-muted d-block">File Dokumen Pengajuan</small>
-                                                    <span class="fw-bold">{{ ($waste_bank_submission->file_document) }}</span>
+                                                    <span class="fw-bold"><a href="{{ asset('storage/'. $waste_bank_submission->file_document )}}">Download PDF</a></span>
                                                 </div>
                                             </div>
                                         </div>

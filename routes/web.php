@@ -59,6 +59,7 @@ Route::middleware('auth_admin')->group(function () {
     Route::get('/activity/edit/{activity}', [AdminActivityController::class, 'edit'])->name('activity.edit');
     Route::put('/activity/update/{activity}', [AdminActivityController::class, 'update'])->name('activity.update');
     Route::delete('/activity/destroy/{activity}', [AdminActivityController::class, 'destroy'])->name('activity.destroy');
+    Route::get('/activity/details/member/{activity}', [AdminActivityController::class, 'getActivityMember'])->name('activity.member');
 
     // Kelola Hadiah
     Route::get('/rewards', [AdminRewardController::class, 'getAllReward'])->name('reward.list');
