@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
             DiscussionQuestionTableSeeder::class,
             DiscussionAnswerTableSeeder::class,
             ComicTableSeeder::class,
-            ComicPhotoTableSeeder::class,
             LikesTableSeeder::class,
             PointTableSeeder::class,
             ProductTableSeeder::class,
