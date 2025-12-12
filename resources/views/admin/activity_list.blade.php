@@ -74,6 +74,10 @@
                                 {{ Str::limit(strip_tags($activity->description), 80) }}
                             </p>
 
+                            <p class="flex-grow-1 text-success" style="font-size: 0.9rem;">
+                                Kuota -> {{ $activity->current_quota }} / {{ $activity->quota }}
+                            </p>
+
                             {{-- Tombol Aksi (Edit dan Detail) --}}
                             <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
                                 {{-- Tombol Detail --}}

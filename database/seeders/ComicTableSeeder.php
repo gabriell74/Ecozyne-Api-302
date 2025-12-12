@@ -25,7 +25,7 @@ class ComicTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        for ($i = 1; $i <= 14; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
 
             $sourcePath2 = public_path("images/comics/miko_dan_lobak/page{$i}.png");
             $storedPath2 = Storage::disk('public')->putFile('comic/comic_pages', new File($sourcePath2));
