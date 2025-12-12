@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'waste_bank', 'community'])->default('community');
             $table->rememberToken();
+            $table->string('otp_code', 6)->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
             $table->timestamps();
         });
 

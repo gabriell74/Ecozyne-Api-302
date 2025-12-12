@@ -52,5 +52,31 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
+        // User Khusus Yusril
+        // Komunitas
+        DB::table('users')->insert([
+            'username' => 'Yusril',
+            'email' => 'iniemail616@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('@Yusril123'),
+            'role' => 'community',
+            'remember_token' => \Illuminate\Support\Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Bank Sampah
+        DB::table('users')->insert([
+            'username' => 'Yusril_bank',
+            'email' => 'yusril@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('@Yusril123'),
+            'role' => 'waste_bank',
+            'remember_token' => \Illuminate\Support\Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
     }
 }

@@ -13,12 +13,11 @@ class SendOtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    public $otp;
+
+    public function __construct($otp)
     {
-        //
+        $this->otp = $otp;
     }
 
     /**
@@ -27,7 +26,7 @@ class SendOtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Otp Mail',
+            subject: 'Kode OTP Verifikasi Anda',
         );
     }
 
@@ -37,7 +36,10 @@ class SendOtpMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'otp',
+            with: [
+                'otp' => $this->otp,
+            ],
         );
     }
 

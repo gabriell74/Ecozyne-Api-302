@@ -1,9 +1,10 @@
 <?php
 namespace Database\Seeders;
 
+use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class CommunityTableSeeder extends Seeder
 {
@@ -23,5 +24,19 @@ class CommunityTableSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
+        // Komunitas Khusus Yusril
+        $user = User::where('email', 'iniemail616@gmail.com')->first();
+        $user_id = $user->id;
+
+        DB::table('community')->insert([
+            'user_id' => $user_id,
+            'address_id' => $faker->numberBetween(1, 25),
+            'photo' => 'yusril.jpg',
+            'phone_number' => '085805368534',
+            'name' => 'MyCommunity',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

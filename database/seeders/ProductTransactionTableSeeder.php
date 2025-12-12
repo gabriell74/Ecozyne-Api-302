@@ -15,7 +15,7 @@ class ProductTransactionTableSeeder extends Seeder
             DB::table('product_transaction')->insert([
                 'order_id' => $faker->numberBetween(1, 15),
                 'product_id' => $faker->numberBetween(1, 5),
-                'price' => $faker->numberBetween(15000, 100000),
+                'total_price' => $faker->numberBetween(15000, 100000),
                 'amount' => $faker->numberBetween(1, 5),
                 'order_customer' => $faker->name(),
                 'order_phone_number' => $faker->phoneNumber(),
