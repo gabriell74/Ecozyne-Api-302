@@ -48,6 +48,8 @@ Route::get('/comics/{id}', [ComicController::class, 'getComicById']);
 Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardStockById']);
 
+Route::get('/marketplace/products', [ProductController::class, 'getAllProduct']);
+
 Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
 Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
 
@@ -99,7 +101,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
 
-      Route::get('/products', [ProductController::class, 'getAllProduct']);
       Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
 
       Route::prefix('/waste-bank/products')->group(function () {

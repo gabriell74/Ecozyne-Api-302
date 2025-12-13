@@ -51,7 +51,7 @@ class AdminComicController extends Controller
                 ->scaleDown(width: 1080)
                 ->toJpeg(75);
 
-            $coverFileName = 'comic/' . uniqid('cover_') . '.jpg';
+            $coverFileName = 'comic/' . uniqid() . '.jpg';
             Storage::disk('public')->put($coverFileName, $coverImage);
 
             $comic = Comic::create([
@@ -69,7 +69,7 @@ class AdminComicController extends Controller
                         ->scaleDown(width: 1080)
                         ->toJpeg(75);
 
-                    $pageFileName = 'comic/comic_pages/' . uniqid('page_') . '.jpg';
+                    $pageFileName = 'comic/comic_pages/' . uniqid() . '.jpg';
                     Storage::disk('public')->put($pageFileName, $img);
 
                     $comic->comicPhotos()->create([
@@ -138,7 +138,7 @@ class AdminComicController extends Controller
                 ->scaleDown(width: 1080)
                 ->toJpeg(75);
 
-            $path = 'comic/' . uniqid('cover_') . '.jpg';
+            $path = 'comic/' . uniqid() . '.jpg';
 
             Storage::disk('public')->put($path, $img);
 
@@ -178,7 +178,7 @@ class AdminComicController extends Controller
             ->scaleDown(width: 1080)
             ->toJpeg(75);
 
-        $path = 'comic/comic_pages/' . uniqid('page_') . '.jpg';
+        $path = 'comic/comic_pages/' . uniqid() . '.jpg';
         Storage::disk('public')->put($path, $compressed);
 
         $comic_photo->photo = $path;

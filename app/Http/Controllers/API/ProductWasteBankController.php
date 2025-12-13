@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Product;
-use App\Models\WasteBank;
 use App\Models\Community;
-use App\Models\WasteBankSubmission;
+use App\Models\WasteBank;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\WasteBankSubmission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 use Spatie\Activitylog\Facades\LogBatch;
 
 class ProductWasteBankController extends Controller
@@ -121,53 +123,77 @@ class ProductWasteBankController extends Controller
 
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'photo' => 'required|image|mimes:jpeg,jpg,png|max:5024',
+            'description'  => 'required|string',
+            'price'        => 'required|numeric|min:0',
+            'stock'        => 'required|integer|min:0',
+            'photo'        => 'required|image|mimes:jpeg,jpg,png|max:5024',
         ]);
 
-        $photoPath = $request->file('photo')->store('products', 'public');
+        try {
+            DB::beginTransaction();
 
-        $product = Product::create([
-            'waste_bank_id' => $this->wasteBank->id,
-            'product_name' => $request->product_name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'stock' => $request->stock,
-            'photo' => $photoPath,
-        ]);
+            $photoFile = $request->file('photo');
 
-        activity()
-            ->performedOn($product)
-            ->causedBy(Auth::user())
-            ->event('create')
-            ->withProperties([
-                'product_name' => $request->product_name,
-                'price' => $request->price,
-                'stock' => $request->stock
-            ])
-            ->log('Menambahkan produk baru');
+            $compressedImage = Image::read($photoFile)
+                ->scaleDown(width: 1080)
+                ->toJpeg(75);
 
-        $product->photo = asset('storage/' . $product->photo);
+            $photoPath = 'products/' . uniqid() . '.jpg';
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Produk berhasil ditambahkan',
-            'data' => $product
-        ], 201);
+            Storage::disk('public')->put($photoPath, $compressedImage);
+
+            $product = Product::create([
+                'waste_bank_id' => $this->wasteBank->id,
+                'product_name'  => $request->product_name,
+                'description'   => $request->description,
+                'price'         => $request->price,
+                'stock'         => $request->stock,
+                'photo'         => $photoPath,
+            ]);
+
+            activity()
+                ->performedOn($product)
+                ->causedBy(Auth::user())
+                ->event('create')
+                ->withProperties([
+                    'product_name' => $request->product_name,
+                    'price'        => $request->price,
+                    'stock'        => $request->stock,
+                ])
+                ->log('Menambahkan produk baru');
+
+            DB::commit();
+
+            $product->photo = asset('storage/' . $product->photo);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil ditambahkan',
+                'data'    => $product
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan produk',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 
-    public function updateWasteBankProduct(Request $request, $id)
+
+   public function updateWasteBankProduct(Request $request, $id)
     {
         if ($this->errorResponse) {
             return $this->errorResponse;
         }
-        
+
         $product = Product::where('id', $id)
             ->where('waste_bank_id', $this->wasteBank->id)
             ->first();
-        
+
         if (!$product) {
             return response()->json([
                 'success' => false,
@@ -177,44 +203,76 @@ class ProductWasteBankController extends Controller
 
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:5024',
+            'description'  => 'required|string',
+            'price'        => 'required|numeric|min:0',
+            'stock'        => 'required|integer|min:0',
+            'photo'        => 'nullable|image|mimes:jpeg,jpg,png|max:5024',
         ]);
 
         $oldData = $product->toArray();
-        $dataToUpdate = $request->only(['product_name', 'description', 'price', 'stock']);
 
-        if ($request->hasFile('photo')) {
-            if ($product->photo) {
-                Storage::disk('public')->delete($product->photo);
+        try {
+            DB::beginTransaction();
+
+            $dataToUpdate = $request->only([
+                'product_name',
+                'description',
+                'price',
+                'stock'
+            ]);
+
+            if ($request->hasFile('photo')) {
+
+                if ($product->photo && Storage::disk('public')->exists($product->photo)) {
+                    Storage::disk('public')->delete($product->photo);
+                }
+
+                $photoFile = $request->file('photo');
+
+                $compressedImage = Image::read($photoFile)
+                    ->scaleDown(width: 1080)
+                    ->toJpeg(75);
+
+                $photoPath = 'products/' . uniqid() . '.jpg';
+
+                Storage::disk('public')->put($photoPath, $compressedImage);
+
+                $dataToUpdate['photo'] = $photoPath;
             }
 
-            $photoPath = $request->file('photo')->store('products', 'public');
-            $dataToUpdate['photo'] = $photoPath;
+            $product->update($dataToUpdate);
+
+            activity()
+                ->performedOn($product)
+                ->causedBy(Auth::user())
+                ->event('update')
+                ->withProperties([
+                    'before' => $oldData,
+                    'after'  => $dataToUpdate
+                ])
+                ->log('Memperbarui produk');
+
+            DB::commit();
+
+            $product->photo = asset('storage/' . $product->photo);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil diperbarui',
+                'data'    => $product
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui produk',
+                'error'   => $e->getMessage(),
+            ], 500);
         }
-
-        $product->update($dataToUpdate);
-
-        activity()
-            ->performedOn($product)
-            ->causedBy(Auth::user())
-            ->event('update')
-            ->withProperties([
-                'before' => $oldData,
-                'after' => $dataToUpdate
-            ])
-            ->log('Memperbarui produk');
-
-        $product->photo = asset('storage/' . $product->photo);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Produk berhasil diperbarui',
-            'data' => $product
-        ], 200);
     }
+
 
     public function deleteWasteBankProduct($id)
     {
