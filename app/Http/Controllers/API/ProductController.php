@@ -15,10 +15,20 @@ class ProductController extends Controller
 {
     public function getAllProduct()
     {
-        $products = Product::latest()->get()->map(function ($product) {
-            $product->photo = asset('storage/' . $product->photo);
-            return $product;
-        });
+        $products = Product::with('wasteBank.wasteBankSubmission')
+            ->latest()
+            ->get()
+            ->map(function ($product) {
+
+                $product->photo = asset('storage/' . $product->photo);
+
+                $product->waste_bank_name =
+                    $product->wasteBank?->wasteBankSubmission?->waste_bank_name;
+
+                unset($product->wasteBank);
+
+                return $product;
+            });
 
         return response()->json([
             "success" => true,
@@ -27,26 +37,38 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function productOrderByCommunity(Request $request)
+    public function productOrderByCommunity(Request $request, Product $product)
     {
-        $request->validate([
-            'product_id' => 'required',
-            'order_customer' => 'required',
-            'order_phone_number' => 'required',
-            'order_address' => 'required',
-            'amount' => 'required|integer|min:1',
-        ]);
-
-        $product = Product::findOrFail($request->product_id);
         $user = $request->user();
         $community = Community::where('user_id', $user->id)->first();
-
+        
         if (!$community) {
             return response()->json([
                 'success' => false,
                 'message' => 'User tidak terdaftar sebagai komunitas'
             ], 404);
         }
+
+        if ($product->stock  <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok produk habis'
+            ], 422);
+        }
+
+        if ($product->stock < $request->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok produk tidak mencukupi'
+            ], 422);
+        }
+
+        $request->validate([
+            'order_customer' => 'required',
+            'order_phone_number' => 'required',
+            'order_address' => 'required',
+            'amount' => 'required|integer|min:1',
+        ]);
 
         try {
             DB::beginTransaction();
@@ -57,22 +79,27 @@ class ProductController extends Controller
                 'order_customer' => $request->order_customer,
                 'order_phone_number' => $request->order_phone_number,
                 'order_address' => $request->order_address,
-                'status_order' => 'Pending',
-                'status_payment' => 'Pending',
+                'status_order' => 'pending',
+                'status_payment' => 'pending',
             ]);
 
             ProductTransaction::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'total_price' => $product->price * $request->amount,
-                'amount' => $request->amount,
+                'order_id'      => $order->id,
+                'product_id'    => $product->id,
+                'product_name'  => $product->product_name, // snapshot
+                'product_price' => $product->price,         // snapshot
+                'amount'        => $request->amount,
+                'total_price'   => $product->price * $request->amount,
             ]);
+
+
+            $product->decrement('stock', $request->amount);
 
             /**
              * SAVE ACTIVITY LOG
              */
             activity()
-                ->causedBy($user->id)
+                ->causedBy($user)
                 ->performedOn($order)
                 ->event('order_created')
                 ->withProperties([
@@ -86,12 +113,35 @@ class ProductController extends Controller
 
             DB::commit();
 
+           $productTransaction = ProductTransaction::where('order_id', $order->id)->get();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil mengajukan pembelian produk',
-                'data' => $order
+                'data' => [
+                    'order' => [
+                        'id' => $order->id,
+                        'community_id' => $order->community_id,
+                        'waste_bank_id' => $order->waste_bank_id,
+                        'order_customer' => $order->order_customer,
+                        'order_phone_number' => $order->order_phone_number,
+                        'order_address' => $order->order_address,
+                        'status_order' => $order->status_order,
+                        'status_payment' => $order->status_payment,
+                        'created_at' => $order->created_at,
+                        'updated_at' => $order->updated_at,
+                        'product_transactions' => $productTransaction->map(function ($item) {
+                            return [
+                                'product_id'    => $item->product_id,
+                                'product_name'  => $item->product_name,   // snapshot
+                                'product_price' => $item->product_price,  // snapshot
+                                'amount'        => $item->amount,
+                                'total_price'   => $item->total_price,
+                            ];
+                        })
+                    ]
+                ]
             ], 201);
-
         } catch (\Throwable $e) {
 
             DB::rollBack();
@@ -100,7 +150,7 @@ class ProductController extends Controller
              * Jika error pun dicatat
              */
             activity()
-                ->causedBy($user->id)
+                ->causedBy($user)
                 ->event('order_failed')
                 ->withProperties([
                     'message' => $e->getMessage(),
@@ -113,6 +163,5 @@ class ProductController extends Controller
                 'message' => 'Pengajuan pembelian produk gagal',
             ], 500);
         }
-
     }
 }

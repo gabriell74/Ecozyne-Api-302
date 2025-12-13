@@ -34,7 +34,7 @@ class Order extends Model
         return $this->belongsTo(WasteBank::class);
     }
 
-    public function productTransaction(): HasMany
+    public function productTransactions(): HasMany
     {
         return $this->hasMany(ProductTransaction::class);
     }

@@ -14,11 +14,18 @@ class ProductTransaction extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'product_price',
+        'product_name',
         'order_customer',
         'order_phone_number',
         'order_address',
         'total_price',
         'amount',
+    ];
+
+    protected $casts = [
+        'total_price' => 'integer',
+        'amount' => 'integer',
     ];
 
     public function order(): BelongsTo

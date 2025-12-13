@@ -82,6 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::get('/reward/exchange/history', [CommunityHistoryController::class, 'rewardExchangeHistory']);
       Route::get('/point/income/history', [CommunityHistoryController::class, 'pointIncomeHistory']);
+      Route::get('/product/order/history', [CommunityHistoryController::class, 'productOrderHistory']);
 
       Route::get('/eco-enzyme-tracking/get-all-batches', [EcoEnzymeTrackingController::class, 'getAllBatches']);
       Route::post('/eco-enzyme-tracking/store-batch', [EcoEnzymeTrackingController::class, 'storeBatch']);
@@ -101,7 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
 
-      Route::post('/product/order', [ProductController::class, 'productOrderByCommunity']);
+      Route::post('/product/{product}/order', [ProductController::class, 'productOrderByCommunity']);
 
       Route::prefix('/waste-bank/products')->group(function () {
         Route::get('/', [ProductWasteBankController::class, 'getWasteBankProducts']);

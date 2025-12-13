@@ -27,7 +27,10 @@ class WasteBankController extends Controller
                 'status',
                 'created_at',
                 'updated_at'
-            ]);
+            ])->map(function ($wasteBank) {
+                $wasteBank->photo = asset('storage/' . $wasteBank->photo);
+                return $wasteBank;
+            });
 
         return response()->json([
             "success" => true,

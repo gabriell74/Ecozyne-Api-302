@@ -25,11 +25,11 @@ return new class extends Migration
                 ->on('product')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('order_customer');
-            $table->string('order_phone_number');
-            $table->string('order_address');
             $table->integer('total_price');
             $table->integer('amount');
+            // Snapshot fields
+            $table->integer('product_price');
+            $table->string('product_name');
             $table->timestamps();
         });
     }

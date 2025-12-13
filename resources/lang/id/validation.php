@@ -169,6 +169,9 @@ return [
     */
 
     'attributes' => [
+        'amount' => 'Jumlah',
+        'stock' => 'Stok',
+        'price' => 'Harga',
         'username' => 'Username',
         'name' => 'Nama lengkap',
         'email' => 'Email',
