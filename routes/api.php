@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\TrashTransaction;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\OtpController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ComicController;
@@ -16,12 +18,11 @@ use App\Http\Controllers\API\OrderCommunityController;
 use App\Http\Controllers\API\OrderWasteBankController;
 use App\Http\Controllers\API\CommunityHistoryController;
 use App\Http\Controllers\API\DiscussionAnswerController;
-use App\Http\Controllers\API\EcoEnzymeTrackingController;
-use App\Http\Controllers\API\DiscussionQuestionController;
 use App\Http\Controllers\API\ProductWasteBankController;
 use App\Http\Controllers\API\TrashTransactionController;
+use App\Http\Controllers\API\EcoEnzymeTrackingController;
+use App\Http\Controllers\API\DiscussionQuestionController;
 use App\Http\Controllers\API\WasteBankSubmissionController;
-use App\Models\TrashTransaction;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
@@ -49,6 +50,9 @@ Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardSto
 
 Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
 Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
+
+Route::post('/send-otp', [OtpController::class, 'sendOtp']);
+Route::post('/verify-otp', [OtpController::class, 'verifyOtp']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
