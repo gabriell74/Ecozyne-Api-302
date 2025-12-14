@@ -12,22 +12,32 @@ class WasteBankController extends Controller
 {
     public function getAllWasteBank()
     {
-        $wasteBanks = WasteBankSubmission::where('status', 'approved')
-            ->latest()
+        $wasteBanks = WasteBank::query()
+            ->join(
+                'waste_bank_submission',
+                'waste_bank_submission.id',
+                '=',
+                'waste_bank.waste_bank_submission_id'
+            )
+            ->where('waste_bank_submission.status', 'approved')
+            ->orderByDesc('waste_bank.created_at')
             ->get([
-                'id',
-                'community_id',
-                'waste_bank_name',
-                'waste_bank_location',
-                'photo',
-                'latitude',
-                'longitude',
-                'file_document',
-                'notes',
-                'status',
-                'created_at',
-                'updated_at'
-            ])->map(function ($wasteBank) {
+                'waste_bank.id',
+                'waste_bank_submission.community_id',
+
+                'waste_bank_submission.waste_bank_name',
+                'waste_bank_submission.waste_bank_location',
+                'waste_bank_submission.photo',
+                'waste_bank_submission.latitude',
+                'waste_bank_submission.longitude',
+                'waste_bank_submission.file_document',
+                'waste_bank_submission.notes',
+                'waste_bank_submission.status',
+
+                'waste_bank.created_at',
+                'waste_bank.updated_at',
+            ])
+            ->map(function ($wasteBank) {
                 $wasteBank->photo = asset('storage/' . $wasteBank->photo);
                 return $wasteBank;
             });

@@ -2,18 +2,36 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\WasteBank;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\TrashTransaction;
+use App\Http\Controllers\Controller;
 
 class TrashTransactionController extends Controller
 {
-    public function trashTransactionByUser(Request $request, $id)
+    public function trashTransactionByUser(Request $request, $wasteBankId)
     {
         $user = $request->user();
 
-        $trash_transaction = TrashTransaction::create([
-            'waste_bank_id' => $id,
+        if (!WasteBank::where('id', $wasteBankId)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => "Bank Sampah tidak ditemukan"
+            ], 404);
+        }
+
+        if (TrashTransaction::where('waste_bank_id', $wasteBankId)
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => "Anda sudah memiliki pengajuan setoran sampah yang sedang diproses di Bank Sampah ini"
+            ], 422);
+        }
+
+        TrashTransaction::create([
+            'waste_bank_id' => $wasteBankId,
             'user_id' => $user->id,
             'status' => "pending"
         ]);
@@ -21,7 +39,6 @@ class TrashTransactionController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Pengajuan Setor Sampah Berhasil Dilakukan",
-            'data' => $trash_transaction
         ], 201);
 
     }

@@ -112,7 +112,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}/delete', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
       });
 
-      Route::post('/trash-transaction/{id}', [TrashTransactionController::class, 'trashTransactionByCommunity']);
+      Route::post('/trash-submissions/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByUser']);
 });
 
 /* 
