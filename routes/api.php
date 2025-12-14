@@ -49,6 +49,7 @@ Route::get('/rewards', [PointExchangeController::class, 'getAllRewards']);
 Route::get('/rewards/{rewardId}', [PointExchangeController::class, 'getRewardStockById']);
 
 Route::get('/marketplace/products', [ProductController::class, 'getAllProduct']);
+Route::get('/marketplace/products/{id}', [ProductController::class, 'getProductDetail']);
 
 Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
 Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
@@ -90,9 +91,9 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::post('/waste-bank-submission/store', [WasteBankSubmissionController::class, 'storeWasteBankSubmission']);
       Route::get('/waste-bank-submission/history', [WasteBankSubmissionController::class, 'getSubmissionHistory']);
 
-      Route::prefix('orders/community')->group(function () {
-        Route::get('/', [OrderCommunityController::class, 'getOrdersByCommunity']);
-        Route::post('{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
+      Route::prefix('/orders/community')->group(function () {
+        Route::post('/{product}/place', [OrderCommunityController::class, 'placeOrder']);
+        Route::post('/{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
       });
 
       Route::prefix('/orders/waste-bank')->group(function () {
@@ -102,7 +103,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
 
-      Route::post('/product/{product}/order', [ProductController::class, 'productOrderByCommunity']);
 
       Route::prefix('/waste-bank/products')->group(function () {
         Route::get('/', [ProductWasteBankController::class, 'getWasteBankProducts']);
