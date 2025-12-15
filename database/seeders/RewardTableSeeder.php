@@ -34,16 +34,5 @@ class RewardTableSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         };
-
-        foreach ($rewards as $reward) {
-            DB::table('reward')->insert([
-                'reward_name' => $reward[0],
-                'photo' => 'reward_' . \Illuminate\Support\Str::slug($reward[0]) . '.jpg',
-                'stock' => $faker->numberBetween(5, 50),
-                'unit_point' => $reward[1],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
     }
 }
