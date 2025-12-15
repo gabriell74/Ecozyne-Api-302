@@ -14,6 +14,24 @@ class WasteBankSubmissionController extends Controller
         $user = $request->user();
         $community = $user->community->id;
 
+        if (WasteBankSubmission::where('community_id', $community)
+            ->where('status', 'pending')
+            ->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda memiliki pengajuan bank sampah yang sedang diproses.',
+            ], 400);
+        }
+        
+        if (WasteBankSubmission::where('community_id', $community)
+            ->where('status', 'approved')
+            ->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah terdaftar sebagai bank sampah.',
+            ], 400);
+        }
+
         $request->validate([
             'waste_bank_name' => 'required|string|max:255',
             'waste_bank_location' => 'required|string|max:300',
@@ -79,6 +97,28 @@ class WasteBankSubmissionController extends Controller
             'success' => true,
             'message' => 'Riwayat pengajuan ditemukan.',
             'data' => $submissions,
+        ], 200);
+    }
+
+    public function checkSubmissionsStatus(Request $request)
+    {
+        $user = $request->user();
+        $community = $user->community;
+
+        $hasPending = WasteBankSubmission::where('community_id', $community->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        activity()
+            ->causedBy($user)
+            ->withProperties([
+                'community_id' => $community->id,
+                'has_pending' => $hasPending,
+            ])
+            ->log('Mengecek status pengajuan bank sampah');
+
+        return response()->json([
+            'has_pending' => $hasPending,
         ], 200);
     }
 }

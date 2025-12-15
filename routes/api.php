@@ -70,39 +70,39 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::delete('/question/delete/{question}', [DiscussionQuestionController::class, 'deleteQuestion']);
 
       Route::get('/profile', [UserController::class, 'getProfile']);
-
+      
       Route::post('/answer/store/{questionId}', [DiscussionAnswerController::class, 'storeAnswer']);
       Route::put('/answer/update/{answer}', [DiscussionAnswerController::class, 'updateAnswer']);
       Route::delete('/answer/delete/{answer}', [DiscussionAnswerController::class, 'deleteAnswer']);
-
+      
       Route::post('/activities/{activity}/register', [ActivityController::class, 'activityRegister']);
       Route::get('/activities/registration/history', [ActivityController::class, 'getCommunityActivityRegistrations']);
       Route::get('/activities/{id}/is-registered', [ActivityController::class, 'checkRegistrationStatus']);
-
+      
       Route::post('/reward/exchange/{reward}', [PointExchangeController::class, 'exchangeReward']);
-
+      
       Route::get('/reward/exchange/history', [CommunityHistoryController::class, 'rewardExchangeHistory']);
       Route::get('/point/income/history', [CommunityHistoryController::class, 'pointIncomeHistory']);
       Route::get('/product/order/history', [CommunityHistoryController::class, 'productOrderHistory']);
-
+      
       Route::get('/eco-enzyme-tracking/get-all-batches', [EcoEnzymeTrackingController::class, 'getAllBatches']);
       Route::post('/eco-enzyme-tracking/store-batch', [EcoEnzymeTrackingController::class, 'storeBatch']);
-
+      
       Route::post('/waste-bank-submission/store', [WasteBankSubmissionController::class, 'storeWasteBankSubmission']);
       Route::get('/waste-bank-submission/history', [WasteBankSubmissionController::class, 'getSubmissionHistory']);
+      Route::get('/waste-bank-submissions/check-status', [WasteBankSubmissionController::class, 'checkSubmissionsStatus']);
 
       Route::prefix('/orders/community')->group(function () {
         Route::post('/{product}/place', [OrderCommunityController::class, 'placeOrder']);
         Route::post('/{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
       });
-
+      
       Route::prefix('/orders/waste-bank')->group(function () {
         Route::get('/', [OrderWasteBankController::class, 'getOrdersByWasteBank']);
         Route::post('/{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
         Route::post('/{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
         Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
-
 
       Route::prefix('/waste-bank/products')->group(function () {
         Route::get('/', [ProductWasteBankController::class, 'getWasteBankProducts']);
@@ -113,8 +113,8 @@ Route::middleware('auth:sanctum')->group(function () {
       });
 
       Route::post('/trash-submissions/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByUser']);
-});
-
+    });
+    
 /* 
 * Semua Route dibawah ini nanti diubah ke web.php
 */
