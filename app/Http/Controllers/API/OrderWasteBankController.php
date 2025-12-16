@@ -14,59 +14,67 @@ class OrderWasteBankController extends Controller
     {
         $user = $request->user() ?? abort(401, 'Unauthorized');
 
-        if (!$user->wasteBank) {
-            abort(403, 'Forbidden: Not a Waste Bank');
+        $community = $user->community;
+        if (! $community) {
+            abort(403, 'Dilarang: pengguna belum tergabung dalam komunitas');
         }
 
-        return $user->wasteBank;
+        $submission = $community?->wasteBankSubmission;
+
+        if (!$submission) {
+            abort(403, 'Dilarang: komunitas ini belum mengajukan pendaftaran sebagai bank sampah');
+        }
+
+        if (! $submission || strtolower($submission->status) !== 'approved') {
+            abort(403, 'Dilarang: komunitas ini belum disetujui sebagai bank sampah');
+        }
+
+        $wasteBank = $submission->wasteBank;
+        if (! $wasteBank) {
+            abort(403, 'Dilarang: waste bank belum terdaftar untuk submission ini');
+        }
+
+        if ($user->id !== $community->user_id && ($user->role ?? null) !== 'waste_bank') {
+            abort(403, 'Dilarang: bukan penanggung jawab bank sampah ini');
+        }
+
+        return $wasteBank;
     }
 
-    public function getOrdersByWasteBank(Request $request)
+    public function getWasteBankOrders(Request $request)
     {
         $wasteBank = $this->wasteBankOrFail($request);
 
         try {
             $orders = Order::where('waste_bank_id', $wasteBank->id)
-                ->with(['community', 'productTransaction.product'])
+                ->with([
+                    'productTransactions',
+                ])
                 ->latest()
                 ->get()
-                ->map(fn ($order) => $this->formatData($order))
-                ->groupBy(function ($item) {
-                    return match (true) {
-                        $item['status'] === 'Pending' => 'incoming',
-                        $item['status'] === 'On Delivery' => 'on_delivery',
-                        $item['status'] === 'Completed' => 'completed',
-                        default => 'canceled_rejected'
-                    };
-                });
+                ->map(fn (Order $order) => $this->formatData($order));
 
-            //  LOG
             activity()
                 ->causedBy($request->user())
                 ->withProperties([
                     'waste_bank_id' => $wasteBank->id,
-                    'ip'           => $request->ip(),
+                    'ip' => $request->ip(),
                 ])
-                ->log('Mengambil daftar pesanan oleh waste bank');
+                ->log('Mengambil pesanan customer untuk waste bank');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil mendapatkan data pesanan',
-                'data' => [
-                    'incoming' => $orders->get('incoming', []),
-                    'on_delivery' => $orders->get('on_delivery', []),
-                    'completed' => $orders->get('completed', []),
-                    'canceled_rejected' => $orders->get('canceled_rejected', []),
-                ]
+                'message' => 'Berhasil mendapatkan pesanan customer',
+                'data'    => $orders,
             ], 200);
 
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil pesanan.',
+                'message' => 'Terjadi kesalahan saat mengambil pesanan customer',
             ], 500);
         }
-    }
+}
 
     public function acceptOrder(Request $request, $orderId)
     {
@@ -170,16 +178,20 @@ class OrderWasteBankController extends Controller
 
     private function formatData(Order $order)
     {
-        $transaction = $order->productTransaction->first();
+        $transaction = $order->productTransactions->first();
 
         return [
             'id' => $order->id,
-            'tanggal' => $order->created_at->format('M d, Y'),
-            'communityName' => $order->community->name ?? '-',
-            'productName' => $transaction->product->product_name ?? '-',
-            'quantity' => $transaction->amount ?? 0,
-            'status' => $order->status_order,
-            'reason' => $order->cancellation_reason,
+            'customer_name' => $order->order_customer ?? '-',
+            'phone_number' => $order->order_phone_number ?? '-',
+            'address' => $order->order_address ?? '-',
+            'total_price' => $transaction->total_price ?? 0,
+            'amount' => $transaction->amount ?? 0,
+            'product_name' => $transaction->product_name ?? '-',
+            'status_order' => $order->status_order,
+            'status_payment' => $order->status_payment,
+            'cancellation_reason' => $order->cancellation_reason,
+            'created_at' => $order->created_at,
         ];
     }
 }
