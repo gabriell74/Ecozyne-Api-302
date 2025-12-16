@@ -27,7 +27,7 @@ use App\Http\Controllers\API\WasteBankSubmissionController;
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/regions', [RegionController::class, 'index']);
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 Route::get('/admin/gallery', [GalleryController::class, 'index']);
 
