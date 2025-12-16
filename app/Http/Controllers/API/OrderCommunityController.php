@@ -146,7 +146,7 @@ class OrderCommunityController extends Controller
     }
 
     /**
-     * POST /api/orders/{orderId}/cancel
+     * PUT /api/orders/community/{orderId}/cancel
      */
     public function cancelOrder(Request $request, $orderId)
     {
@@ -154,9 +154,9 @@ class OrderCommunityController extends Controller
         $community = $user->community ?? abort(401, 'Tidak terdaftar sebagai komunitas');
 
         $validator = Validator::make($request->all(), [
-            'reason' => 'required|string|max:255',
+            'cancellation_reason' => 'required|string|max:255',
         ], [
-            'reason.required' => 'Alasan pembatalan wajib diisi.',
+            'cancellation_reason.required' => 'Alasan pembatalan wajib diisi.',
         ]);
 
         $validator->validate();
@@ -175,7 +175,7 @@ class OrderCommunityController extends Controller
                     ->causedBy($user)
                     ->withProperties([
                         'order_id' => $orderId,
-                        'reason' => $request->reason,
+                        'cancellation_reason' => $request->cancellation_reason,
                         'ip' => $request->ip(),
                         'user_agent' => $request->userAgent(),
                     ])
@@ -188,7 +188,7 @@ class OrderCommunityController extends Controller
                 ], 403);
             }
 
-            if (!in_array($order->status_order, ['Pending'])) {
+            if (!in_array($order->status_order, ['pending'])) {
 
                 // Logging gagal karena status tidak valid
                 activity()
@@ -196,7 +196,7 @@ class OrderCommunityController extends Controller
                     ->withProperties([
                         'order_id' => $order->id,
                         'current_status' => $order->status_order,
-                        'reason' => $request->reason,
+                        'cancellation_reason' => $request->cancellation_reason,
                         'ip' => $request->ip(),
                         'user_agent' => $request->userAgent(),
                     ])
@@ -210,8 +210,9 @@ class OrderCommunityController extends Controller
             }
 
             $order->update([
-                'status_order'        => 'Canceled',
-                'cancellation_reason' => $request->reason,
+                'status_order'        => 'cancelled',
+                'cancellation_reason' => $request->cancellation_reason,
+                'status_payment'      => 'failed',
             ]);
 
             DB::commit();
@@ -222,7 +223,7 @@ class OrderCommunityController extends Controller
                 ->withProperties([
                     'order_id' => $order->id,
                     'new_status' => 'Canceled',
-                    'reason' => $request->reason,
+                    'cancellation_reason' => $request->cancellation_reason,
                     'ip' => $request->ip(),
                     'user_agent' => $request->userAgent(),
                 ])
@@ -233,10 +234,11 @@ class OrderCommunityController extends Controller
                 'message' => 'Pesanan berhasil dibatalkan',
                 'data'    => [
                     'id'     => $order->id,
-                    'status' => $order->status_order,
-                    'reason' => $order->cancellation_reason,
+                    'status_order' => $order->status_order,
+                    'status_payment' => $order->status_payment,
+                    'cancellation_reason' => $order->cancellation_reason,
                 ],
-            ]);
+            ], 200);
 
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -272,7 +274,7 @@ class OrderCommunityController extends Controller
             'metode'     => 'COD',
             'bankSampah' => $order->wasteBank->name ?? '-',
             'status'     => $order->status_order,
-            'reason'     => $order->cancellation_reason,
+            'cancellation_reason'     => $order->cancellation_reason,
         ];
     }
 }

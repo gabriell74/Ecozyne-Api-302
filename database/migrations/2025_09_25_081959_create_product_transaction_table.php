@@ -19,11 +19,11 @@ return new class extends Migration
                 ->on('order')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')
                 ->references('id')
                 ->on('product')
-                ->onDelete('cascade')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
             $table->integer('total_price');
             $table->integer('amount');

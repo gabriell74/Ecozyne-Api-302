@@ -14,7 +14,7 @@ class ExchangeTransactionTableSeeder extends Seeder
         for ($i = 1; $i <= 15; $i++) {
             DB::table('exchange_transaction')->insert([
                 'exchange_id' => $faker->numberBetween(1, 10),
-                'reward_id' => $faker->numberBetween(1, 7),
+                'reward_id' => $faker->numberBetween(1, 4),
                 'amount' => $faker->numberBetween(1, 3),
                 'total_unit_point' => $faker->numberBetween(100, 500),
                 'created_at' => now(),

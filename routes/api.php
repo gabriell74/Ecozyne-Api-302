@@ -94,7 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       Route::prefix('/orders/community')->group(function () {
         Route::post('/{product}/place', [OrderCommunityController::class, 'placeOrder']);
-        Route::post('/{order}/cancel', [OrderCommunityController::class, 'cancelOrder']);
+        Route::put('/{orderId}/cancel', [OrderCommunityController::class, 'cancelOrder']);
       });
       
       Route::prefix('/orders/waste-bank')->group(function () {
