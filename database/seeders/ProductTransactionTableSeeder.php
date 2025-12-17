@@ -21,7 +21,7 @@ class ProductTransactionTableSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             DB::table('product_transaction')->insert([
                 'order_id' => $faker->numberBetween(1, 15),
-                'product_id' => $faker->numberBetween(1, 5),
+                'product_id' => $faker->numberBetween(1, 4),
                 'product_name' => $rewards[array_rand($rewards)],
                 'product_price' => $faker->numberBetween(1, 5),
                 'total_price' => $faker->numberBetween(15000, 100000),
