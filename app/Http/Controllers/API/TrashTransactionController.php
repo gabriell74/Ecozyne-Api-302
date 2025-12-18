@@ -59,7 +59,7 @@ class TrashTransactionController extends Controller
         ], 200);
     }
 
-    public function approveTransaction(Request $request, $id)
+    public function approveTransaction($id)
     {
         $transaction = TrashTransaction::find($id);
 
@@ -70,22 +70,61 @@ class TrashTransactionController extends Controller
             ], 404);
         }
 
-        $poin = $transaction->trash_weight * 10;
-
         $transaction->update([
             'status' => 'approved',
-            'poin_earned' => $poin
+            'rejection_reason' => null,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => "Setoran sampah berhasil disetujui",
+            'message' => "Pengajuan setoran sampah disetujui",
+            'data' => $transaction
+        ], 200);
+    }
+
+    public function storeTrash(Request $request, $id)
+    {
+        $request->validate([[
+            'trash_weight' => 'required|integer|min:1'
+        ]]);
+
+        $transaction = TrashTransaction::find($id);
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => false,
+                'message' => "Transaksi tidak ditemukan"
+            ], 404);
+        }
+
+        if ($transaction->status !== 'approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi belum disetujui'
+            ], 422);
+        }
+
+        $poin = $request->trash_weight * 10;
+
+        $transaction->update([
+            'trash_weight' => $request->trash_weight,
+            'poin_earned' => $poin,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Setoran sampah berhasil, poin ditambahkan",
             'data' => $transaction
         ], 200);
     }
 
     public function rejectTransaction(Request $request, $id)
     {
+
+        $request->validate([[
+            'rejection_reason' => 'required|string'
+        ]]);
+
         $transaction = TrashTransaction::find($id);
 
         if (!$transaction) {
@@ -95,19 +134,15 @@ class TrashTransactionController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'reason' => 'required|string'
-        ]);
-
         $transaction->update([
             'status' => 'rejected',
-            'reason' => $request->reason,
+            'rejection_reason' => $request->rejection_reason,
             'poin_earned' => 0,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => "Setoran sampah ditolak",
+            'message' => "Pengajuan setoran sampah ditolak",
             'data' => $transaction
         ], 200);
     }
