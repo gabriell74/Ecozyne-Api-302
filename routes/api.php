@@ -113,6 +113,11 @@ Route::middleware('auth:sanctum')->group(function () {
       });
 
       Route::post('/trash-submissions/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByUser']);
+      Route::get('/trash-submissions/waste-bank/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByWasteBank']);
+      Route::put('/trash-submissions/{id}/approve', [TrashTransactionController::class, 'approveTransaction']);
+      Route::put('/trash-submissions/{id}/store', [TrashTransactionController::class, 'storeTrash']);
+      Route::put('/trash-submissions/{id}/reject', [TrashTransactionController::class, 'rejectTransaction']);
+      Route::get('/trash-submissions/user/history', [TrashTransactionController::class, 'historyByUser']);
     });
     
 /* 

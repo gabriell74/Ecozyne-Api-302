@@ -147,5 +147,19 @@ class TrashTransactionController extends Controller
         ], 200);
     }
 
+    public function historyByUser(Request $request)
+    {
+        $user = $request->user();
 
+        $history = TrashTransaction::with(['wasteBank'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => "History setoran sampah",
+            'data' => $history
+        ], 200);
+    }
 }
