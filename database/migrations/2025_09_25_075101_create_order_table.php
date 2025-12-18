@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('order_customer');
             $table->string('order_phone_number', 20);
             $table->text('order_address');
-            $table->enum('status_order', ['pending', 'processed', 'delivered', 'cancelled']);
+            $table->enum('status_order', ['pending', 'processed', 'delivered', 'cancelled', 'rejected']);
             $table->text('cancellation_reason')->nullable();
             $table->enum('status_payment', ['pending', 'paid', 'failed']);
             $table->timestamps();
