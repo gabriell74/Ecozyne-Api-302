@@ -99,9 +99,9 @@ Route::middleware('auth:sanctum')->group(function () {
       
       Route::prefix('/waste-bank/orders')->group(function () {
         Route::get('/', [OrderWasteBankController::class, 'getWasteBankOrders']);
-        Route::post('/{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
-        Route::post('/{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
-        Route::post('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
+        Route::put('/{order}/accept', [OrderWasteBankController::class, 'acceptOrder']);
+        Route::put('/{order}/reject', [OrderWasteBankController::class, 'rejectOrder']);
+        Route::put('/{order}/complete', [OrderWasteBankController::class, 'completeOrder']);
       });
 
       Route::prefix('/waste-bank/products')->group(function () {

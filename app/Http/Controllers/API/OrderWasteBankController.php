@@ -78,29 +78,51 @@ class OrderWasteBankController extends Controller
 
     public function acceptOrder(Request $request, $orderId)
     {
-        return $this->updateOrder($request, $orderId, 'On Delivery', 'Pesanan diterima');
+        return $this->updateOrder(
+            $request,
+            $orderId,
+            'processed',
+            'Pesanan diterima',
+            null,
+            ['pending']
+        );
     }
+
 
     public function rejectOrder(Request $request, $orderId)
     {
         $validator = Validator::make($request->all(), [
-            'reason' => 'required|string|max:255'
+            'cancellation_reason' => 'required|string|max:255'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal.',
+                'message' => "Validasi gagal",
                 'errors' => $validator->errors()
             ], 422);
         }
 
-        return $this->updateOrder($request, $orderId, 'Rejected', 'Pesanan ditolak', $request->reason);
+        return $this->updateOrder(
+            $request, 
+            $orderId, 
+            'rejected', 
+            'Pesanan ditolak', 
+            $request->cancellation_reason,
+            null
+        );
     }
 
     public function completeOrder(Request $request, $orderId)
     {
-        return $this->updateOrder($request, $orderId, 'Completed', 'Pesanan selesai', null, ['On Delivery']);
+        return $this->updateOrder(
+            $request,
+            $orderId,
+            'delivered',
+            'Pesanan selesai',
+            null,
+            ['processed'],
+        );
     }
 
     private function updateOrder(
@@ -109,16 +131,19 @@ class OrderWasteBankController extends Controller
         $targetStatus,
         $successMessage,
         $reason = null,
-        $allowedStatus = ['Pending']
+        $allowedStatus = ['pending']
     ) {
+
+        dd('UPDATE ORDER TERPANGGIL', $allowedStatus);
         $wasteBank = $this->wasteBankOrFail($request);
 
         DB::beginTransaction();
 
         try {
-            $order = Order::where('id', $orderId)
-                ->where('waste_bank_id', $wasteBank->id)
-                ->first();
+            $order = Order::where([
+                'id' => $orderId,
+                'waste_bank_id' => $wasteBank->id,
+            ])->first();
 
             if (!$order) {
                 DB::rollBack();
@@ -128,7 +153,7 @@ class OrderWasteBankController extends Controller
                 ], 404);
             }
 
-            if (!in_array($order->status_order, $allowedStatus)) {
+            if (!in_array($order->status_order, $allowedStatus,)) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -136,11 +161,21 @@ class OrderWasteBankController extends Controller
                 ], 409);
             }
 
+            $oldStatus = $order->status_order;
+
             $dataUpdate = [
                 'status_order' => $targetStatus
             ];
 
-            if ($targetStatus === 'Rejected') {
+            if ($targetStatus === 'rejected') {
+                if (!$reason) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Alasan penolakan wajib diisi'
+                    ], 422);
+                }
+
                 $dataUpdate['cancellation_reason'] = $reason;
             }
 
@@ -148,23 +183,22 @@ class OrderWasteBankController extends Controller
 
             DB::commit();
 
-            //  LOG
             activity()
                 ->causedBy($request->user())
                 ->performedOn($order)
                 ->withProperties([
-                    'order_id'       => $order->id,
-                    'old_status'     => $order->status_order,
-                    'new_status'     => $targetStatus,
-                    'reason'         => $reason,
-                    'ip'             => $request->ip(),
+                    'order_id'   => $order->id,
+                    'old_status' => $oldStatus,
+                    'new_status' => $targetStatus,
+                    'reason'     => $reason,
+                    'ip'         => $request->ip(),
                 ])
                 ->log("Mengubah status pesanan menjadi {$targetStatus}");
 
             return response()->json([
                 'success' => true,
                 'message' => $successMessage,
-                'data' => $this->formatData($order)
+                'data'    => $this->formatData($order)
             ], 200);
 
         } catch (\Throwable $e) {
