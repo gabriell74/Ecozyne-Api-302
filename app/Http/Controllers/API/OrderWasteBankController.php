@@ -83,8 +83,8 @@ class OrderWasteBankController extends Controller
             $orderId,
             'processed',
             'Pesanan diterima',
+            ['pending'],
             null,
-            ['pending']
         );
     }
 
@@ -108,8 +108,8 @@ class OrderWasteBankController extends Controller
             $orderId, 
             'rejected', 
             'Pesanan ditolak', 
+            ['pending'],
             $request->cancellation_reason,
-            null
         );
     }
 
@@ -120,21 +120,20 @@ class OrderWasteBankController extends Controller
             $orderId,
             'delivered',
             'Pesanan selesai',
-            null,
             ['processed'],
+            null,
         );
     }
 
     private function updateOrder(
         Request $request,
         $orderId,
-        $targetStatus,
-        $successMessage,
-        $reason = null,
-        $allowedStatus = ['pending']
+        string $targetStatus,
+        string $successMessage,
+        array $allowedStatus,
+        ?string $reason = null,
     ) {
 
-        dd('UPDATE ORDER TERPANGGIL', $allowedStatus);
         $wasteBank = $this->wasteBankOrFail($request);
 
         DB::beginTransaction();
@@ -153,6 +152,7 @@ class OrderWasteBankController extends Controller
                 ], 404);
             }
 
+
             if (!in_array($order->status_order, $allowedStatus,)) {
                 DB::rollBack();
                 return response()->json([
@@ -167,6 +167,14 @@ class OrderWasteBankController extends Controller
                 'status_order' => $targetStatus
             ];
 
+            if ($targetStatus === 'delivered') {
+                $dataUpdate['status_payment'] = 'paid';
+            }
+
+            if ($targetStatus === 'rejected') {
+                $dataUpdate['status_payment'] = 'failed';
+            }
+
             if ($targetStatus === 'rejected') {
                 if (!$reason) {
                     DB::rollBack();
@@ -178,6 +186,7 @@ class OrderWasteBankController extends Controller
 
                 $dataUpdate['cancellation_reason'] = $reason;
             }
+
 
             $order->update($dataUpdate);
 
@@ -205,7 +214,7 @@ class OrderWasteBankController extends Controller
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan',
+                'message' => 'Terjadi kesalahan saat memperbarui status pesanan',
             ], 500);
         }
     }
