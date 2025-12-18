@@ -25,9 +25,9 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->enum('status', ['rejected', 'pending', 'approved'])->default('pending');
+            $table->enum('status', ['rejected', 'pending', 'approved', 'completed'])->default('pending');
             $table->text('rejection_reason')->nullable();
-            $table->integer('poin_earned')->nullable();
+            $table->integer('point_earned')->nullable();
             $table->integer('trash_weight')->nullable();
             $table->timestamps();
         });

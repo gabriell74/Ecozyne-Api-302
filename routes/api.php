@@ -112,12 +112,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}/delete', [ProductWasteBankController::class, 'deleteWasteBankProduct']);
       });
 
-      Route::post('/trash-submissions/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByUser']);
-      Route::get('/trash-submissions/waste-bank/{wasteBankId}', [TrashTransactionController::class, 'trashTransactionByWasteBank']);
-      Route::put('/trash-submissions/{id}/approve', [TrashTransactionController::class, 'approveTransaction']);
-      Route::put('/trash-submissions/{id}/store', [TrashTransactionController::class, 'storeTrash']);
-      Route::put('/trash-submissions/{id}/reject', [TrashTransactionController::class, 'rejectTransaction']);
-      Route::get('/trash-submissions/user/history', [TrashTransactionController::class, 'historyByUser']);
+      Route::post('/trash-transactions/waste-bank/{wasteBankId}', [TrashTransactionController::class, 'createTrashTransaction']);
+      Route::get('/trash-transactions/user/history',[TrashTransactionController::class, 'historyByUser']);
+      Route::get('/trash-transactions/waste-bank',[TrashTransactionController::class, 'getTrashTransactions']);
+      Route::put('/trash-transactions/{id}/approve',[TrashTransactionController::class, 'approveTransaction']);
+      Route::put('/trash-transactions/{id}/reject',[TrashTransactionController::class, 'rejectTransaction']);
+      Route::put('/trash-transactions/{id}/complete',[TrashTransactionController::class, 'storeTrash']);
     });
     
 /* 
