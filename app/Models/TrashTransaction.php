@@ -16,6 +16,7 @@ class TrashTransaction extends Model
         'point_earned',
         'status',
         'trash_weight',
+        'trash_image',
         'rejection_reason'
     ];
 

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
+use App\Models\Point;
 use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use App\Models\TrashTransaction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Laravel\Facades\Image;
 
 class TrashTransactionController extends Controller
 {
@@ -142,22 +146,50 @@ class TrashTransactionController extends Controller
         );
     }
 
-
+    /**
+     * Simpan berat + gambar sampah (finalisasi)
+     */
     public function storeTrash(Request $request, $id)
     {
         $request->validate([
-            'trash_weight' => 'required|integer|min:1'
+            'trash_weight' => 'required|numeric|min:1',
+            'trash_image'  => 'required|image|mimes:jpg,jpeg,png|max:5120'
         ]);
 
-        return $this->updateTransaction(
-            $request,
-            $id,
-            'completed',
-            'Setoran sampah berhasil diproses',
-            ['approved'],
-            null,
-            $request->trash_weight
-        );
+        DB::beginTransaction();
+
+        try {
+            $trashImage = $request->file('trash_image');
+
+            $coverImage = Image::read($trashImage)
+                ->scaleDown(width: 1080)
+                ->toJpeg(75);
+
+            $imagePath = 'trash/' . uniqid('trash_') . '.jpg';
+            Storage::disk('public')->put($imagePath, $coverImage);
+
+            $response = $this->updateTransaction(
+                $request,
+                $id,
+                'completed',
+                'Setoran sampah berhasil diproses',
+                ['approved'],
+                null,
+                $request->trash_weight,
+                $imagePath
+            );
+
+            DB::commit();
+            return $response;
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses setoran sampah'
+            ], 500);
+        }
     }
 
     /**
@@ -170,7 +202,8 @@ class TrashTransactionController extends Controller
         string $successMessage,
         array $allowedStatus,
         ?string $reason = null,
-        ?int $trashWeight = null
+        ?int $trashWeight = null,
+        ?string $imagePath = null
     ) {
         $wasteBank = $this->wasteBankOrFail($request);
 
@@ -208,11 +241,23 @@ class TrashTransactionController extends Controller
             }
 
             if ($targetStatus === 'completed') {
+                $earnedPoint = $trashWeight * 10;
+
                 $dataUpdate += [
                     'trash_weight' => $trashWeight,
-                    'point_earned' => $trashWeight * 10,
+                    'point_earned' => $earnedPoint,
+                    'trash_image'  => $imagePath,
                 ];
+
+                $communityId = $transaction->user->community->id;
+
+                Point::where('community_id', $communityId)
+                    ->update([
+                        'point'  => DB::raw("point + $earnedPoint"),
+                        'expired_point'=> Carbon::now()->addYear(),
+                    ]);
             }
+
 
             $transaction->update($dataUpdate);
             $transaction->load(['user.community']);
@@ -245,6 +290,9 @@ class TrashTransactionController extends Controller
             'trash_weight'     => $trx->trash_weight,
             'point_earned'     => $trx->point_earned,
             'rejection_reason' => $trx->rejection_reason,
+            'trash_image'      => $trx->trash_image
+                ? asset('storage/' . $trx->trash_image)
+                : null,
             'created_at'       => $trx->created_at,
 
             'user_id'          => $trx->user_id,
