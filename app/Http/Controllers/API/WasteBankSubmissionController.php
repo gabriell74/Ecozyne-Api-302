@@ -36,6 +36,12 @@ class WasteBankSubmissionController extends Controller
             'waste_bank_name' => 'required|string|max:255',
             'waste_bank_location' => 'required|string|max:300',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:5024',
+            // alamt lengkap | string,
+            // rt | integer,
+            // rw | integer,
+            // kode pos |int max 5
+            // kecamatan | string
+            // kelurahan | string
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'file_document' => 'required|mimes:pdf|max:5024',
@@ -48,7 +54,7 @@ class WasteBankSubmissionController extends Controller
         $wasteBankSubmission = WasteBankSubmission::create([
             'community_id' => $community,
             'waste_bank_name' => $request->waste_bank_name,
-            'waste_bank_location' => $request->waste_bank_location,
+            'waste_bank_location' => $request->waste_bank_location, // $request->alamat_lengkap . $request->rt,
             'photo' => $photoPath,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
