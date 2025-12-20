@@ -17,7 +17,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_200_get_all_dapat_mengambil_semua_produk_yang_dimiliki_bank_sampah()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -40,13 +40,12 @@ class ProductWasteBankControllerTest extends TestCase
 
         // Bandingkan jumlah data JSON dan database
         $this->assertEquals($totalData, count($data), 'Jumlah data dari API tidak sesuai database.');
-        $this->assertDatabaseCount('users', $totalData);
     }
 
     public function test_201_post_create_bank_sampah_dapat_menambah_produk()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -70,7 +69,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_get_detail_by_id_mengambil_detail_produk_yang_dimiliki_bank_sampah() 
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -96,7 +95,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_put_patch_update_bank_sampah_dapat_memperbarui_produk_miliknya()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -123,7 +122,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_delete_destroy_bank_sampah_dapat_menghapus_produk_miliknya()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -142,7 +141,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_validation_error_input_nama_produk_dikosongkan()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');
@@ -166,7 +165,7 @@ class ProductWasteBankControllerTest extends TestCase
     public function test_404_not_found_mengambil_endpoint_yang_salah()
     {
         // Id pengguna yang memiliki role bank sampah
-        $user = User::where('id', '27')->first();
+        $user = User::where('id', '31')->first();
 
         // Memastikan menggunakan user karena perlu autentikasi
         $this->assertNotNull($user, 'User tidak ditemukan di database.');

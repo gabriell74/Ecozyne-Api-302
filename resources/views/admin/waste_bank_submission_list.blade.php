@@ -229,17 +229,17 @@
                             </div>
                             @if ($waste_bank_submission->status === 'pending')
                             <div class="mt-2 mt-md-0">
-                                <form action="{{ route('waste_bank_submission.approval', $waste_bank_submission->id) }}" method="post" class="d-inline">
+                                <form action="{{ route('waste_bank_submission.approval', $waste_bank_submission->id) }}" method="post" class="d-inline" id="reject_form">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" name="status" value="rejected" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    <button type="button" name="status" value="rejected" class="btn btn-danger btn-sm rounded-pill px-3" onclick="confirmReject()">
                                         <i class="fas fa-times me-1"></i>Tolak
                                     </button>
                                 </form>
-                                <form action="{{ route('waste_bank_submission.approval', $waste_bank_submission->id) }}" method="post" class="d-inline">
+                                <form action="{{ route('waste_bank_submission.approval', $waste_bank_submission->id) }}" method="post" class="d-inline" id="accept_form">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" name="status" value="approved" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                                    <button type="button" name="status" value="approved" class="btn btn-success btn-sm rounded-pill px-3" onclick="confirmAccept()">
                                         <i class="fas fa-check me-1"></i>Setujui
                                     </button>
                                 </form>

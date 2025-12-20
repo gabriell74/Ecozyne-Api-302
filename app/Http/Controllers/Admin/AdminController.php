@@ -12,11 +12,13 @@ use App\Models\Community;
 use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Models\WasteBankSubmission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Models\TrashTransaction;
 
 class AdminController extends Controller
 {   
@@ -56,11 +58,31 @@ class AdminController extends Controller
 
         // Hadiah
         $latest_reward = Reward::latest()->take(2)->get();
-        
+
+        // Data setoran bank sampah dalam 1 bulan terakhir
+        $data = TrashTransaction::select('waste_bank_id', DB::raw('SUM(trash_weight) as total_weight'))
+        ->where('status', 'approved')
+        ->where('created_at', '>=', Carbon::now()->subMonth()) // 1 bulan terakhir
+        ->groupBy('waste_bank_id')
+        ->get();
+
+        // Persiapkan label (ID Bank) dan datanya (Total Berat)
+        $weights = $data->pluck('total_weight');
+        $wasteBankId = $data->pluck('waste_bank_id');
+        $labels = WasteBank::with('wasteBankSubmission')
+                        ->whereIn('id', $wasteBankId)
+                        ->get()
+                        ->pluck('wasteBankSubmission.waste_bank_name');
+
         return view('admin.dashboard', compact(
-            'user_total', 'article_total', 'waste_bank_submission_total', 'activity_total',
+            // Data total
+            'user_total', 'article_total', 'waste_bank_submission_total', 'activity_total', 'community_total', 'waste_bank_total', 
+            // Data bulan ini
             'user_this_month', 'article_this_month', 'waste_bank_submission_this_month', 'activity_this_month',
-            'community_total', 'waste_bank_total', 'latest_article', 'latest_comic', 'latest_reward', 'latest_activity',
+            // Data latest
+            'latest_article', 'latest_comic', 'latest_reward', 'latest_activity',
+            // Data statistik
+            'labels', 'weights'
         ));
     }
 

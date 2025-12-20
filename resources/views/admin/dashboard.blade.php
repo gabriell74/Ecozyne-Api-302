@@ -87,7 +87,7 @@
                 <div class="card-header bg-transparent border-0 py-4 px-4 d-flex justify-content-between align-items-center">
                     {{-- PERUBAHAN: Warna teks menjadi gelap (#2B3A55) --}}
                     <h5 class="fw-bold mb-0" style="color: #2B3A55;">
-                        <i class="fas fa-chart-bar me-2" style="color: #10b981;"></i>Setoran Bank Sampah
+                        <i class="fas fa-chart-bar me-2" style="color: #10b981;"></i>Setoran Bank Sampah Dalam 1 Bulan Terakhir
                     </h5>
                 </div>
                 <div class="card-body p-4">
@@ -279,16 +279,10 @@ document.addEventListener("DOMContentLoaded", function () {
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: [
-                'Bank Sampah 1',
-                'Hijau Berseri',
-                'Cemerlang',
-                'Alam Lestari',
-                'EcoGreen'
-            ],
+            labels: @json($labels), 
             datasets: [{
                 label: 'Total Setoran (Kg)',
-                data: [520, 410, 380, 355, 330],
+                data: @json($weights), 
                 backgroundColor: [
                     'rgba(16, 185, 129, 0.9)',
                     'rgba(6, 182, 212, 0.9)',
