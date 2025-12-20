@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Exchange;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\TrashTransaction;
 
 class CommunityHistoryController extends Controller
 {
@@ -58,7 +59,16 @@ class CommunityHistoryController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $pointIncomeFromWasteSubmission = []; // Placeholder for future implementation
+        $pointIncomeFromWasteSubmission = TrashTransaction::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($transaction) {
+                $transaction->trash_image = $transaction->trash_image
+                    ? asset('storage/' . $transaction->trash_image)
+                    : null;
+                return $transaction;
+            });
 
         return response()->json([
             'success' => true,

@@ -13,9 +13,11 @@ class TrashTransaction extends Model
     protected $fillable = [
         'waste_bank_id',
         'user_id',
-        'poin_earned',
+        'point_earned',
+        'status',
         'trash_weight',
-        'rejectionReason'
+        'trash_image',
+        'rejection_reason'
     ];
 
     public function wasteBank(): BelongsTo

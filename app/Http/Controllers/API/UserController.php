@@ -242,6 +242,7 @@ class UserController extends Controller
 
             if ($wasteBank && $wasteBank->wasteBankSubmission) {
                 $responseUser['waste_bank'] = [
+                    'id' => $wasteBank->id,
                     'waste_bank_name' => $wasteBank->wasteBankSubmission->waste_bank_name,
                     'waste_bank_location' => $wasteBank->wasteBankSubmission->waste_bank_location,
                     'latitude' => $wasteBank->wasteBankSubmission->latitude,
