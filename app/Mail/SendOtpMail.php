@@ -13,11 +13,11 @@ class SendOtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $otp;
+    public $otpCode;
 
-    public function __construct($otp)
+    public function __construct($otpCode)
     {
-        $this->otp = $otp;
+        $this->otpCode = $otpCode;
     }
 
     /**
@@ -38,7 +38,7 @@ class SendOtpMail extends Mailable
         return new Content(
             view: 'otp',
             with: [
-                'otp' => $this->otp,
+                'otp' => $this->otpCode,
             ],
         );
     }

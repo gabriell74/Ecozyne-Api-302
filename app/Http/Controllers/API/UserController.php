@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Point;
 use App\Models\Address;
+use App\Mail\SendOtpMail;
 use App\Models\Community;
 use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -19,72 +22,95 @@ class UserController extends Controller
     public function register(Request $request)
     {
         try {
-            $request->validate([
-                'username' => 'required',
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => [
-                    'required',
-                    'string',
-                    'min:8',
-                    'regex:/[a-z]/',      // huruf kecil
-                    'regex:/[A-Z]/',      // huruf besar
-                    'regex:/[0-9]/',      // angka
-                    'regex:/[@$!%*?&._\-]/', // simbol
-                    'not_regex:/\s/', // tanpa spasi
-                ],   
-                'phone_number' => [
-                    'required',
-                    'min:10',
-                    'regex:/^[0-9]+$/'
-                ],
-                'address' => 'required',
-                'postal_code' => 'required',
-                'kelurahan' => 'required',
-            ]);
+            return DB::transaction(function () use ($request) {
+                $existingUnverifiedUser = User::where('email', $request->email)
+                    ->whereNull('email_verified_at')
+                    ->first();
 
-            DB::beginTransaction();
+                if ($existingUnverifiedUser) {
+                    $userId = $existingUnverifiedUser->id;
+                    $addressId = $existingUnverifiedUser->community->address_id;
+                    $communityId = $existingUnverifiedUser->community->id;
 
-            $address = Address::create([
-                'address' => $request->address,
-                'kelurahan_id' => $request->kelurahan,
-                'postal_code' => $request->postal_code,
-            ]);
-            
-            $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+                    Point::where('community_id', $communityId)->delete();
+                    Community::where('id', $communityId)->delete();
+                    Address::where('id', $addressId)->delete();
+                    $existingUnverifiedUser->delete();
+                }
 
-            $community = Community::create([
-                'user_id' => $user->id,
-                'address_id' => $address->id,
-                'phone_number' => $request->phone_number,
-                'name' => $request->name,
-            ]);
+                $request->validate([
+                    'username' => 'required',
+                    'name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    'password' => [
+                        'required',
+                        'string',
+                        'min:8',
+                        'regex:/[a-z]/',      // huruf kecil
+                        'regex:/[A-Z]/',      // huruf besar
+                        'regex:/[0-9]/',      // angka
+                        'regex:/[@$!%*?&._\-]/', // simbol
+                        'not_regex:/\s/', // tanpa spasi
+                    ],   
+                    'phone_number' => [
+                        'required',
+                        'min:10',
+                        'regex:/^[0-9]+$/'
+                    ],
+                    'address' => 'required',
+                    'postal_code' => 'required',
+                    'kelurahan' => 'required',
+                ]);
 
-            Point::create([
-                'community_id' => $community->id,
-                'expired_point'=> now()->addYear(),
-            ]);
+                $otpCode = rand(100000, 999999);
 
-            DB::commit();
-            activity()
-                ->causedBy($user)
-                ->performedOn($user)
-                ->event('register')
-                ->withProperties([
+                $address = Address::create([
+                    'address' => $request->address,
+                    'kelurahan_id' => $request->kelurahan,
+                    'postal_code' => $request->postal_code,
+                ]);
+                
+                $user = User::create([
+                    'username' => $request->username,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'otp_code' => $otpCode,
+                    'otp_expires_at' => Carbon::now()->addMinutes(10),
+                ]);
+
+                $community = Community::create([
+                    'user_id' => $user->id,
+                    'address_id' => $address->id,
+                    'phone_number' => $request->phone_number,
+                    'name' => $request->name,
+                ]);
+
+                Point::create([
+                    'community_id' => $community->id,
+                    'expired_point'=> now()->addYear(),
+                ]);
+
+                DB::commit();
+
+                Mail::to($user->email)->send(new SendOtpMail($otpCode));
+
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($user)
+                    ->event('register')
+                    ->withProperties([
+                        'email' => $user->email,
+                        'community' => $community->name,
+                        'phone_number' => $community->phone_number
+                    ])
+                    ->log('User melakukan registrasi dan menunggu verifikasi');
+
+                return response()->json([
                     'email' => $user->email,
-                    'community' => $community->name,
-                    'phone_number' => $community->phone_number
-                ])
-                ->log('User telah melakukan registrasi');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pendaftaran Berhasil',
-            ], 201);
+                    'success' => true,
+                    'message' => 'Pendaftaran Berhasil Silahkan Lakukan Verifikasi',
+                ], 201);
+            });
 
         } catch (ValidationException $e) {
             return response()->json([
@@ -93,10 +119,66 @@ class UserController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-            DB::rollback();
             return response()->json([
                 'success' => false,
-                'message' => 'Pendaftaran Gagal',
+                'message' => 'Pendaftaran Gagal Silahkan Coba Lagi',
+            ], 500);
+        }
+    }
+
+    public function registerOtpVerify(Request $request)
+    {
+        try {
+            return DB::transaction(function () use ($request) {
+                $request->validate([
+                    'email' => 'required|email|exists:users,email',
+                    'otp' => 'required|numeric|digits:6'
+                ]);
+
+                $user = User::where('email', $request->email)->lockForUpdate()->firstOrFail();
+
+                if ($user->email_verified_at) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Email ini sudah diverifikasi',
+                    ], 409);
+                }
+
+                if ($user->otp_code != $request->otp) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Kode OTP salah',
+                    ], 400);
+                }
+
+                if (Carbon::now()->gt($user->otp_expires_at)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Kode OTP sudah kadaluarsa',
+                    ], 410);
+                }
+
+                $user->email_verified_at = now();
+                $user->otp_code = null;
+                $user->otp_expires_at = null;
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Verifikasi Berhasil Silahkan Login',
+                ], 201);
+            });
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Verifikasi Gagal Silahkan Coba Lagi',
             ], 500);
         }
     }
