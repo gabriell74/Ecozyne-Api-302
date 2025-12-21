@@ -25,7 +25,8 @@ use App\Http\Controllers\API\DiscussionQuestionController;
 use App\Http\Controllers\API\WasteBankSubmissionController;
 
 Route::post('/register', [UserController::class, 'register']);
-Route::post('/verify-otp', [UserController::class, 'registerOtpVerify']);
+Route::post('/register/verify-otp', [UserController::class, 'registerOtpVerify']);
+Route::post('/register/resend-otp', [UserController::class, 'resendOtp']);
 Route::get('/regions', [RegionController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');

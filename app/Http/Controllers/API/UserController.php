@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -23,35 +24,21 @@ class UserController extends Controller
     {
         try {
             return DB::transaction(function () use ($request) {
-                $existingUnverifiedUser = User::where('email', $request->email)
-                    ->whereNull('email_verified_at')
-                    ->first();
-
-                if ($existingUnverifiedUser) {
-                    $userId = $existingUnverifiedUser->id;
-                    $addressId = $existingUnverifiedUser->community->address_id;
-                    $communityId = $existingUnverifiedUser->community->id;
-
-                    Point::where('community_id', $communityId)->delete();
-                    Community::where('id', $communityId)->delete();
-                    Address::where('id', $addressId)->delete();
-                    $existingUnverifiedUser->delete();
-                }
 
                 $request->validate([
                     'username' => 'required',
                     'name' => 'required',
-                    'email' => 'required|email|unique:users,email',
+                    'email' => 'required|email',
                     'password' => [
                         'required',
                         'string',
                         'min:8',
-                        'regex:/[a-z]/',      // huruf kecil
-                        'regex:/[A-Z]/',      // huruf besar
-                        'regex:/[0-9]/',      // angka
-                        'regex:/[@$!%*?&._\-]/', // simbol
-                        'not_regex:/\s/', // tanpa spasi
-                    ],   
+                        'regex:/[a-z]/',
+                        'regex:/[A-Z]/',
+                        'regex:/[0-9]/',
+                        'regex:/[@$!%*?&._\-]/',
+                        'not_regex:/\s/',
+                    ],
                     'phone_number' => [
                         'required',
                         'min:10',
@@ -62,6 +49,35 @@ class UserController extends Controller
                     'kelurahan' => 'required',
                 ]);
 
+                $email = strtolower($request->email);
+
+                $existingUnverifiedUser = User::where('email', $email)
+                    ->whereNull('email_verified_at')
+                    ->first();
+
+                if ($existingUnverifiedUser) {
+
+                    RateLimiter::clear('otp-verify:' . $email);
+                    RateLimiter::clear('otp-resend:' . $email);
+
+                    $community = $existingUnverifiedUser->community;
+
+                    if ($community) {
+                        Point::where('community_id', $community->id)->delete();
+                        Address::where('id', $community->address_id)->delete();
+                        $community->delete();
+                    }
+
+                    $existingUnverifiedUser->delete();
+                }
+
+                if (User::where('email', $email)->exists()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Email sudah terdaftar',
+                    ], 409);
+                }
+
                 $otpCode = rand(100000, 999999);
 
                 $address = Address::create([
@@ -69,13 +85,13 @@ class UserController extends Controller
                     'kelurahan_id' => $request->kelurahan,
                     'postal_code' => $request->postal_code,
                 ]);
-                
+
                 $user = User::create([
                     'username' => $request->username,
-                    'email' => $request->email,
+                    'email' => $email,
                     'password' => Hash::make($request->password),
                     'otp_code' => $otpCode,
-                    'otp_expires_at' => Carbon::now()->addMinutes(10),
+                    'otp_expires_at' => now()->addMinutes(10),
                 ]);
 
                 $community = Community::create([
@@ -87,10 +103,8 @@ class UserController extends Controller
 
                 Point::create([
                     'community_id' => $community->id,
-                    'expired_point'=> now()->addYear(),
+                    'expired_point' => now()->addYear(),
                 ]);
-
-                DB::commit();
 
                 Mail::to($user->email)->send(new SendOtpMail($otpCode));
 
@@ -108,7 +122,7 @@ class UserController extends Controller
                 return response()->json([
                     'email' => $user->email,
                     'success' => true,
-                    'message' => 'Pendaftaran Berhasil Silahkan Lakukan Verifikasi',
+                    'message' => 'Pendaftaran berhasil, silakan verifikasi OTP',
                 ], 201);
             });
 
@@ -121,21 +135,37 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pendaftaran Gagal Silahkan Coba Lagi',
+                'message' => 'Pendaftaran gagal, silakan coba lagi',
             ], 500);
         }
     }
+
 
     public function registerOtpVerify(Request $request)
     {
         try {
             return DB::transaction(function () use ($request) {
+
                 $request->validate([
                     'email' => 'required|email|exists:users,email',
                     'otp' => 'required|numeric|digits:6'
                 ]);
 
-                $user = User::where('email', $request->email)->lockForUpdate()->firstOrFail();
+                $email = strtolower($request->email);
+                $rateLimitKey = 'otp-verify:' . $email;
+
+                if (RateLimiter::tooManyAttempts($rateLimitKey, 8)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Terlalu banyak percobaan OTP. Silakan coba lagi nanti.',
+                    ], 429);
+                }
+
+                RateLimiter::hit($rateLimitKey, 600);
+
+                $user = User::where('email', $email)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
                 if ($user->email_verified_at) {
                     return response()->json([
@@ -144,28 +174,31 @@ class UserController extends Controller
                     ], 409);
                 }
 
-                if ($user->otp_code != $request->otp) {
+                if ($user->otp_code !== $request->otp) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Kode OTP salah',
                     ], 400);
                 }
 
-                if (Carbon::now()->gt($user->otp_expires_at)) {
+                if (now()->gt($user->otp_expires_at)) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Kode OTP sudah kadaluarsa',
                     ], 410);
                 }
 
-                $user->email_verified_at = now();
-                $user->otp_code = null;
-                $user->otp_expires_at = null;
-                $user->save();
+                RateLimiter::clear($rateLimitKey);
+
+                $user->update([
+                    'email_verified_at' => now(),
+                    'otp_code' => null,
+                    'otp_expires_at' => null,
+                ]);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Verifikasi Berhasil Silahkan Login',
+                    'message' => 'Verifikasi berhasil, silakan login',
                 ], 201);
             });
 
@@ -175,10 +208,72 @@ class UserController extends Controller
                 'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Verifikasi Gagal Silahkan Coba Lagi',
+                'message' => 'Verifikasi gagal, silakan coba lagi',
+            ], 500);
+        }
+    }
+
+    public function resendOtp(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
+
+            $email = strtolower($request->email);
+            $rateLimitKey = 'otp-resend:' . $email;
+
+            if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terlalu banyak permintaan OTP. Silakan coba lagi nanti.',
+                ], 429);
+            }
+
+            RateLimiter::hit($rateLimitKey, 300);
+
+            $user = User::where('email', $email)
+                ->whereNull('email_verified_at')
+                ->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun sudah diverifikasi atau tidak ditemukan',
+                ], 400);
+            }
+
+            $otpCode = rand(100000, 999999);
+
+            $user->update([
+                'otp_code' => $otpCode,
+                'otp_expires_at' => now()->addMinutes(10),
+            ]);
+
+            RateLimiter::clear('otp-verify:' . $email);
+
+            Mail::to($user->email)->send(new SendOtpMail($otpCode));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kode OTP baru telah dikirim',
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim ulang OTP',
             ], 500);
         }
     }
