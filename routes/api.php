@@ -25,6 +25,7 @@ use App\Http\Controllers\API\DiscussionQuestionController;
 use App\Http\Controllers\API\WasteBankSubmissionController;
 
 Route::post('/register', [UserController::class, 'register']);
+Route::post('/verify-otp', [UserController::class, 'registerOtpVerify']);
 Route::get('/regions', [RegionController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -53,9 +54,6 @@ Route::get('/marketplace/products/{id}', [ProductController::class, 'getProductD
 
 Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
 Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
-
-Route::post('/send-otp', [OtpController::class, 'sendOtp']);
-Route::post('/verify-otp', [OtpController::class, 'verifyOtp']);
 
 Route::middleware('auth:sanctum')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
