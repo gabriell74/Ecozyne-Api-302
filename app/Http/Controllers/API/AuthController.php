@@ -20,6 +20,16 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
 
             $user = Auth::user();
+
+            if (is_null($user->email_verified_at)) {
+                Auth::logout();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email belum terverifikasi!',
+                ], 403);
+            }
+
             $token = $user->createToken('auth-token')->plainTextToken;
 
             activity()
