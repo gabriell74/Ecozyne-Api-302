@@ -56,7 +56,7 @@ Route::get('/marketplace/products/{id}', [ProductController::class, 'getProductD
 Route::get('/waste-banks', [WasteBankController::class, 'getAllWasteBank']);
 Route::get('/waste-banks/{wasteBank}', [WasteBankController::class, 'wasteBankDetail']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', 'db_connection')->group(function () {
       Route::post('/logout', [AuthController::class, 'logout']);
       
       Route::post('/validate-password', [UserController::class, 'validatePassword']);
