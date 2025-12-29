@@ -44,9 +44,9 @@
                         <a href="{{ route('activity.edit', $activity->id) }}" class="btn btn-outline-primary rounded-pill me-3 px-4">
                             <i class="fas fa-edit me-2"></i> Edit 
                         </a>
-                        <form action="{{ route('activity.destroy', $activity->id)}}" method="post" id="delete_form">
+                        <form action="{{ route('activity.destroy', $activity->id)}}" method="post" id="delete_form{{ $activity->id }}">
                             @csrf @method('delete')
-                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete()">
+                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete('delete_form{{ $activity->id }}')">
                                 <i class="fas fa-trash-alt me-2"></i> Hapus
                             </button>
                         </form>

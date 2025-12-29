@@ -24,36 +24,36 @@ class AdminWasteBankSubmissionController extends Controller
     }
 
     public function wasteBankSubmissionApproval(Request $request, WasteBankSubmission $waste_bank_submission)
-{
-    $request->validate([
-        'status' => 'required|in:approved,rejected',
-    ]);
+    {
+        $request->validate([
+            'status' => 'required|in:approved,rejected',
+        ]);
 
-    if ($waste_bank_submission->status !== 'pending') {
-        return back()->with('error', 'Status hanya dapat diubah jika masih Menunggu.');
-    }
-
-    DB::beginTransaction();
-    try {
-        $waste_bank_submission->update(['status' => $request->status]);
-
-        $community = Community::find($waste_bank_submission->community_id);
-        $user = $community ? User::find($community->user_id) : null;
-
-        if ($request->status === 'approved' && $user) {
-            $user->update(['role' => 'waste_bank']);
-
-            WasteBank::create([
-                'waste_bank_submission_id' => $waste_bank_submission->id,
-            ]);
+        if ($waste_bank_submission->status !== 'pending') {
+            return back()->with('error', 'Status hanya dapat diubah jika masih Menunggu.');
         }
 
-        DB::commit();
+        DB::beginTransaction();
+        try {
+            $waste_bank_submission->update(['status' => $request->status]);
 
-        return back()->with('success', 'Status pengajuan bank sampah berhasil diperbarui.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            $community = Community::find($waste_bank_submission->community_id);
+            $user = $community ? User::find($community->user_id) : null;
+
+            if ($request->status === 'approved' && $user) {
+                $user->update(['role' => 'waste_bank']);
+
+                WasteBank::create([
+                    'waste_bank_submission_id' => $waste_bank_submission->id,
+                ]);
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Status pengajuan bank sampah berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
-}
 }

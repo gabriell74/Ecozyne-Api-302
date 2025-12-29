@@ -49,9 +49,9 @@
                                         <small class="text-light-50" style="font-size: 0.75rem;">Tanggal Pendaftaran : {{ $community->created_at->format('d M Y') }}</small>
                                     </div>
                                 </div>
-                                <form action="{{ route('community.destroy', $community->id)}}" method="post" style="z-index: 10;" id="delete_form">
+                                <form action="{{ route('community.destroy', $community->id)}}" method="post" style="z-index: 10;" id="delete_form{{ $community->id }}">
                                     @csrf @method('delete')
-                                    <button class="btn btn-outline-danger btn-sm rounded-pill" type="button" onclick="confirmDelete()">
+                                    <button class="btn btn-outline-danger btn-sm rounded-pill" type="button" onclick="confirmDelete('delete_form{{ $community->id }}')">
                                         <i class="fas fa-trash me-1"></i>Hapus
                                     </button>
                                 </form>

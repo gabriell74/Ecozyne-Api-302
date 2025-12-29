@@ -55,9 +55,9 @@
                             <i class="fas fa-edit me-2"></i> Edit 
                         </a>
                         {{-- Asumsi route destroy adalah 'article.destroy' --}}
-                        <form action="{{ route('gallery.destroy', $gallery->id)}}" method="post" id="delete_form">
+                        <form action="{{ route('gallery.destroy', $gallery->id)}}" method="post" id="delete_form{{ $gallery->id }}">
                             @csrf @method('delete')
-                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete()">
+                            <button class="btn btn-outline-danger rounded-pill px-4" type="button" onclick="confirmDelete('delete_form{{ $gallery->id }}')">
                                 <i class="fas fa-trash-alt me-2"></i> Hapus
                             </button>
                         </form>

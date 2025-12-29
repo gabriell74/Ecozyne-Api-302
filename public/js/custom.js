@@ -1,6 +1,6 @@
 // Script konfirmasi sebelum delete
 
-function confirmDelete() {
+function confirmDelete(formId) {
     Swal.fire({
         title: 'Anda yakin ingin menghapus data ini?',
         text: 'Data yang sudah terhapus tidak bisa dipulihkan kembali',
@@ -10,12 +10,12 @@ function confirmDelete() {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('delete_form').submit();
+            document.getElementById(formId).submit();
         }
     });
 }
 
-function confirmAccept() {
+function confirmAccept(formId) {
     Swal.fire({
         title: 'Anda yakin ingin setujui?',
         text: 'Data yang sudah disetujui tidak bisa diubah kembali',
@@ -25,12 +25,12 @@ function confirmAccept() {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('accept_form').submit();
+            document.getElementById(formId).submit();
         }
     });
 }
 
-function confirmReject() {
+function confirmReject(formId) {
     Swal.fire({
         title: 'Anda yakin ingin menolak?',
         text: 'Data yang sudah ditolak tidak bisa diubah kembali',
@@ -40,7 +40,7 @@ function confirmReject() {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('reject_form').submit();
+            document.getElementById(formId).submit();
         }
     });
 }

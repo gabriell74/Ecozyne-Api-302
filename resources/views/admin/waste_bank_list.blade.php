@@ -48,9 +48,9 @@
                                     <small class="text-light-50" style="font-size: 0.75rem;">Tanggal Pendaftaran : {{ $waste_bank->created_at->format('d M Y') }}</small>
                                 </div>
                             </div>
-                            <form action="{{ route('waste_bank.destroy', $waste_bank->id)}}" method="post" style="z-index: 10;" id="delete_form">
+                            <form action="{{ route('waste_bank.destroy', $waste_bank->id)}}" method="post" style="z-index: 10;" id="delete_form{{ $waste_bank->id }}">
                                 @csrf @method('delete')
-                                <button class="btn btn-outline-danger btn-sm rounded-pill" type="button" onclick="confirmDelete()">
+                                <button class="btn btn-outline-danger btn-sm rounded-pill" type="button" onclick="confirmDelete('delete_form{{ $waste_bank->id }}')">
                                     <i class="fas fa-trash me-1"></i>Hapus
                                 </button>
                             </form>

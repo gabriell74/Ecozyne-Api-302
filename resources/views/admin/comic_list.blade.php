@@ -36,9 +36,9 @@
                         {{-- Tombol Hapus --}}
                         <form action="{{ route('comic.destroy', $comic->id)}}" 
                               class="position-absolute top-0 end-0 m-2" 
-                              method="post" style="z-index: 10;" id="delete_form">
+                              method="post" style="z-index: 10;" id="delete_form{{ $comic->id }}">
                             @csrf @method('delete')
-                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="button" onclick="confirmDelete()">
+                            <button class="btn btn-sm btn-danger rounded-circle shadow-sm" type="button" onclick="confirmDelete('delete_form{{ $comic->id }}')">
                                 <i class="fas fa-trash"></i> 
                             </button>
                         </form>
