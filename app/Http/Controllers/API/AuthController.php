@@ -26,7 +26,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'success' => false,
-                    'message' => 'Email belum terverifikasi!',
+                    'message' => 'Akun Tidak Terdaftar',
                 ], 403);
             }
 
