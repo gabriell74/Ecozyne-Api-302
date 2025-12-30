@@ -117,6 +117,7 @@ Route::middleware('auth:sanctum', 'db_connection')->group(function () {
       Route::put('/trash-transactions/{id}/approve',[TrashTransactionController::class, 'approveTransaction']);
       Route::put('/trash-transactions/{id}/reject',[TrashTransactionController::class, 'rejectTransaction']);
       Route::put('/trash-transactions/{id}/complete',[TrashTransactionController::class, 'storeTrash']);
+      Route::get('/trash-transactions/submissions', [TrashTransactionController::class, 'trashSubmissionsByUser']);
     });
     
 /* 

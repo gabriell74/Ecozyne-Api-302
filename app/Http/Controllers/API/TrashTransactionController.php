@@ -279,6 +279,43 @@ class TrashTransactionController extends Controller
         }
     }
 
+   public function trashSubmissionsByUser(Request $request)
+    {
+        $user = $request->user();
+
+        $trashSubmissions = TrashTransaction::query()
+            ->select([
+                'id',
+                'waste_bank_id',
+                'status',
+                'created_at',
+            ])
+            ->where('user_id', $user->id)
+            ->with([
+                'wasteBank:id,waste_bank_submission_id',
+                'wasteBank.wasteBankSubmission:id,waste_bank_name',
+            ])
+            ->where('status', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($transaction) {
+
+                $transaction->waste_bank_name =
+                    $transaction->wasteBank?->wasteBankSubmission?->waste_bank_name;
+
+                $transaction->unsetRelation('wasteBank');
+
+                return $transaction;
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat pengajuan setoran sampah',
+            'data'    => $trashSubmissions,
+        ], 200);
+    }
+
+
     /**
      * Formatter response
      */
@@ -294,7 +331,7 @@ class TrashTransactionController extends Controller
                 ? asset('storage/' . $trx->trash_image)
                 : null,
             'created_at'       => $trx->created_at,
-
+            'waste_bank_name' => $trx->wasteBank->name ?? null,
             'user_id'          => $trx->user_id,
             'username'         => $trx->user->username ?? null,
             'community_name'   => $trx->user->community->name ?? null,

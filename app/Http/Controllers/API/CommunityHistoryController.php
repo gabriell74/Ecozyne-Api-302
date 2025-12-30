@@ -60,6 +60,10 @@ class CommunityHistoryController extends Controller
             ->get();
 
         $pointIncomeFromWasteSubmission = TrashTransaction::where('user_id', $user->id)
+            ->with([
+                'wasteBank:id,waste_bank_submission_id',
+                'wasteBank.wasteBankSubmission:id,waste_bank_name',
+            ])
             ->where('status', 'completed')
             ->orderBy('created_at', 'desc')
             ->get()
@@ -67,6 +71,10 @@ class CommunityHistoryController extends Controller
                 $transaction->trash_image = $transaction->trash_image
                     ? asset('storage/' . $transaction->trash_image)
                     : null;
+
+                     $transaction->waste_bank_name =$transaction->wasteBank?->wasteBankSubmission?->waste_bank_name;
+
+                    $transaction->unsetRelation('wasteBank');
                 return $transaction;
             });
 
