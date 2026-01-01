@@ -21,7 +21,7 @@ class ArticleTableSeeder extends Seeder
 
         for ($i = 1; $i <= 3; $i++) {
             $sourcePath = public_path("images/foto/article{$i}.png");
-            $storedPath = Storage::disk('public')->putFile('article', new File($sourcePath));
+            $storedPath = Storage::disk('public')->putFile('articles', new File($sourcePath));
             $article = $articles[$i - 1];
 
             DB::table('article')->insert([

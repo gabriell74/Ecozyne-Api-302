@@ -44,7 +44,7 @@
                                 <i class="fas fa-user-circle me-3" style="font-size: 1.9rem; color: #007559;"></i>
                                 <div>
                                     <h6 class="fw-semibold mb-1 text-#001d16" style="font-size: 1rem;">Nama Bank Sampah : {{ $waste_bank->wasteBankSubmission->waste_bank_name }}</h6>
-                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Lokasi : {{ $waste_bank->wasteBankSubmission->location }}</p>
+                                    <p class="mb-0 text-#001d16" style="font-size: 0.85rem;">Lokasi : {{ $waste_bank->wasteBankSubmission->waste_bank_location }}</p>
                                     <small class="text-light-50" style="font-size: 0.75rem;">Tanggal Pendaftaran : {{ $waste_bank->created_at->format('d M Y') }}</small>
                                 </div>
                             </div>

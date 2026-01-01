@@ -35,7 +35,7 @@ class AdminComicController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'comic_title' => 'required',
+            'comic_title' => 'required|max:255',
             'cover_photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
             'photo'       => 'required|array|min:1',
             'photo.*'     => 'required|image|mimes:jpg,jpeg,png|max:8192',

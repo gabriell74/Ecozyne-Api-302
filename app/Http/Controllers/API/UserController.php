@@ -26,8 +26,8 @@ class UserController extends Controller
             return DB::transaction(function () use ($request) {
 
                 $request->validate([
-                    'username' => 'required',
-                    'name' => 'required',
+                    'username' => 'required|max:255',
+                    'name' => 'required|max:255',
                     'email' => 'required|email',
                     'password' => [
                         'required',
