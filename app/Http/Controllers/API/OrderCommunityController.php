@@ -20,27 +20,13 @@ class OrderCommunityController extends Controller
     public function placeOrder(Request $request, Product $product)
     {
         $user = $request->user();
+
         $community = Community::where('user_id', $user->id)->first();
-        
         if (!$community) {
             return response()->json([
                 'success' => false,
                 'message' => 'User tidak terdaftar sebagai komunitas'
             ], 404);
-        }
-
-        if ($product->stock  <= 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Stok produk habis'
-            ], 422);
-        }
-
-        if ($product->stock < $request->amount) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Stok produk tidak mencukupi'
-            ], 422);
         }
 
         $request->validate([
@@ -53,9 +39,46 @@ class OrderCommunityController extends Controller
         try {
             DB::beginTransaction();
 
+            /**
+             * AMBIL PRODUCT DI DALAM TRANSAKSI + LOCK
+             */
+            $lockedProduct = Product::where('id', $product->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$lockedProduct) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produk tidak ditemukan'
+                ], 404);
+            }
+
+            /**
+             *  CEK STOK SETELAH LOCK
+             */
+            if ($lockedProduct->stock <= 0) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok produk habis'
+                ], 422);
+            }
+
+            if ($lockedProduct->stock < $request->amount) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok produk tidak mencukupi'
+                ], 422);
+            }
+
+            /**
+             * CREATE ORDER
+             */
             $order = Order::create([
                 'community_id' => $community->id,
-                'waste_bank_id' => $product->waste_bank_id,
+                'waste_bank_id' => $lockedProduct->waste_bank_id,
                 'order_customer' => $request->order_customer,
                 'order_phone_number' => $request->order_phone_number,
                 'order_address' => $request->order_address,
@@ -63,20 +86,25 @@ class OrderCommunityController extends Controller
                 'status_payment' => 'pending',
             ]);
 
+            /**
+             * SNAPSHOT PRODUCT
+             */
             ProductTransaction::create([
                 'order_id'      => $order->id,
-                'product_id'    => $product->id,
-                'product_name'  => $product->product_name, // snapshot
-                'product_price' => $product->price,         // snapshot
+                'product_id'    => $lockedProduct->id,
+                'product_name'  => $lockedProduct->product_name,
+                'product_price' => $lockedProduct->price,
                 'amount'        => $request->amount,
-                'total_price'   => $product->price * $request->amount,
+                'total_price'   => $lockedProduct->price * $request->amount,
             ]);
 
-
-            $product->decrement('stock', $request->amount);
+            /**
+             * DECREMENT STOK (AMAN)
+             */
+            $lockedProduct->decrement('stock', $request->amount);
 
             /**
-             * SAVE ACTIVITY LOG
+             * ACTIVITY LOG
              */
             activity()
                 ->causedBy($user)
@@ -84,16 +112,16 @@ class OrderCommunityController extends Controller
                 ->event('order_created')
                 ->withProperties([
                     'community_id' => $community->id,
-                    'product_id' => $product->id,
+                    'product_id' => $lockedProduct->id,
                     'amount' => $request->amount,
-                    'total_price' => $product->price * $request->amount,
-                    'waste_bank_id' => $product->waste_bank_id,
+                    'total_price' => $lockedProduct->price * $request->amount,
+                    'waste_bank_id' => $lockedProduct->waste_bank_id,
                 ])
                 ->log('Komunitas mengajukan pembelian produk');
 
             DB::commit();
 
-           $productTransaction = ProductTransaction::where('order_id', $order->id)->get();
+            $productTransaction = ProductTransaction::where('order_id', $order->id)->get();
 
             return response()->json([
                 'success' => true,
@@ -113,8 +141,8 @@ class OrderCommunityController extends Controller
                         'product_transactions' => $productTransaction->map(function ($item) {
                             return [
                                 'product_id'    => $item->product_id,
-                                'product_name'  => $item->product_name,   // snapshot
-                                'product_price' => $item->product_price,  // snapshot
+                                'product_name'  => $item->product_name,
+                                'product_price' => $item->product_price,
                                 'amount'        => $item->amount,
                                 'total_price'   => $item->total_price,
                             ];
@@ -122,13 +150,10 @@ class OrderCommunityController extends Controller
                     ]
                 ]
             ], 201);
-        } catch (\Throwable $e) {
 
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            /**
-             * Jika error pun dicatat
-             */
             activity()
                 ->causedBy($user)
                 ->event('order_failed')

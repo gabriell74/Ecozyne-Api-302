@@ -295,7 +295,6 @@ class TrashTransactionController extends Controller
                 'wasteBank:id,waste_bank_submission_id',
                 'wasteBank.wasteBankSubmission:id,waste_bank_name',
             ])
-            ->where('status', 'completed')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($transaction) {
