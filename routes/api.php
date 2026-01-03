@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum', 'db_connection')->group(function () {
       
       Route::get('/eco-enzyme-tracking/get-all-batches', [EcoEnzymeTrackingController::class, 'getAllBatches']);
       Route::post('/eco-enzyme-tracking/store-batch', [EcoEnzymeTrackingController::class, 'storeBatch']);
+      Route::delete('/eco-enzyme-tracking/delete-batch/{id}', [EcoEnzymeTrackingController::class, 'deleteBatch']);
       
       Route::post('/waste-bank-submission/store', [WasteBankSubmissionController::class, 'storeWasteBankSubmission']);
       Route::get('/waste-bank-submission/history', [WasteBankSubmissionController::class, 'getSubmissionHistory']);
