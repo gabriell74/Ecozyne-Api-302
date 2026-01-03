@@ -61,7 +61,7 @@ class AdminController extends Controller
 
         // Data setoran bank sampah dalam 1 bulan terakhir
         $data = TrashTransaction::select('waste_bank_id', DB::raw('SUM(trash_weight) as total_weight'))
-        ->where('status', 'approved')
+        ->where('status', 'completed')
         ->where('created_at', '>=', Carbon::now()->subMonth()) // 1 bulan terakhir
         ->groupBy('waste_bank_id')
         ->get();
