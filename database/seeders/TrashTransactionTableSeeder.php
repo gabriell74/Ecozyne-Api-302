@@ -17,7 +17,7 @@ class TrashTransactionTableSeeder extends Seeder
                 'user_id' => $faker->numberBetween(1, 10),
                 'status' => $faker->randomElement(['rejected', 'pending', 'approved']),
                 'rejection_reason' => $faker->optional()->sentence(),
-                'poin_earned' => $faker->numberBetween(10, 100),
+                'point_earned' => $faker->numberBetween(10, 100),
                 'trash_weight' => $faker->numberBetween(1, 20),
                 'created_at' => $faker->dateTimeBetween('-2 months', 'now'),
                 'updated_at' => now(),
