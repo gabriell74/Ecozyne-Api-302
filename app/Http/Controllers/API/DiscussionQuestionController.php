@@ -53,6 +53,8 @@ class DiscussionQuestionController extends Controller
             ])
             ->log('User membuat pertanyaan baru');
 
+        $question->load('user:id,username');
+
         return response()->json([
             'success' => true,
             'message' => 'Berhasil menambah pertanyaan',
