@@ -33,7 +33,7 @@ class AdminRewardController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'reward_name' => 'required',
+            'reward_name' => 'required|max:255',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:8192',
             'stock' => 'required',
             'unit_point' => 'required',
