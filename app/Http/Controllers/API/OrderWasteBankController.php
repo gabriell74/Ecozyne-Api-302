@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\ProductTransaction;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -152,8 +154,7 @@ class OrderWasteBankController extends Controller
                 ], 404);
             }
 
-
-            if (!in_array($order->status_order, $allowedStatus,)) {
+            if (!in_array($order->status_order, $allowedStatus)) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -163,16 +164,40 @@ class OrderWasteBankController extends Controller
 
             $oldStatus = $order->status_order;
 
+        
+            if ($targetStatus === 'rejected') {
+
+                $productTransaction = ProductTransaction::where('order_id', $order->id)->first();
+
+                if (!$productTransaction) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data produk pesanan tidak ditemukan'
+                    ], 422);
+                }
+
+                $product = Product::where('id', $productTransaction->product_id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$product) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Produk tidak ditemukan'
+                    ], 422);
+                }
+
+                $product->increment('stock', $productTransaction->amount);
+            }
+
             $dataUpdate = [
                 'status_order' => $targetStatus
             ];
 
             if ($targetStatus === 'delivered') {
                 $dataUpdate['status_payment'] = 'paid';
-            }
-
-            if ($targetStatus === 'rejected') {
-                $dataUpdate['status_payment'] = 'failed';
             }
 
             if ($targetStatus === 'rejected') {
@@ -184,9 +209,9 @@ class OrderWasteBankController extends Controller
                     ], 422);
                 }
 
+                $dataUpdate['status_payment'] = 'failed';
                 $dataUpdate['cancellation_reason'] = $reason;
             }
-
 
             $order->update($dataUpdate);
 
@@ -200,7 +225,6 @@ class OrderWasteBankController extends Controller
                     'old_status' => $oldStatus,
                     'new_status' => $targetStatus,
                     'reason'     => $reason,
-                    'ip'         => $request->ip(),
                 ])
                 ->log("Mengubah status pesanan menjadi {$targetStatus}");
 

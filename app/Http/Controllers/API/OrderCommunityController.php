@@ -194,18 +194,6 @@ class OrderCommunityController extends Controller
                 ->first();
 
             if (!$order) {
-
-                //  Logging gagal
-                activity()
-                    ->causedBy($user)
-                    ->withProperties([
-                        'order_id' => $orderId,
-                        'cancellation_reason' => $request->cancellation_reason,
-                        'ip' => $request->ip(),
-                        'user_agent' => $request->userAgent(),
-                    ])
-                    ->log('Gagal membatalkan pesanan (tidak ditemukan / unauthorized)');
-
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -213,20 +201,7 @@ class OrderCommunityController extends Controller
                 ], 403);
             }
 
-            if (!in_array($order->status_order, ['pending'])) {
-
-                // Logging gagal karena status tidak valid
-                activity()
-                    ->causedBy($user)
-                    ->withProperties([
-                        'order_id' => $order->id,
-                        'current_status' => $order->status_order,
-                        'cancellation_reason' => $request->cancellation_reason,
-                        'ip' => $request->ip(),
-                        'user_agent' => $request->userAgent(),
-                    ])
-                    ->log('User mencoba membatalkan pesanan tetapi status sudah tidak valid');
-
+            if ($order->status_order !== 'pending') {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -234,25 +209,58 @@ class OrderCommunityController extends Controller
                 ], 422);
             }
 
+            /**
+             * AMBIL SNAPSHOT PRODUCT (PASTI 1)
+             */
+            $productTransaction = ProductTransaction::where('order_id', $order->id)->first();
+
+            if (!$productTransaction) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data produk pesanan tidak ditemukan',
+                ], 422);
+            }
+
+            /**
+             * LOCK PRODUCT
+             */
+            $product = Product::where('id', $productTransaction->product_id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$product) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produk sudah tidak tersedia',
+                ], 422);
+            }
+
+        
+            $product->increment('stock', $productTransaction->amount);
+
+            /**
+             * UPDATE STATUS ORDER
+             */
             $order->update([
                 'status_order'        => 'cancelled',
-                'cancellation_reason' => $request->cancellation_reason,
                 'status_payment'      => 'failed',
+                'cancellation_reason' => $request->cancellation_reason,
             ]);
 
             DB::commit();
 
-            //  Logging sukses
             activity()
                 ->causedBy($user)
+                ->performedOn($order)
+                ->event('order_cancelled')
                 ->withProperties([
-                    'order_id' => $order->id,
-                    'new_status' => 'Canceled',
-                    'cancellation_reason' => $request->cancellation_reason,
-                    'ip' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
+                    'order_id'   => $order->id,
+                    'product_id' => $product->id,
+                    'amount'     => $productTransaction->amount,
                 ])
-                ->log('Pesanan berhasil dibatalkan');
+                ->log('Pesanan dibatalkan dan stok dikembalikan');
 
             return response()->json([
                 'success' => true,
@@ -267,18 +275,14 @@ class OrderCommunityController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            report($e);
 
-            //  Logging error sistem
             activity()
                 ->causedBy($user)
+                ->event('order_cancel_failed')
                 ->withProperties([
-                    'order_id' => $orderId,
-                    'error_message' => $e->getMessage(),
-                    'ip' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
+                    'error' => $e->getMessage(),
                 ])
-                ->log('Terjadi kesalahan saat pembatalan pesanan');
+                ->log('Gagal membatalkan pesanan');
 
             return response()->json([
                 'success' => false,
