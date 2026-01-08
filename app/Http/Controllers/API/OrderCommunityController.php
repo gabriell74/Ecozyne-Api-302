@@ -17,7 +17,7 @@ class OrderCommunityController extends Controller
     const STATUS_ACCEPTED = ['Completed'];
     const STATUS_REJECTED = ['Rejected', 'Canceled'];
 
-    public function placeOrder(Request $request, Product $product)
+    public function placeOrder(Request $request, int $productId)
     {
         $user = $request->user();
 
@@ -42,7 +42,7 @@ class OrderCommunityController extends Controller
             /**
              * AMBIL PRODUCT DI DALAM TRANSAKSI + LOCK
              */
-            $lockedProduct = Product::where('id', $product->id)
+            $lockedProduct = Product::where('id', $productId)
                 ->lockForUpdate()
                 ->first();
 

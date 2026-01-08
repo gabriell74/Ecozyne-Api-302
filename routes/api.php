@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum', 'db_connection')->group(function () {
       Route::get('/waste-bank-submissions/check-status', [WasteBankSubmissionController::class, 'checkSubmissionsStatus']);
 
       Route::prefix('/orders/community')->group(function () {
-        Route::post('/{product}/place', [OrderCommunityController::class, 'placeOrder']);
+        Route::post('/{productId}/place', [OrderCommunityController::class, 'placeOrder']);
         Route::put('/{orderId}/cancel', [OrderCommunityController::class, 'cancelOrder']);
       });
       
