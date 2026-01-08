@@ -8,6 +8,7 @@ use App\Models\Point;
 use App\Models\Address;
 use App\Mail\SendOtpMail;
 use App\Models\Community;
+use App\Models\Kelurahan;
 use App\Models\WasteBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -353,13 +354,13 @@ class UserController extends Controller
         ], 200);
     }
 
-        public function updateProfile(Request $request)
+    public function updateProfile(Request $request)
     {
         $user = $request->user();
 
         $validated = $request->validate([
-            'username' => 'required',
-            'name' => 'required',
+            'username' => 'required|max:255',
+            'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone_number' => [
                 'required',
@@ -395,6 +396,22 @@ class UserController extends Controller
                 $community->update([
                     'name' => $validated['name'],
                     'phone_number' => $validated['phone_number'],
+                ]);
+            }
+
+            $address = Address::where('id', $community->address_id)->first();
+
+            if ($address) {
+                $before['address'] = [
+                    'kelurahan_id' => $address->kelurahan_id,
+                    'address' => $address->address,
+                    'postal_code' => $address->postal_code,
+                ];
+
+                $address->update([
+                    'kelurahan_id' => $validated['kelurahan'],
+                    'address' => $validated['address'],
+                    'postal_code' => $validated['postal_code'],
                 ]);
             }
 

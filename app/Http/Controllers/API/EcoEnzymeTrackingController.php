@@ -84,7 +84,7 @@ class EcoEnzymeTrackingController extends Controller
             'batch_name' => 'required|string|max:255',
             'start_date' => 'required|date|before_or_equal:end_date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'notes' => 'nullable|string',
+            'notes' => 'required|string',
         ]);
 
         $validatedData['waste_bank_id'] = $wasteBankId;
