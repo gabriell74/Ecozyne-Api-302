@@ -5,91 +5,76 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use App\Mail\SendOtpMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 
 class ResetPasswordController extends Controller
 {
     public function sendOtpForResetPassword(Request $request)
     {
         try {
-            return DB::transaction(function () use ($request) {
+            $request->validate([
+                'email' => 'required|email',
+            ]);
 
-                $request->validate([
-                    'email' => 'required|email',
-                ]);
+            $email = strtolower($request->email);
 
-                $email = strtolower($request->email);
-                $user = User::where('email', $email)->first();
+            $user = User::where('email', $email)
+                ->whereNotNull('email_verified_at')
+                ->first();
 
-                if (!$user) {
-                    RateLimiter::clear('otp-verify:' . $email);
-                    RateLimiter::clear('otp-resend:' . $email);
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Pengguna Tidak Ditemukan'
-                    ], 404);
-                }
-
-                if (is_null($user->email_verified_at)) {
-                    RateLimiter::clear('otp-verify:' . $email);
-                    RateLimiter::clear('otp-resend:' . $email);
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Email belum diverifikasi, silahkan registrasi ulang.'
-                    ], 403);
-                }
-
-                $otpCode = rand(100000, 999999);
-                $user->update([
-                    'otp_code' => $otp,
-                    'otp_expires_at' => now()->addMinutes(10)
-                ]);
-
-                Mail::to($user->email)->send(new SendOtpMail($otpCode));
-
-                activity()
-                    ->causedBy($user)
-                    ->performedOn($user)
-                    ->event('Forgot Password')
-                    ->withProperties([
-                        'email' => $user->email,
-                    ])
-                    ->log('User sedang proses mereset password');
+            if (!$user) {
+                RateLimiter::clear('otp-verify:' . $email);
+                RateLimiter::clear('otp-resend:' . $email);
 
                 return response()->json([
-                    'email' => $user->email,
-                    'success' => true,
-                    'message' => 'OTP Dikirim, silahkan cek email anda.',
-                ], 200);
-            });
+                    'success' => false,
+                    'message' => "Email tidak ditemukan \n atau belum diverifikasi",
+                ], 404);
+            }
+
+            $otpCode = rand(100000, 999999);
+
+            $user->update([
+                'otp_code' => $otpCode,
+                'otp_expires_at' => now()->addMinutes(10),
+                'reset_password_verified_at' => null,
+            ]);
+
+            Mail::to($user->email)->send(new SendOtpMail($otpCode));
+
+            return response()->json([
+                'success' => true,
+                'email' => $user->email,
+                'message' => 'OTP dikirim untuk reset password',
+            ], 200);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'OTP Gagal dikirim, silahkan coba lagi',
+                'message' => 'Gagal mengirim OTP reset password',
             ], 500);
         }
     }
 
-    public function resetPasswordOtpVerify(Request $request) 
+    public function resetPasswordOtpVerify(Request $request)
     {
         try {
             return DB::transaction(function () use ($request) {
 
                 $request->validate([
                     'email' => 'required|email|exists:users,email',
-                    'otp' => 'required|numeric|digits:6'
+                    'otp' => 'required|digits:6',
                 ]);
 
                 $email = strtolower($request->email);
@@ -111,8 +96,8 @@ class ResetPasswordController extends Controller
                 if (!$user->email_verified_at) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Email belum diverifikasi, silahkan registrasi ulang.',
-                    ], 409);
+                        'message' => 'Email belum diverifikasi',
+                    ], 403);
                 }
 
                 if ($user->otp_code !== $request->otp) {
@@ -132,28 +117,27 @@ class ResetPasswordController extends Controller
                 RateLimiter::clear($rateLimitKey);
 
                 $user->update([
+                    'reset_password_verified_at' => now(),
                     'otp_code' => null,
                     'otp_expires_at' => null,
                 ]);
 
                 return response()->json([
-                    'email' => $user->email,
                     'success' => true,
-                    'message' => 'Verifikasi berhasil, silahkan masukkan password baru',
-                ], 201);
+                    'message' => 'OTP valid, silakan reset password',
+                ], 200);
             });
 
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Verifikasi gagal, silakan coba lagi',
+                'message' => 'Verifikasi OTP gagal',
             ], 500);
         }
     }
@@ -184,8 +168,8 @@ class ResetPasswordController extends Controller
             if (!$user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Email belum diverifikasi, silahkan registrasi ulang.',
-                ], 400);
+                    'message' => 'Email belum diverifikasi',
+                ], 403);
             }
 
             $otpCode = rand(100000, 999999);
@@ -193,6 +177,7 @@ class ResetPasswordController extends Controller
             $user->update([
                 'otp_code' => $otpCode,
                 'otp_expires_at' => now()->addMinutes(10),
+                'reset_password_verified_at' => null,
             ]);
 
             RateLimiter::clear('otp-verify:' . $email);
@@ -202,12 +187,11 @@ class ResetPasswordController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Kode OTP baru telah dikirim',
-            ]);
+            ], 200);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
 
@@ -219,10 +203,11 @@ class ResetPasswordController extends Controller
         }
     }
 
-    public function resetPasswordByUser(Request $request) 
-    {   
-        try { 
+    public function resetPasswordByUser(Request $request)
+    {
+        try {
             return DB::transaction(function () use ($request) {
+
                 $request->validate([
                     'email' => 'required|email|exists:users,email',
                     'password' => [
@@ -235,48 +220,49 @@ class ResetPasswordController extends Controller
                         'regex:/[@$!%*?&._\-]/',
                         'not_regex:/\s/',
                     ],
-                    'password_confirmation' => [
-                        'required',
-                        'same:password',
-                        'string',
-                        'min:8',
-                        'regex:/[a-z]/',
-                        'regex:/[A-Z]/',
-                        'regex:/[0-9]/',
-                        'regex:/[@$!%*?&._\-]/',
-                        'not_regex:/\s/',
-                    ],
+                    'password_confirmation' => 'required|same:password',
                 ]);
 
-                $user = User::where('email', $request->email)->lockForUpdate()->firstOrFail();
-                
+                $user = User::where('email', $request->email)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if (!$user->reset_password_verified_at) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'OTP belum diverifikasi',
+                    ], 403);
+                }
+
                 if (Hash::check($request->password, $user->password)) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Password baru tidak boleh sama dengan yang lama',
+                        'message' => 'Password baru tidak boleh sama dengan password lama',
                     ], 400);
                 }
 
-                $user->password = Hash::make($request->password);
-                $user->otp_code = null;
-                $user->otp_expires_at = null;
-                $user->save();
+                $user->update([
+                    'password' => Hash::make($request->password),
+                    'reset_password_verified_at' => null,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Password berhasil direset',
+                ], 200);
             });
 
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Verifikasi gagal, silakan coba lagi',
+                'message' => 'Reset password gagal',
             ], 500);
         }
     }
 }
-
-

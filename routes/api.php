@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ActivityController;
 use App\Http\Controllers\API\WasteBankController;
 use App\Http\Controllers\api\PointExchangeController;
+use App\Http\Controllers\API\ResetPasswordController;
 use App\Http\Controllers\API\OrderCommunityController;
 use App\Http\Controllers\API\OrderWasteBankController;
 use App\Http\Controllers\API\CommunityHistoryController;
@@ -28,6 +29,11 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/register/verify-otp', [UserController::class, 'registerOtpVerify']);
 Route::post('/register/resend-otp', [UserController::class, 'resendOtp']);
 Route::get('/regions', [RegionController::class, 'index']);
+
+Route::post('/reset-password/send-otp', [ResetPasswordController::class, 'sendOtpForResetPassword']);
+Route::post('/reset-password/verify-otp', [ResetPasswordController::class, 'resetPasswordOtpVerify']);
+Route::post('/reset-password/resend-otp', [ResetPasswordController::class, 'resetPasswordResendOtp']);
+Route::put('/reset-password', [ResetPasswordController::class, 'resetPasswordByUser']);
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
